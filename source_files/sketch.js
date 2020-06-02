@@ -1,18 +1,18 @@
 var shapes = [];
 
-function setup() {
-  createCanvas(canvasWidth, canvasHeight);
-}
-
 // DISPLAY
-var canvasWidth = 750;
-var canvasHeight = 750;
+var canvasWidth = window.innerWidth;
+var canvasHeight = window.innerHeight;
 var currentScale = 1;
 var zoomFactor = 1.05;
 var originX = canvasWidth / 2;
 var originY = canvasHeight / 2;
 var translatedMouseX;
 var translatedMouseY;
+
+function setup() {
+  createCanvas(canvasWidth, canvasHeight);
+}
 
 function draw() {
   background(220);
