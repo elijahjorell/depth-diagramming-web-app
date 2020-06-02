@@ -1,5 +1,6 @@
 var shapes = [];
 
+// =================================================================================================
 // ====== DISPLAY
 
 var canvasWidth = window.innerWidth;
@@ -21,14 +22,28 @@ function draw() {
   translate(originX, originY);
   pan();
   scale(currentScale);
+  shapeIsBeingMoved();
   displayShapes();
   updatePreviousMouseCoordinates();
 }
 
 function displayShapes() {
   for (i = 0; i < shapes.length; i++) {
+    loadDefaultStyle();
+    highlightSelectedShape(i);
     ellipse(shapes[i].x, shapes[i].y, shapes[i].r);
+    loadDefaultStyle();
   }
+}
+
+function highlightSelectedShape(indexIn) {
+  if (indexIn == selectedShape) {
+    stroke('red');
+  }
+}
+
+function loadDefaultStyle() {
+  stroke(255);
 }
 
 function updatePreviousMouseCoordinates() {
@@ -41,7 +56,7 @@ function updateTranslatedMouseCoordinates() {
   translatedMouseY = (mouseY - originY) / currentScale;
 }
 
-
+// =================================================================================================
 // ====== KEYBOARD/MOUSE
 
 function keyPressed() {
@@ -62,17 +77,20 @@ function mousePressed() {
   if (mouseButton == LEFT) {
     selectDeselect(getShapeIndex());
   } else if (mouseButton == CENTER) {
-    panning = 'on';
+    beginPanning();
   }
+}
+
+function doubleClicked() {
+  editShape(getShapeIndex());
 }
 
 function mouseReleased() {
-  if (panning == 'on') {
-    panning = 'off';
-  }
+  cancelPan();
+  cancelMovingShape();
 }
 
-
+// =================================================================================================
 // ====== NAVIGATION
 
 var panning = "off";
@@ -81,10 +99,20 @@ var panRefY;
 var previousX;
 var previousY;
 
+function beginPanning() {
+  panning = 'on';
+}
+
 function pan() {
   if (panning == 'on') {
     originX -= 0.7 * (previousX - mouseX);
     originY -= 0.7 * (previousY - mouseY);
+  }
+}
+
+function cancelPan() {
+  if (panning == 'on') {
+    panning = 'off';
   }
 }
 
@@ -100,9 +128,13 @@ function zoom(event) {
   originY -= zoomDirection * translatedMouseY * currentScale * (zoomFactor - 1);
 }
 
-
+// =================================================================================================
 // ====== COMMANDS
+
 var selectedShape;
+var movingShape;
+var movingShapeCursorOffsetX;
+var movingShapeCursorOffsetY;
 
 function selectDeselect(indexIn) {
   if (selectedShape == undefined) {
@@ -118,7 +150,7 @@ function selectDeselect(indexIn) {
       selectedShape = undefined;
     } else {
       if (indexIn == selectedShape) {
-        selectedShape = indexIn;
+        beginMovingShape();
       } else {
         previousSelectedShape = selectedShape;
         selectedShape = indexIn;
@@ -126,6 +158,33 @@ function selectDeselect(indexIn) {
       }
     }
   }
+}
+
+function beginMovingShape() {
+  movingShapeCursorOffsetX = translatedMouseX - shapes[selectedShape].x;
+  movingShapeCursorOffsetY = translatedMouseY - shapes[selectedShape].y;
+  movingShape = selectedShape;
+  console.log('Shape ' + movingShape + ' is being moved');
+}
+
+function shapeIsBeingMoved() {
+  if (movingShape != undefined) {
+    shapes[movingShape].x = translatedMouseX - movingShapeCursorOffsetX;
+    shapes[movingShape].y = translatedMouseY - movingShapeCursorOffsetY;
+  }
+}
+
+function cancelMovingShape() {
+  if (movingShape != undefined) {
+    console.log('Shape ' + movingShape + ' has stopped being moved');
+    movingShape = undefined;
+    movingShapeCursorOffsetX = undefined;
+    movingShapeCursorOffsetY = undefined;
+  }
+}
+
+function editShape() {
+
 }
 
 function getShapeIndex() {
@@ -140,7 +199,7 @@ function getShapeIndex() {
   }
 }
 
-
+// =================================================================================================
 // ====== BROWSER
 
 // disable browser middle button autoscroll event 
