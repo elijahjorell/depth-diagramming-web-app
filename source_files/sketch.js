@@ -1,6 +1,6 @@
 var shapes = [];
 
-// DISPLAY
+// ====== DISPLAY
 var canvasWidth = window.innerWidth;
 var canvasHeight = window.innerHeight;
 var currentScale = 1;
@@ -40,7 +40,7 @@ function updateTranslatedMouseCoordinates() {
   translatedMouseY = (mouseY - originY) / currentScale;
 }
 
-// KEYBOARD/MOUSE
+// ====== KEYBOARD/MOUSE
 
 function keyPressed() {
   if (keyCode == ENTER) {
@@ -60,17 +60,17 @@ function mousePressed() {
   if (mouseButton == LEFT) {
     selectObject(getShapeID());
   } else if (mouseButton == CENTER) {
-    panning = "on";
+    panning = 'on';
   }
 }
 
 function mouseReleased() {
-  if (panning == "on") {
-    panning = "off";
+  if (panning == 'on') {
+    panning = 'off';
   }
 }
 
-// NAVIGATION
+// ====== NAVIGATION
 var panning = "off";
 var panRefX;
 var panRefY;
@@ -78,7 +78,7 @@ var previousX;
 var previousY;
 
 function pan() {
-  if (panning == "on") {
+  if (panning == 'on') {
     originX -= 0.7 * (previousX - mouseX);
     originY -= 0.7 * (previousY - mouseY);
   }
@@ -96,7 +96,7 @@ function zoom(event) {
   originY -= zoomDirection * translatedMouseY * currentScale * (zoomFactor - 1);
 }
 
-// COMMANDS
+// ====== COMMANDS
 function selectObject() {
   
 }
@@ -112,3 +112,11 @@ function getShapeID() {
     }
   }
 }
+
+// ====== BROWSER
+// disable browser middle button autoscroll event 
+document.addEventListener('mousedown', (e) => {
+  if (e.button == 1) {
+    e.preventDefault();
+  }
+});
