@@ -31,7 +31,7 @@ function displayShapes() {
   for (i = 0; i < shapes.length; i++) {
     loadDefaultStyle();
     highlightSelectedShape(i);
-    ellipse(shapes[i].x, shapes[i].y, shapes[i].r);
+    ellipse(shapes[i].x, shapes[i].y, 2 * shapes[i].r);
     loadDefaultStyle();
   }
 }
@@ -82,6 +82,7 @@ function mousePressed() {
 }
 
 function doubleClicked() {
+  focusOnShape();
   editShape(getShapeIndex());
 }
 
@@ -183,8 +184,22 @@ function cancelMovingShape() {
   }
 }
 
-function editShape() {
+function editShape(indexIn) {
+  if (selectedShape != undefined) {
+    console.log('Shape ' + indexIn + ' is being edited');
+    shapeDescription = createElement("textarea")
+    shapeDescription.elt.id = "shape-description"
+    shapeDescription.position(0.1 * canvasWidth, 0.2 * canvasHeight);
+    shapeDescription.size(0.3 * canvasWidth, 0.5 * canvasHeight);
+    shapeDescription.elt.focus();
+    // PENDING MORE CODE
+  }
+}
 
+function focusOnShape() {
+  if (selectedShape != undefined) {
+    // pending code
+  }
 }
 
 function getShapeIndex() {
@@ -192,7 +207,7 @@ function getShapeIndex() {
     distanceToShape = dist(translatedMouseX,
                            translatedMouseY,
                            shapes[i].x,
-                           shapes[i].y)
+                           shapes[i].y);
     if (distanceToShape < shapes[i].r) {
       return i;
     }
