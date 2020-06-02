@@ -1,6 +1,7 @@
 var shapes = [];
 
 // ====== DISPLAY
+
 var canvasWidth = window.innerWidth;
 var canvasHeight = window.innerHeight;
 var currentScale = 1;
@@ -40,6 +41,7 @@ function updateTranslatedMouseCoordinates() {
   translatedMouseY = (mouseY - originY) / currentScale;
 }
 
+
 // ====== KEYBOARD/MOUSE
 
 function keyPressed() {
@@ -58,7 +60,7 @@ function mouseWheel(event) {
 
 function mousePressed() {
   if (mouseButton == LEFT) {
-    selectObject(getShapeID());
+    selectDeselect(getShapeIndex());
   } else if (mouseButton == CENTER) {
     panning = 'on';
   }
@@ -70,7 +72,9 @@ function mouseReleased() {
   }
 }
 
+
 // ====== NAVIGATION
+
 var panning = "off";
 var panRefX;
 var panRefY;
@@ -96,12 +100,35 @@ function zoom(event) {
   originY -= zoomDirection * translatedMouseY * currentScale * (zoomFactor - 1);
 }
 
+
 // ====== COMMANDS
-function selectObject() {
-  
+var selectedShape;
+
+function selectDeselect(indexIn) {
+  if (selectedShape == undefined) {
+    if (indexIn == undefined) {
+      
+    } else {
+      selectedShape = indexIn;
+      console.log('Shape ' + selectedShape + ' has been selected');
+    }
+  } else {
+    if (indexIn == undefined) {
+      console.log('Shape ' + selectedShape + ' has been unselected');
+      selectedShape = undefined;
+    } else {
+      if (indexIn == selectedShape) {
+        selectedShape = indexIn;
+      } else {
+        previousSelectedShape = selectedShape;
+        selectedShape = indexIn;
+        console.log('Selection has been changed from shape ' + previousSelectedShape + ' to shape ' + selectedShape);
+      }
+    }
+  }
 }
 
-function getShapeID() {
+function getShapeIndex() {
   for (i = 0; i < shapes.length; i++) {
     distanceToShape = dist(translatedMouseX,
                            translatedMouseY,
@@ -113,7 +140,9 @@ function getShapeID() {
   }
 }
 
+
 // ====== BROWSER
+
 // disable browser middle button autoscroll event 
 document.addEventListener('mousedown', (e) => {
   if (e.button == 1) {
