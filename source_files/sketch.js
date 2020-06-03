@@ -1,4 +1,5 @@
 var shapes = [];
+var parentShapes = [];
 
 // =================================================================================================
 // ====== DISPLAY
@@ -28,12 +29,19 @@ function draw() {
 }
 
 function displayShapes() {
+  // 
+
+  // loop to display shapes
   for (i = 0; i < shapes.length; i++) {
     loadDefaultStyle();
     highlightSelectedShape(i);
     rect(shapes[i].x, shapes[i].y, shapes[i].w, shapes[i].h);
     loadDefaultStyle();
   }
+}
+
+function isShapeInParentShapesArray(indexIn) {
+  //try indexOf
 }
 
 function highlightSelectedShape(indexIn) {
@@ -62,6 +70,8 @@ function updateTranslatedMouseCoordinates() {
 function keyPressed() {
   if (keyCode == ENTER) {
     createShape();
+  } else if (keyCode == 32) { // spacebar
+    logShapesArray();
   }
 }
 
@@ -140,7 +150,10 @@ function createShape() {
     x: translatedMouseX - rectWidth/2,
     y: translatedMouseY - rectHeight/2,
     w: rectWidth,
-    h: rectHeight
+    h: rectHeight,
+    parent: undefined,
+    children: undefined,
+    depth: 0,
   });
 }
 
@@ -185,26 +198,43 @@ function shapeIsBeingMoved() {
 function cancelMovingShape() {
   if (movingShape != undefined) {
     console.log('Shape ' + movingShape + ' has stopped being moved');
+    updateShapeParentChildrenAndDepth(movingShape);
     movingShape = undefined;
     movingShapeCursorOffsetX = undefined;
     movingShapeCursorOffsetY = undefined;
   }
 }
 
-function editShape(indexIn) {
-  if (selectedShape != undefined) {
-    console.log('Shape ' + indexIn + ' is being edited');
-    // shapeDescription = createElement("textarea")
-    // shapeDescription.elt.id = "shape-description"
-    // shapeDescription.position(0.1 * canvasWidth, 0.2 * canvasHeight);
-    // shapeDescription.size(0.3 * canvasWidth, 0.5 * canvasHeight);
-    // shapeDescription.elt.focus();
-    // pending code
+function updateShapeParentChildrenAndDepth(indexIn) {
+  // parent
+  targetParent = getShapeIndex();
+  if (targetParent != indexIn) {
+    shapes[indexIn].parent = targetParent
+    console.log('Shape ' + indexIn + ' now has shape ' + targetParent + ' as its parent');
+    
+    // children
+    shapes[targetParent].children = indexIn;
+    console.log('Shape ' + targetParent + ' now has shape ' + indexIn + ' as its child');
+    
+    // depth, iterate through the parents of parents, adding 1 to depth each loop
+    currentParent = targetParent;
+    currentDepth = 0;
+    while (currentParent != undefined) {
+      currentParent = shapes[currentParent].parent;
+      currentDepth += 1;
+    }
+    shapes[indexIn].depth = currentDepth;
+    console.log('Shape ' + indexIn + ' now has a depth of ' + currentDepth);
   }
 }
 
-function focusOnShape() {
+function updateDimensionsBasedOnChildren() {
+  
+}
+
+function editShape(indexIn) {
   if (selectedShape != undefined) {
+    console.log('Shape ' + indexIn + ' is being edited');
     // pending code
   }
 }
@@ -215,9 +245,16 @@ function getShapeIndex() {
         translatedMouseX < shapes[i].x + shapes[i].w &&
         translatedMouseY > shapes[i].y &&
         translatedMouseY < shapes[i].y + shapes[i].h) {
-          return i;
+        return i;
       }
   }
+}
+
+// =================================================================================================
+// ====== TESTING
+
+function logShapesArray() {
+  console.log(shapes);
 }
 
 // =================================================================================================
