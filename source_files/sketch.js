@@ -135,19 +135,13 @@ var movingShapeCursorOffsetY;
 var rectWidth = 120;
 var rectHeight = 80;
 
-// create class
-
-class Shape {
-  constructor(xIn, yIn) {
-    this.w = rectWidth
-    this.h = rectHeight
-    this.x = xIn - rectWidth/2
-    this.y = yIn - rectHeight/2
-  }
-}
-
 function createShape() {
-  shapes.push(new Shape(translatedMouseX, translatedMouseY));
+  shapes.push({
+    x: translatedMouseX - rectWidth/2,
+    y: translatedMouseY - rectHeight/2,
+    w: rectWidth,
+    h: rectHeight
+  });
 }
 
 function selectDeselect(indexIn) {
