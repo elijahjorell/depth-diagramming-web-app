@@ -31,7 +31,7 @@ function displayShapes() {
   for (i = 0; i < shapes.length; i++) {
     loadDefaultStyle();
     highlightSelectedShape(i);
-    ellipse(shapes[i].x, shapes[i].y, 2 * shapes[i].r);
+    rect(shapes[i].x, shapes[i].y, shapes[i].w, shapes[i].h);
     loadDefaultStyle();
   }
 }
@@ -61,11 +61,7 @@ function updateTranslatedMouseCoordinates() {
 
 function keyPressed() {
   if (keyCode == ENTER) {
-    shapes.push({
-      x: translatedMouseX,
-      y: translatedMouseY,
-      r: 50
-    });
+    createShape();
   }
 }
 
@@ -136,6 +132,17 @@ var selectedShape;
 var movingShape;
 var movingShapeCursorOffsetX;
 var movingShapeCursorOffsetY;
+var rectWidth = 120;
+var rectHeight = 80;
+
+function createShape() {
+  shapes.push({
+    x: translatedMouseX - rectWidth/2,
+    y: translatedMouseY - rectHeight/2,
+    w: rectWidth,
+    h: rectHeight
+  });
+}
 
 function selectDeselect(indexIn) {
   if (selectedShape == undefined) {
@@ -187,12 +194,12 @@ function cancelMovingShape() {
 function editShape(indexIn) {
   if (selectedShape != undefined) {
     console.log('Shape ' + indexIn + ' is being edited');
-    shapeDescription = createElement("textarea")
-    shapeDescription.elt.id = "shape-description"
-    shapeDescription.position(0.1 * canvasWidth, 0.2 * canvasHeight);
-    shapeDescription.size(0.3 * canvasWidth, 0.5 * canvasHeight);
-    shapeDescription.elt.focus();
-    // PENDING MORE CODE
+    // shapeDescription = createElement("textarea")
+    // shapeDescription.elt.id = "shape-description"
+    // shapeDescription.position(0.1 * canvasWidth, 0.2 * canvasHeight);
+    // shapeDescription.size(0.3 * canvasWidth, 0.5 * canvasHeight);
+    // shapeDescription.elt.focus();
+    // pending code
   }
 }
 
@@ -204,13 +211,12 @@ function focusOnShape() {
 
 function getShapeIndex() {
   for (i = 0; i < shapes.length; i++) {
-    distanceToShape = dist(translatedMouseX,
-                           translatedMouseY,
-                           shapes[i].x,
-                           shapes[i].y);
-    if (distanceToShape < shapes[i].r) {
-      return i;
-    }
+    if (translatedMouseX > shapes[i].x &&
+        translatedMouseX < shapes[i].x + shapes[i].w &&
+        translatedMouseY > shapes[i].y &&
+        translatedMouseY < shapes[i].y + shapes[i].h) {
+          return i;
+      }
   }
 }
 
