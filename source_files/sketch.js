@@ -29,20 +29,22 @@ function draw() {
 }
 
 function displayShapes() {
-  // 
-
   // loop to display shapes
   for (i = 0; i < shapes.length; i++) {
     loadDefaultStyle();
     highlightSelectedShape(i);
     updateFillBasedOnDepth(i);
+
+    // display rectangles
+    // code to display parents first (so children will seem like they're within parent shapes)
     rect(shapes[i].x, shapes[i].y, shapes[i].w, shapes[i].h);
+
     loadDefaultStyle();
   }
 }
 
 function updateFillBasedOnDepth(indexIn) {
-  fill(255 - 5 * shapes[indexIn].depth);
+  fill(255, 200);
 }
 
 function highlightSelectedShape(indexIn) {
@@ -90,7 +92,6 @@ function mousePressed() {
 }
 
 function doubleClicked() {
-  focusOnShape();
   editShape(getShapeIndex());
 }
 
@@ -184,6 +185,10 @@ function selectDeselect(indexIn) {
   }
 }
 
+function sendShapeToFront(indexIn) { // which one is shown on top i.e send to front, send backwards etc etc
+
+}
+
 function beginMovingShape() {
   movingShapeCursorOffsetX = translatedMouseX - shapes[selectedShape].x;
   movingShapeCursorOffsetY = translatedMouseY - shapes[selectedShape].y;
@@ -195,6 +200,11 @@ function shapeIsBeingMoved() {
   if (movingShape != undefined) {
     shapes[movingShape].x = translatedMouseX - movingShapeCursorOffsetX;
     shapes[movingShape].y = translatedMouseY - movingShapeCursorOffsetY;
+  
+    // move children shape of shape being moved too
+    if (shapes[movingShape].children.length != 0) {
+      updateChildrenShapePosition(movingShape);
+    }
   }
 }
 
@@ -217,6 +227,7 @@ function updateShapeParentChildrenAndDepth(indexIn) {
     
     // children
     shapes[targetParent].children.push(indexIn);
+    console.log(shapes[targetParent].children);
     console.log('Shape ' + targetParent + ' now has shape ' + indexIn + ' as its child');
     
     // depth, iterate through the parents of parents, adding 1 to depth each loop
@@ -230,22 +241,24 @@ function updateShapeParentChildrenAndDepth(indexIn) {
     console.log('Shape ' + indexIn + ' now has a depth of ' + currentDepth);
 
     // update dimensions based on number of children
-    if (shapes[targetParent].children.length = 1) {
+    if (shapes[targetParent].children.length == 1) {
       shapes[targetParent].w = rectWidth + 2 * rectSpacingInParent; // instead of being hard coded at rectWidth etc. make width based on children width 
       shapes[targetParent].h = rectHeight + 2 * rectSpacingInParent;
     } if (shapes[targetParent].children.length > 1) {
       shapes[targetParent].w = rectWidth + 2 * rectSpacingInParent; // instead of being hard coded at rectWidth etc. make width based on children width 
-      shapes[targetParent].h = rectSpacingInParent + rectHeight + (shapes[targetParent].children.length - 1) * (rectHeight + rectSpacingInParent);
+      shapes[targetParent].h = 2 * rectSpacingInParent + rectHeight + (shapes[targetParent].children.length - 1) * (rectHeight + rectSpacingInParent);
     }
 
-    // overlap children and parent
-    shapes[indexIn].x = shapes[targetParent].x + rectSpacingInParent;
-    shapes[indexIn].y = shapes[targetParent].y + rectSpacingInParent + (shapes[targetParent].children.length - 1) * (rectHeight + rectSpacingInParent);
+    updateChildrenShapePosition(targetParent);
   }
 }
 
-function orderShapes() { // which one is shown on top i.e send to front, send backwards etc etc
-
+function updateChildrenShapePosition(indexIn) {
+  for (i = 0; i < shapes[indexIn].children.length; i++) {
+    currentChild = shapes[indexIn].children[i];
+    shapes[currentChild].x = shapes[indexIn].x + rectSpacingInParent;
+    shapes[currentChild].y = shapes[indexIn].y + rectSpacingInParent + i * (rectHeight + rectSpacingInParent);
+  }
 }
 
 function editShape(indexIn) {
