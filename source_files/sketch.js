@@ -36,9 +36,8 @@ function displayShapes() {
     updateFillBasedOnDepth(i);
 
     // display rectangles
-    // code to display parents first (so children will seem like they're within parent shapes)
+    // pending code to display parents first (so children will seem like they're within parent shapes)
     rect(shapes[i].x, shapes[i].y, shapes[i].w, shapes[i].h);
-
     loadDefaultStyle();
   }
 }
@@ -85,14 +84,14 @@ function mouseWheel(event) {
 
 function mousePressed() {
   if (mouseButton == LEFT) {
-    selectDeselect(getShapeIndex());
+    selectDeselect(getShapeIndices().slice(-1)[0]); // selects shape on top if multiple overlapping
   } else if (mouseButton == CENTER) {
     beginPanning();
   }
 }
 
 function doubleClicked() {
-  editShape(getShapeIndex());
+  editShape(getShapeIndices().slice(-1)[0]);
 }
 
 function mouseReleased() {
@@ -151,6 +150,7 @@ var rectSpacingInParent = 10;
 
 function createShape() {
   shapes.push({
+    id: shapes.length,
     x: translatedMouseX - rectWidth/2,
     y: translatedMouseY - rectHeight/2,
     w: rectWidth,
@@ -164,7 +164,7 @@ function createShape() {
 function selectDeselect(indexIn) {
   if (selectedShape == undefined) {
     if (indexIn == undefined) {
-      
+      // do nothing
     } else {
       selectedShape = indexIn;
       console.log('Shape ' + selectedShape + ' has been selected');
@@ -186,7 +186,7 @@ function selectDeselect(indexIn) {
 }
 
 function sendShapeToFront(indexIn) { // which one is shown on top i.e send to front, send backwards etc etc
-
+  console.log("Index of shape " + indexIn + " is " + shapes.indexOf(indexIn));
 }
 
 function beginMovingShape() {
@@ -219,18 +219,28 @@ function cancelMovingShape() {
 }
 
 function updateShapeParentChildrenAndDepth(indexIn) {
-  // parent
-  targetParent = getShapeIndex();
+  targetShapeIndices = getShapeIndices();
+  
+  // remove shape being moved from target indices array
+  if (targetShapeIndices.length > 1) {
+    for (i = 0; i < targetShapeIndices.length; i++) {
+      if (targetShapeIndices[i] == movingShape) {
+        targetShapeIndices.splice(i, 1); 
+        targetParent = targetShapeIndices.slice(-1)[0];
+      }
+    }
+  }
+
+  // update moved shapes parent
   if (targetParent != indexIn) {
     shapes[indexIn].parent = targetParent
     console.log('Shape ' + indexIn + ' now has shape ' + targetParent + ' as its parent');
     
-    // children
+    // update target parents children
     shapes[targetParent].children.push(indexIn);
-    console.log(shapes[targetParent].children);
     console.log('Shape ' + targetParent + ' now has shape ' + indexIn + ' as its child');
     
-    // depth, iterate through the parents of parents, adding 1 to depth each loop
+    // update moved shapes depth, iterate through the parents of parents, adding 1 to depth each loop
     currentParent = targetParent;
     currentDepth = 0;
     while (currentParent != undefined) {
@@ -240,7 +250,7 @@ function updateShapeParentChildrenAndDepth(indexIn) {
     shapes[indexIn].depth = currentDepth;
     console.log('Shape ' + indexIn + ' now has a depth of ' + currentDepth);
 
-    // update dimensions based on number of children
+    // update target parents dimensions based on number of children
     if (shapes[targetParent].children.length == 1) {
       shapes[targetParent].w = rectWidth + 2 * rectSpacingInParent; // instead of being hard coded at rectWidth etc. make width based on children width 
       shapes[targetParent].h = rectHeight + 2 * rectSpacingInParent;
@@ -268,15 +278,20 @@ function editShape(indexIn) {
   }
 }
 
-function getShapeIndex() {
+function getShapeIndices() {
+  shapeIndexArray = [];
   for (i = 0; i < shapes.length; i++) {
     if (translatedMouseX > shapes[i].x &&
         translatedMouseX < shapes[i].x + shapes[i].w &&
         translatedMouseY > shapes[i].y &&
         translatedMouseY < shapes[i].y + shapes[i].h) {
-        return i;
+        shapeIndexArray.push(i);
       }
   }
+  if (shapeIndexArray.length == 0) {
+    shapeIndexArray.push(undefined)
+  }
+  return shapeIndexArray;
 }
 
 // =================================================================================================
