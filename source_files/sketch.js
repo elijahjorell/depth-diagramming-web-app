@@ -84,14 +84,14 @@ function mouseWheel(event) {
 
 function mousePressed() {
   if (mouseButton == LEFT) {
-    selectDeselect(getShapeIndices().slice(-1)[0]); // selects shape on top if multiple overlapping
+    selectDeselect(getShapeIndices().splice(-1)[0]); // selects shape on top if multiple overlapping
   } else if (mouseButton == CENTER) {
     beginPanning();
   }
 }
 
 function doubleClicked() {
-  editShape(getShapeIndices().slice(-1)[0]);
+  editShape(getShapeIndices().splice(-1)[0]);
 }
 
 function mouseReleased() {
@@ -219,17 +219,11 @@ function cancelMovingShape() {
 }
 
 function updateShapeParentChildrenAndDepth(indexIn) {
-  targetShapeIndices = getShapeIndices();
   
-  // remove shape being moved from target indices array
-  if (targetShapeIndices.length > 1) {
-    for (i = 0; i < targetShapeIndices.length; i++) {
-      if (targetShapeIndices[i] == movingShape) {
-        targetShapeIndices.splice(i, 1); 
-        targetParent = targetShapeIndices.slice(-1)[0];
-      }
-    }
-  }
+  targetIndices = getShapeIndices(); // remove element being moved from this array
+
+  targetParent = getShapeIndices().splice(-1)[0];
+
 
   // update moved shapes parent
   if (targetParent != indexIn) {
@@ -289,7 +283,7 @@ function getShapeIndices() {
       }
   }
   if (shapeIndexArray.length == 0) {
-    shapeIndexArray.push(undefined)
+    shapeIndexArray.push(undefined);
   }
   return shapeIndexArray;
 }
