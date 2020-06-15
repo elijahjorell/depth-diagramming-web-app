@@ -211,7 +211,7 @@ function shapeIsBeingMoved() {
 function cancelMovingShape() {
   if (movingShape != undefined) {
     console.log('Shape ' + movingShape + ' has stopped being moved');
-    updateShapeParentChildrenAndDepth(movingShape);
+    updateShapeParentChildrenAndDepth(movingShape); // when moving shape is "dropped" into another shape
     movingShape = undefined;
     movingShapeCursorOffsetX = undefined;
     movingShapeCursorOffsetY = undefined;
@@ -220,36 +220,47 @@ function cancelMovingShape() {
 
 function updateShapeParentChildrenAndDepth(indexIn) {
   targetIndices = getShapeIndices();
-  indicesToSpliceArray = [];
+  flaggedIndices = [];
 
-   // flag shape being moved from indices array
-  if (targetIndices.length > 1) { 
+  // flagging any invalid target shapes
+  if (targetIndices.length > 0) { 
+    
+    // flag shape being moved from indices array
     for (i = 0; i < targetIndices.length; i++) {
       if (targetIndices[i] == movingShape) {
-        indicesToSpliceArray.push(targetIndices[i]);
-        // console.log('Shape ' + targetIndices[i] + ' has been flagged')
+        flaggedIndices.push(targetIndices[i]);
       }
 
       // flag children of moving shape from indices array
       for (j = 0; j < shapes[movingShape].children.length; j++) {
         if (targetIndices[i] == shapes[movingShape].children[j]) {
-          indicesToSpliceArray.push(targetIndices[i]);
-          // console.log('Shape ' + targetIndices[i] + ' has been flagged')
+          flaggedIndices.push(targetIndices[i]);
         }
       }
     }
     
-    // sort flagged indices in descending order
-    indicesToSpliceArray = indicesToSpliceArray.sort(function(a, b){return b-a}); 
+    // sort flagged indices in descending order to prevent index misalignment when a index is removed before an index that proceeds it
+    flaggedIndices = flaggedIndices.sort(function(a, b){return b-a}); 
 
     // remove flagged shapes from indices array
-    for (i = 0; i < indicesToSpliceArray.length; i++) {
-      targetIndices.splice(targetIndices.indexOf(indicesToSpliceArray[i]), 1); // find index of flagged shape and remove
+    for (i = 0; i < flaggedIndices.length; i++) {
+      targetIndices.splice(targetIndices.indexOf(flaggedIndices[i]), 1); // find index of flagged shape and remove
     }
     
-    if (targetIndices.length == 0) {
-      console.log('No valid target parent')
-      return
+    if (targetIndices.length == 0) { // when shape is not dropped onto any other shape
+      console.log('No valid target parent');
+      
+      // if not dropped into any shape, remove parent and end function
+      if (shapes[indexIn].parent != undefined) {
+        console.log('Shape ' + indexIn + ' no longer a child of ' + shapes[indexIn].parent);
+        clearedParent = shapes[indexIn].parent;
+        shapes[clearedParent].children.splice(shapes[clearedParent].children.indexOf(indexIn), 1)
+        shapes[indexIn].parent = undefined;
+        updateParentDimensions(clearedParent);
+        updateChildrenShapePosition(clearedParent);
+      }
+  
+      return;
     }
 
     targetParent = targetIndices.splice(-1)[0]; // change from "highest index" to "item with highest order i.e. front, back"
@@ -261,7 +272,7 @@ function updateShapeParentChildrenAndDepth(indexIn) {
 
   // update moved shapes parent
   if (targetParent != indexIn) {
-    shapes[indexIn].parent = targetParent
+    shapes[indexIn].parent = targetParent;
     console.log('Shape ' + indexIn + ' now has shape ' + targetParent + ' as its parent');
     
     // update target parents children
@@ -274,19 +285,11 @@ function updateShapeParentChildrenAndDepth(indexIn) {
     // while (currentParent != undefined) { // THIS IS CAUSING A OVERFLOW ERROR, HAPPENS WHEN AN SHAPE WITH ANOTHER SHAPE INSIDE BUT BEHIND IS SELECTED
     //   currentParent = shapes[currentParent].parent;
     //   currentDepth += 1;
-    // }
+    // } // add 
     // shapes[indexIn].depth = currentDepth;
     // console.log('Shape ' + indexIn + ' now has a depth of ' + currentDepth);
 
-    // update target parents dimensions based on number of children
-    if (shapes[targetParent].children.length == 1) {
-      shapes[targetParent].w = rectWidth + 2 * rectSpacingInParent; // instead of being hard coded at rectWidth etc. make width based on children width 
-      shapes[targetParent].h = rectHeight + 2 * rectSpacingInParent;
-    } if (shapes[targetParent].children.length > 1) {
-      shapes[targetParent].w = rectWidth + 2 * rectSpacingInParent; // instead of being hard coded at rectWidth etc. make width based on children width 
-      shapes[targetParent].h = 2 * rectSpacingInParent + rectHeight + (shapes[targetParent].children.length - 1) * (rectHeight + rectSpacingInParent);
-    }
-
+    updateParentDimensions(targetParent);
     updateChildrenShapePosition(targetParent);
   }
 }
@@ -297,6 +300,21 @@ function updateChildrenShapePosition(indexIn) {
     shapes[currentChild].x = shapes[indexIn].x + rectSpacingInParent;
     shapes[currentChild].y = shapes[indexIn].y + rectSpacingInParent + i * (rectHeight + rectSpacingInParent);
   }
+}
+
+function updateParentDimensions(indexIn) {
+  if (shapes[indexIn].children.length == 0) {
+    shapes[indexIn].w = rectWidth;
+    shapes[indexIn].h = rectHeight;
+  } else if (shapes[indexIn].children.length == 1) {
+    shapes[indexIn].w = rectWidth + 2 * rectSpacingInParent; // instead of being hard coded at rectWidth etc. make width based on children width 
+    shapes[indexIn].h = rectHeight + 2 * rectSpacingInParent;
+  } else if (shapes[targetParent].children.length > 1) {
+    shapes[indexIn].w = rectWidth + 2 * rectSpacingInParent; // instead of being hard coded at rectWidth etc. make width based on children width 
+    shapes[indexIn].h = 2 * rectSpacingInParent + rectHeight + (shapes[indexIn].children.length - 1) * (rectHeight + rectSpacingInParent);
+  }
+  // move "update target parents dimensions based on number of children" section from updateShapeParentChildrenAndDepth function here
+  // rename updateShapeParentChildrenAndDepth function
 }
 
 function editShape(indexIn) {
