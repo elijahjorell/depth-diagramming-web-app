@@ -91,7 +91,11 @@ function mousePressed() {
 }
 
 function doubleClicked() {
-  editShape(getShapeIndices().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
+  if (getShapeIndices[0] == undefined) {
+    // empty
+  } else {
+    editShape(getShapeIndices().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
+  }
 }
 
 function mouseReleased() {
@@ -202,6 +206,7 @@ function shapeIsBeingMoved() {
     shapes[movingShape].y = translatedMouseY - movingShapeCursorOffsetY;
   
     // move children shape of shape being moved too
+    // CHANGE TO MOVE ALL DESCENDANTS
     if (shapes[movingShape].children.length != 0) {
       updateChildrenShapePosition(movingShape);
     }
@@ -222,7 +227,7 @@ function updateShapeParentChildrenAndDepth(indexIn) {
   targetIndices = getShapeIndices();
   flaggedIndices = [];
 
-  // flagging any invalid target shapes
+  // processing target indices
   if (targetIndices.length > 0) { 
     for (i = 0; i < targetIndices.length; i++) {
 
@@ -263,8 +268,7 @@ function updateShapeParentChildrenAndDepth(indexIn) {
         clearedParent = shapes[indexIn].parent;
         shapes[clearedParent].children.splice(shapes[clearedParent].children.indexOf(indexIn), 1)
         shapes[indexIn].parent = undefined;
-        updateParentDimensions(clearedParent);
-        updateChildrenShapePosition(clearedParent);
+        updateAncestryDimensionsAndPosition(clearedParent)
       }
   
       return;
@@ -274,8 +278,6 @@ function updateShapeParentChildrenAndDepth(indexIn) {
   } else {
     targetParent = getShapeIndices()[0];
   }
-
- 
 
   // update moved shapes parent
   if (targetParent != indexIn) {
@@ -292,13 +294,25 @@ function updateShapeParentChildrenAndDepth(indexIn) {
     // while (currentParent != undefined) { // THIS IS CAUSING A OVERFLOW ERROR, HAPPENS WHEN AN SHAPE WITH ANOTHER SHAPE INSIDE BUT BEHIND IS SELECTED
     //   currentParent = shapes[currentParent].parent;
     //   currentDepth += 1;
-    // } // add 
+    // }
     // shapes[indexIn].depth = currentDepth;
     // console.log('Shape ' + indexIn + ' now has a depth of ' + currentDepth);
 
-    updateParentDimensions(targetParent);
-    updateChildrenShapePosition(targetParent);
+    updateAncestryDimensionsAndPosition(targetParent)
   }
+}
+
+function updateAncestryDimensionsAndPosition(indexIn) {
+  currentParent = indexIn;
+  while (currentParent != undefined) { // THIS IS CAUSING A OVERFLOW ERROR, HAPPENS WHEN AN SHAPE WITH ANOTHER SHAPE INSIDE BUT BEHIND IS SELECTED
+    updateParentDimensions(currentParent); // update parents of parents dimensions
+    updateChildrenShapePosition(currentParent); // update parents of parents children positions
+    currentParent = shapes[currentParent].parent;
+  }
+}
+
+function updateDescendantsPosition() {
+
 }
 
 function updateChildrenShapePosition(indexIn) {
@@ -313,13 +327,19 @@ function updateParentDimensions(indexIn) {
   if (shapes[indexIn].children.length == 0) {
     shapes[indexIn].w = rectWidth;
     shapes[indexIn].h = rectHeight;
-  } else if (shapes[indexIn].children.length == 1) {
-    shapes[indexIn].w = rectWidth + 2 * rectSpacingInParent; // instead of being hard coded at rectWidth etc. make width based on children width 
-    shapes[indexIn].h = rectHeight + 2 * rectSpacingInParent;
-  } else if (shapes[targetParent].children.length > 1) {
-    shapes[indexIn].w = rectWidth + 2 * rectSpacingInParent; // instead of being hard coded at rectWidth etc. make width based on children width 
-    shapes[indexIn].h = 2 * rectSpacingInParent + rectHeight + (shapes[indexIn].children.length - 1) * (rectHeight + rectSpacingInParent);
+  } else if (shapes[indexIn].children.length >= 1) { 
+    maxWidth = rectWidth;
+    totalChildrenHeight = 0;
+    for (i = 0; i < shapes[indexIn].children.length; i++) {
+      if (shapes[shapes[indexIn].children[i]].w > maxWidth) {
+        maxWidth = shapes[shapes[indexIn].children[i]].w;
+      }
+      totalChildrenHeight += shapes[shapes[indexIn].children[i]].h;
+    }
+    shapes[indexIn].w = maxWidth + 2 * rectSpacingInParent;
+    shapes[indexIn].h = totalChildrenHeight + rectSpacingInParent + shapes[indexIn].children.length * rectSpacingInParent;
   }
+
   // move "update target parents dimensions based on number of children" section from updateShapeParentChildrenAndDepth function here
   // rename updateShapeParentChildrenAndDepth function
 }
