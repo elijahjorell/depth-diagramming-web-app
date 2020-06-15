@@ -224,9 +224,9 @@ function updateShapeParentChildrenAndDepth(indexIn) {
 
   // flagging any invalid target shapes
   if (targetIndices.length > 0) { 
-    
-    // flag shape being moved from indices array
     for (i = 0; i < targetIndices.length; i++) {
+
+      // flag shape being moved from indices array
       if (targetIndices[i] == movingShape) {
         flaggedIndices.push(targetIndices[i]);
       }
@@ -236,6 +236,13 @@ function updateShapeParentChildrenAndDepth(indexIn) {
         if (targetIndices[i] == shapes[movingShape].children[j]) {
           flaggedIndices.push(targetIndices[i]);
         }
+      }
+
+      // if not moved outside of parent, reset position and shape
+      if (targetIndices[i] == shapes[movingShape].parent) {
+        updateParentDimensions(shapes[movingShape].parent);
+        updateChildrenShapePosition(shapes[movingShape].parent);
+        return
       }
     }
     
