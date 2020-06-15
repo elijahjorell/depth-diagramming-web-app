@@ -216,14 +216,14 @@ function shapeIsBeingMoved() {
 function cancelMovingShape() {
   if (movingShape != undefined) {
     console.log('Shape ' + movingShape + ' has stopped being moved');
-    updateShapeParentChildrenAndDepth(movingShape); // when moving shape is "dropped" into another shape
+    shapeIsDropped(movingShape); // when moving shape is "dropped" into another shape
     movingShape = undefined;
     movingShapeCursorOffsetX = undefined;
     movingShapeCursorOffsetY = undefined;
   }
 }
 
-function updateShapeParentChildrenAndDepth(indexIn) {
+function shapeIsDropped(indexIn) {
   targetIndices = getShapeIndices();
   flaggedIndices = [];
 
@@ -316,10 +316,20 @@ function updateDescendantsPosition() {
 }
 
 function updateChildrenShapePosition(indexIn) {
+  currentYOffset = rectSpacingInParent;
+  currentXOffset = undefined;
   for (i = 0; i < shapes[indexIn].children.length; i++) {
     currentChild = shapes[indexIn].children[i];
-    shapes[currentChild].x = shapes[indexIn].x + rectSpacingInParent;
-    shapes[currentChild].y = shapes[indexIn].y + rectSpacingInParent + i * (rectHeight + rectSpacingInParent);
+    previousChild = shapes[indexIn].children[i - 1];
+
+    // X offset
+    shapes[currentChild].x = shapes[indexIn].x + shapes[indexIn].w/2 - shapes[currentChild].w/2;
+    
+    // Y offset
+    if (i > 0) {
+      currentYOffset += shapes[previousChild].h + rectSpacingInParent;
+    }
+    shapes[currentChild].y = shapes[indexIn].y + currentYOffset;
   }
 }
 
@@ -339,9 +349,6 @@ function updateParentDimensions(indexIn) {
     shapes[indexIn].w = maxWidth + 2 * rectSpacingInParent;
     shapes[indexIn].h = totalChildrenHeight + rectSpacingInParent + shapes[indexIn].children.length * rectSpacingInParent;
   }
-
-  // move "update target parents dimensions based on number of children" section from updateShapeParentChildrenAndDepth function here
-  // rename updateShapeParentChildrenAndDepth function
 }
 
 function editShape(indexIn) {
