@@ -1,8 +1,8 @@
 var shapes = [];
 var parentShapes = [];
 
-// =================================================================================================
-// ====== DISPLAY
+// ============================================================================================================================================================================================
+// ==================================================================================== DISPLAY
 
 var canvasWidth = window.innerWidth;
 var canvasHeight = window.innerHeight;
@@ -67,8 +67,8 @@ function updateTranslatedMouseCoordinates() {
   translatedMouseY = (mouseY - originY) / currentScale;
 }
 
-// =================================================================================================
-// ====== KEYBOARD/MOUSE
+// ============================================================================================================================================================================================
+// ==================================================================================== KEYBOARD/MOUSE
 
 function keyPressed() {
   if (keyCode == ENTER) {
@@ -103,8 +103,8 @@ function mouseReleased() {
   cancelMovingShape();
 }
 
-// =================================================================================================
-// ====== NAVIGATION
+// ============================================================================================================================================================================================
+// ==================================================================================== NAVIGATION
 
 var panning = "off";
 var panRefX;
@@ -141,8 +141,8 @@ function zoom(event) {
   originY -= zoomDirection * translatedMouseY * currentScale * (zoomFactor - 1);
 }
 
-// =================================================================================================
-// ====== COMMANDS
+// ============================================================================================================================================================================================
+// ==================================================================================== COMMANDS
 
 var selectedShape;
 var movingShape;
@@ -331,7 +331,7 @@ function updatePositionsOfDescendants(indexIn) {
   // get array containing all of a shape's descendants
   descendants = getShapesDescendants(indexIn);
 
-  // apply updatePositionsOfChildren starting from the lowest depth
+  // apply updatePositionsOfChildren starting from the grandest person
   currentDepth = 0; // start from 0, maybe can change to depth of the ancenstor the function is running for
   currentDescendant = -1;
   descendantsUpdated = 0;
@@ -358,7 +358,7 @@ function updatePositionsOfChildren(indexIn) { // EXPERIENCING ISSUES, MISALIGNED
     currentChild = shapes[indexIn].children[i];
     previousChild = shapes[indexIn].children[i - 1];
     
-    // X offset - REPLACE WITH FUNCTION THAT POSITIONS BEGINNING FROM GRANDEST PARENT USING DEPTH
+    // X offset - align to centre of parent
     shapes[currentChild].x = shapes[indexIn].x + shapes[indexIn].w/2 - shapes[currentChild].w/2;
     
     // Y offset
@@ -443,8 +443,8 @@ function getShapeIndices() {
   return shapeIndexArray;
 }
 
-// =================================================================================================
-// ====== TESTING
+// ============================================================================================================================================================================================
+// ==================================================================================== TESTING
 
 function logShapesArray() {
   if (selectedShape == undefined) {
@@ -454,8 +454,8 @@ function logShapesArray() {
   }
 }
 
-// =================================================================================================
-// ====== BROWSER
+// ============================================================================================================================================================================================
+// ==================================================================================== BROWSER
 
 // disable browser middle button autoscroll event 
 document.addEventListener('mousedown', (e) => {
