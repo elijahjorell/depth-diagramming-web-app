@@ -212,11 +212,8 @@ function shapeIsBeingMoved() {
     shapes[movingShape].x = translatedMouseX - movingShapeCursorOffsetX;
     shapes[movingShape].y = translatedMouseY - movingShapeCursorOffsetY;
   
-    // move children shape of shape being moved too
-    // CHANGE TO MOVE ALL DESCENDANTS
-    if (shapes[movingShape].children.length != 0) {
-      updatePositionsOfChildren(movingShape);
-    }
+    // descendants of moving shape
+    updatePositionsOfFamily(movingShape);
   }
 }
 
