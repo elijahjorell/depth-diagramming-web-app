@@ -146,8 +146,7 @@ function zoom(event) {
 
 var selectedShape;
 var movingShape;
-var movingShapeCursorOffsetX;
-var movingShapeCursorOffsetY;
+var movingShapeOffsetArray = [];
 let rectWidth = 120;
 let rectHeight = 80;
 let rectSpacingInParent = 10;
@@ -199,21 +198,27 @@ function sendShapeToFront(indexIn) { // which one is shown on top i.e send to fr
 }
 
 function beginMovingShape() {
-  movingShapeCursorOffsetX = translatedMouseX - shapes[selectedShape].x; // change to array containing offset for all descendants
-  movingShapeCursorOffsetY = translatedMouseY - shapes[selectedShape].y; // change to array containing offset for all descendants
   movingShape = selectedShape;
   console.log('Shape ' + movingShape + ' is being moved');
 
-  // getShapesDescendants(movingShape); // change to array containing offset for all descendants
+  // create to array containing all descendants for all descendants + offset x + offset y
+  movingShapesArray = getShapesDescendants(movingShape);
+  for (i = 0; i < movingShapesArray.length; i++) {
+    movingShapeOffsetArray.push({
+      id: movingShapesArray[i],
+      offsetX: translatedMouseX - shapes[movingShapesArray[i]].x,
+      offsetY: translatedMouseY - shapes[movingShapesArray[i]].y
+    })
+  }
 }
 
 function shapeIsBeingMoved() {
   if (movingShape != undefined) {
-    shapes[movingShape].x = translatedMouseX - movingShapeCursorOffsetX;
-    shapes[movingShape].y = translatedMouseY - movingShapeCursorOffsetY;
-  
-    // descendants of moving shape
-    updatePositionsOfFamily(movingShape);
+    // move all shapes in movingShapeOffsetArray
+    for (i = 0; i < movingShapeOffsetArray.length; i++) {
+      shapes[movingShapeOffsetArray[i].id].x = translatedMouseX - movingShapeOffsetArray[i].offsetX;
+      shapes[movingShapeOffsetArray[i].id].y = translatedMouseY - movingShapeOffsetArray[i].offsetY;
+    }
   }
 }
 
@@ -221,9 +226,8 @@ function cancelMovingShape() {
   if (movingShape != undefined) {
     console.log('Shape ' + movingShape + ' has stopped being moved');
     shapeIsDropped(movingShape); // when moving shape is "dropped" into another shape
+    movingShapeOffsetArray = [];
     movingShape = undefined;
-    movingShapeCursorOffsetX = undefined;
-    movingShapeCursorOffsetY = undefined;
   }
 }
 
