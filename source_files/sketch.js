@@ -160,6 +160,7 @@ function createShape() {
     w: rectWidth,
     h: rectHeight,
     parent: undefined,
+    grandestParent: undefined,
     children: [],
     depth: 0,
   });
@@ -208,7 +209,7 @@ function shapeIsBeingMoved() {
     // move children shape of shape being moved too
     // CHANGE TO MOVE ALL DESCENDANTS
     if (shapes[movingShape].children.length != 0) {
-      updateChildrenShapePosition(movingShape);
+      updatePositionsOfChildren(movingShape);
     }
   }
 }
@@ -245,8 +246,8 @@ function shapeIsDropped(indexIn) {
 
       // if not moved outside of parent, reset position and shape
       if (targetIndices[i] == shapes[movingShape].parent) {
-        updateParentDimensions(shapes[movingShape].parent);
-        updateChildrenShapePosition(shapes[movingShape].parent);
+        updateDimensionsBasedOnChildren(shapes[movingShape].parent);
+        updatePositionsOfChildren(shapes[movingShape].parent);
         return
       }
     }
@@ -268,7 +269,8 @@ function shapeIsDropped(indexIn) {
         clearedParent = shapes[indexIn].parent;
         shapes[clearedParent].children.splice(shapes[clearedParent].children.indexOf(indexIn), 1)
         shapes[indexIn].parent = undefined;
-        updateAncestryDimensionsAndPosition(clearedParent)
+        updateDimensionsOfAncestors(clearedParent);
+        updatePositionsOfFamily(clearedParent);
       }
   
       return;
@@ -288,41 +290,68 @@ function shapeIsDropped(indexIn) {
     shapes[targetParent].children.push(indexIn);
     console.log('Shape ' + targetParent + ' now has shape ' + indexIn + ' as its child');
     
-    //// update moved shapes depth, iterate through the parents of parents, adding 1 to depth each loop
-    // currentParent = targetParent;
-    // currentDepth = 0;
-    // while (currentParent != undefined) { // THIS IS CAUSING A OVERFLOW ERROR, HAPPENS WHEN AN SHAPE WITH ANOTHER SHAPE INSIDE BUT BEHIND IS SELECTED
-    //   currentParent = shapes[currentParent].parent;
-    //   currentDepth += 1;
-    // }
-    // shapes[indexIn].depth = currentDepth;
-    // console.log('Shape ' + indexIn + ' now has a depth of ' + currentDepth);
+    // update moved shapes depth, iterate through the parents of parents, adding 1 to depth each loop
+    currentParent = targetParent;
+    currentDepth = 0;
+    while (currentParent != undefined) { // THIS IS CAUSING A OVERFLOW ERROR, HAPPENS WHEN AN SHAPE WITH ANOTHER SHAPE INSIDE BUT BEHIND IS SELECTED
+      currentParent = shapes[currentParent].parent;
+      currentDepth += 1;
+    }
+    shapes[indexIn].depth = currentDepth;
+    console.log('Shape ' + indexIn + ' now has a depth of ' + currentDepth);
 
-    updateAncestryDimensionsAndPosition(targetParent)
+    // update dimensions of moved shapes ancestry
+    updateDimensionsOfAncestors(targetParent);
+
+    // update positions of entire family
+    updatePositionsOfFamily(targetParent);
   }
 }
 
-function updateAncestryDimensionsAndPosition(indexIn) {
+function updateDimensionsOfAncestors(indexIn) {
   currentParent = indexIn;
   while (currentParent != undefined) { // THIS IS CAUSING A OVERFLOW ERROR, HAPPENS WHEN AN SHAPE WITH ANOTHER SHAPE INSIDE BUT BEHIND IS SELECTED
-    updateParentDimensions(currentParent); // update parents of parents dimensions
-    updateChildrenShapePosition(currentParent); // update parents of parents children positions
+    updateDimensionsBasedOnChildren(currentParent); // update parents of parents dimensions
     currentParent = shapes[currentParent].parent;
   }
 }
 
-function updateDescendantsPosition() {
-
+function updatePositionsOfFamily(indexIn) {
+  updatePositionsOfDescendants(getShapesGrandestParent(indexIn));
 }
 
-function updateChildrenShapePosition(indexIn) {
+function updatePositionsOfDescendants(indexIn) {
+  // get array containing all of a shape's descendants
+  descendants = getShapesDescendants(indexIn);
+
+  // apply updatePositionsOfChildren starting from the lowest depth
+  currentDepth = 0; // start from 0, maybe can change to depth of the ancenstor the function is running for
+  currentDescendant = -1;
+  descendantsUpdated = 0;
+  while (descendantsUpdated < descendants.length) {
+    currentDescendant += 1;
+    
+    if (shapes[descendants[currentDescendant]].depth == currentDepth) {
+      updatePositionsOfChildren(currentDescendant);
+      descendantsUpdated += 1;
+    }
+    
+    if (currentDescendant == descendants.length - 1) {
+      currentDescendant = 0;
+      currentDepth += 1;
+    }
+  }
+}
+
+function updatePositionsOfChildren(indexIn) { // EXPERIENCING ISSUES, MISALIGNED X
   currentYOffset = rectSpacingInParent;
   currentXOffset = undefined;
+
   for (i = 0; i < shapes[indexIn].children.length; i++) {
     currentChild = shapes[indexIn].children[i];
     previousChild = shapes[indexIn].children[i - 1];
-
-    // X offset
+    
+    // X offset - REPLACE WITH FUNCTION THAT POSITIONS BEGINNING FROM GRANDEST PARENT USING DEPTH
     shapes[currentChild].x = shapes[indexIn].x + shapes[indexIn].w/2 - shapes[currentChild].w/2;
     
     // Y offset
@@ -333,19 +362,23 @@ function updateChildrenShapePosition(indexIn) {
   }
 }
 
-function updateParentDimensions(indexIn) {
+function updateDimensionsBasedOnChildren(indexIn) {
   if (shapes[indexIn].children.length == 0) {
     shapes[indexIn].w = rectWidth;
     shapes[indexIn].h = rectHeight;
   } else if (shapes[indexIn].children.length >= 1) { 
     maxWidth = rectWidth;
     totalChildrenHeight = 0;
+
+    // sum the total dimensions of children
     for (i = 0; i < shapes[indexIn].children.length; i++) {
       if (shapes[shapes[indexIn].children[i]].w > maxWidth) {
         maxWidth = shapes[shapes[indexIn].children[i]].w;
       }
       totalChildrenHeight += shapes[shapes[indexIn].children[i]].h;
     }
+
+    // add spacing
     shapes[indexIn].w = maxWidth + 2 * rectSpacingInParent;
     shapes[indexIn].h = totalChildrenHeight + rectSpacingInParent + shapes[indexIn].children.length * rectSpacingInParent;
   }
@@ -356,6 +389,29 @@ function editShape(indexIn) {
     console.log('Shape ' + indexIn + ' is being edited');
     // pending code
   }
+}
+
+function getShapesDescendants(indexIn) {
+  descendants = [indexIn];
+  i = 0;
+  while (i < descendants.length) {
+    // add current descendants children if it has any
+    if (shapes[descendants[i]].children.length > 0) {
+      descendants = descendants.concat(shapes[descendants[i]].children);
+    }
+    i += 1;
+  }
+  console.log('Starting from index 1, the descendants of ' + indexIn + ' are: ' + descendants);
+  return descendants;
+}
+
+function getShapesGrandestParent(indexIn) {
+  currentGrandestParent = indexIn;
+  while (shapes[currentGrandestParent].parent != undefined) {
+    currentGrandestParent = shapes[currentGrandestParent].parent;
+  }
+  console.log('Shape ' + indexIn + "'s grandest parent is shape " + currentGrandestParent);
+  return currentGrandestParent;
 }
 
 function getShapeIndices() {
@@ -378,7 +434,11 @@ function getShapeIndices() {
 // ====== TESTING
 
 function logShapesArray() {
-  console.log(shapes);
+  if (selectedShape == undefined) {
+    console.log(shapes);
+  } else {
+    console.log(shapes[selectedShape]);
+  }
 }
 
 // =================================================================================================
