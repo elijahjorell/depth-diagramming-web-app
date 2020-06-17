@@ -232,36 +232,27 @@ function cancelMovingShape() {
 }
 
 function shapeIsDropped(indexIn) {
-  targetIndices = getShapeIndices();
+  targetIndices = getShapeIndices(); // ERROR STILL, CANNOT DRAG BIG SHAPE INTO SMALL SHAPE STILL NOT GRABBING
   flaggedIndices = [];
 
-  // processing target indices
+  // if not moved outside of parent, reset position and shape
   for (i = 0; i < targetIndices.length; i++) {
-
-    // flag shape being moved from indices array
-    if (targetIndices[i] == movingShape) {
-      flaggedIndices.push(targetIndices[i]);
-    }
-
-    // flag children of moving shape from indices array WILL HAVE TO CHANGE TO DESCENDANTS
-    for (j = 0; j < shapes[movingShape].children.length; j++) {
-      if (targetIndices[i] == shapes[movingShape].children[j]) {
-        flaggedIndices.push(targetIndices[i]);
-      }
-    }
-
-    // if not moved outside of parent, reset position and shape
     if (targetIndices[i] == shapes[movingShape].parent) {
       updateDimensionsOfShape(shapes[movingShape].parent);
       updatePositionsOfChildren(shapes[movingShape].parent);
       return
     }
   }
-  
+
+  // flag descendants
+  flaggedIndices = flaggedIndices.concat(getShapesDescendants(indexIn)); 
+
   // remove flagged shapes from indices array
   flaggedIndices = flaggedIndices.sort(function(a, b){return b-a}); // sort flagged indices in descending order to prevent index misalignment
   for (i = 0; i < flaggedIndices.length; i++) {
-    targetIndices.splice(targetIndices.indexOf(flaggedIndices[i]), 1); // find index of flagged shapes and remove
+    if (targetIndices.includes(flaggedIndices[i])) { // only if flagged indice is in targetIndices
+      targetIndices.splice(targetIndices.indexOf(flaggedIndices[i]), 1); // find index of flagged shapes and remove
+    }
   }
   
   // set targetParent
@@ -288,7 +279,10 @@ function shapeIsDropped(indexIn) {
     shapes[targetParent].children.push(indexIn);
     console.log('Shape ' + targetParent + ' now has shape ' + indexIn + ' as its child');
 
-    updateDepthOfDescendants(indexIn); // change to depth of descendants
+    // !!! ERROR OCCURS AROUND HERE !!!
+    // WHEN SHAPE WITH SHAPES "BELOW IT" ARE MOVED AND CURSOR IS OVER DESCENDANTS
+    // CANNOT HAVE THE PARENT OF YOUR PARENT AS A PARENT
+    updateDepthOfDescendants(indexIn);
     updateDimensionsOfAncestors(targetParent);
     updatePositionsOfFamily(targetParent);
   }
