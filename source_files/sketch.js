@@ -8,6 +8,7 @@ var canvasWidth = window.innerWidth;
 var canvasHeight = window.innerHeight;
 var currentScale = 1;
 var zoomFactor = 1.05;
+var baseStrokeWeight = 4;
 var originX = canvasWidth / 2;
 var originY = canvasHeight / 2;
 var translatedMouseX;
@@ -48,11 +49,10 @@ function updateStyleBasedShapeState(indexIn) {
     fill(34, 42, 53, 25);
   }
 
-  // update stroke
+  // update lineWeight - UPDATE TO BE BASED ON "HEIGHT" RATHER THAN DEPTH
+  strokeWeight(baseStrokeWeight * Math.pow(1.5, shapes[indexIn].height));
   
   // update text size
-  
-  
 }
 
 function highlightSelectedShape(indexIn) {
@@ -64,7 +64,7 @@ function highlightSelectedShape(indexIn) {
 function loadDefaultStyle() {
   fill(255);
   stroke(180, 199, 231);
-  strokeWeight(1)
+  strokeWeight(baseStrokeWeight)
 }
 
 function updatePreviousMouseCoordinates() {
@@ -159,7 +159,7 @@ var movingShape;
 var movingShapeOffsetArray = [];
 let rectWidth = 120;
 let rectHeight = 80;
-let rectSpacingInParent = 40;
+let rectSpacingInParent = 80; // make this scale with depth
 
 function createShape() {
   shapes.push({
@@ -171,6 +171,7 @@ function createShape() {
     parent: undefined,
     children: [],
     depth: 0,
+    height: 0
   });
 
   // pending value input
@@ -212,7 +213,7 @@ function beginMovingShape() {
   console.log('Shape ' + movingShape + ' is being moved');
 
   // create to array containing all descendants for all descendants + offset x + offset y
-  movingShapesArray = getShapesDescendants(movingShape);
+  movingShapesArray = getDescendantsOfShape(movingShape);
   for (i = 0; i < movingShapesArray.length; i++) {
     movingShapeOffsetArray.push({
       id: movingShapesArray[i],
@@ -242,7 +243,7 @@ function cancelMovingShape() {
 }
 
 function shapeIsDropped(indexIn) {
-  targetIndices = getShapeIndices(); // ERROR STILL, CANNOT DRAG BIG SHAPE INTO SMALL SHAPE STILL NOT GRABBING
+  targetIndices = getShapeIndices();
   flaggedIndices = [];
 
   // if not moved outside of parent, reset position and shape
@@ -255,7 +256,7 @@ function shapeIsDropped(indexIn) {
   }
 
   // flag descendants
-  flaggedIndices = flaggedIndices.concat(getShapesDescendants(indexIn)); 
+  flaggedIndices = flaggedIndices.concat(getDescendantsOfShape(indexIn)); 
 
   // remove flagged shapes from indices array
   flaggedIndices = flaggedIndices.sort(function(a, b){return b-a}); // sort flagged indices in descending order to prevent index misalignment
@@ -270,7 +271,9 @@ function shapeIsDropped(indexIn) {
 
   // if shape has a parent, clear their relationship
   if (shapes[indexIn].parent != undefined) {
+    clearedParent = shapes[indexIn].parent;
     clearParentOfShape(indexIn);
+    updateHeightOfFamily(clearedParent);
     updateDimensionsOfAncestors(clearedParent);
     updatePositionsOfFamily(clearedParent);
   }
@@ -278,6 +281,7 @@ function shapeIsDropped(indexIn) {
   // updating shape information
   if (targetParent == undefined) { // if shape is dropped onto the canvas
     updateDepthOfDescendants(indexIn);
+    updateHeightOfFamily(indexIn);
     console.log('Shape ' + indexIn + ' was dropped onto the canvas');
     return;
   } else { // if shape is dropped onto another shape
@@ -289,10 +293,8 @@ function shapeIsDropped(indexIn) {
     shapes[targetParent].children.push(indexIn);
     console.log('Shape ' + targetParent + ' now has shape ' + indexIn + ' as its child');
 
-    // !!! ERROR OCCURS AROUND HERE !!!
-    // WHEN SHAPE WITH SHAPES "BELOW IT" ARE MOVED AND CURSOR IS OVER DESCENDANTS
-    // CANNOT HAVE THE PARENT OF YOUR PARENT AS A PARENT
     updateDepthOfDescendants(indexIn);
+    updateHeightOfFamily(indexIn);
     updateDimensionsOfAncestors(targetParent);
     updatePositionsOfFamily(targetParent);
   }
@@ -305,8 +307,24 @@ function clearParentOfShape(indexIn) {
   console.log('Shape ' + indexIn + ' no longer a child of ' + clearedParent);
 }
 
+function updateHeightOfFamily(indexIn) {
+  family = getDescendantsOfShape(getGrandestParentOfShape(indexIn));
+  familyDepths = [];
+
+  // get max depth of family
+  for (j = 0; j < family.length; j++) {
+    familyDepths.push(shapes[family[j]].depth);
+  }
+  maxDepth = Math.max(...familyDepths);
+
+  // update height of each shape in family
+  for (j = 0; j < family.length; j++) {
+    shapes[family[j]].height = maxDepth - shapes[family[j]].depth;
+  }
+}
+
 function updateDepthOfDescendants(indexIn) {
-  descendants = getShapesDescendants(indexIn);
+  descendants = getDescendantsOfShape(indexIn);
   for (j = 0; j < descendants.length; j++) {
     updateDepthOfShape(descendants[j]);
   }
@@ -328,12 +346,12 @@ function updateDepthOfShape(indexIn) {
 }
 
 function updatePositionsOfFamily(indexIn) {
-  updatePositionsOfDescendants(getShapesGrandestParent(indexIn));
+  updatePositionsOfDescendants(getGrandestParentOfShape(indexIn));
 }
 
 function updatePositionsOfDescendants(indexIn) {
   // get array containing all of a shape's descendants
-  descendants = getShapesDescendants(indexIn);
+  descendants = getDescendantsOfShape(indexIn);
 
   // apply updatePositionsOfChildren starting from the grandest person
   currentDepth = 0; // start from 0, maybe can change to depth of the ancenstor the function is running for
@@ -411,7 +429,7 @@ function editShape(indexIn) {
   }
 }
 
-function getShapesDescendants(indexIn) { // 0th index is the ancestor
+function getDescendantsOfShape(indexIn) { // 0th index is the ancestor
   descendants = [indexIn];
   i = 0;
   while (i < descendants.length) {
@@ -425,7 +443,7 @@ function getShapesDescendants(indexIn) { // 0th index is the ancestor
   return descendants;
 }
 
-function getShapesGrandestParent(indexIn) {
+function getGrandestParentOfShape(indexIn) {
   currentGrandestParent = indexIn;
   while (shapes[currentGrandestParent].parent != undefined) {
     currentGrandestParent = shapes[currentGrandestParent].parent;
