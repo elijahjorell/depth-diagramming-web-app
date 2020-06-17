@@ -18,7 +18,7 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  background(34, 42, 53);
   updateTranslatedMouseCoordinates();
   translate(originX, originY);
   pan();
@@ -33,7 +33,7 @@ function displayShapes() {
   for (i = 0; i < shapes.length; i++) {
     loadDefaultStyle();
     highlightSelectedShape(i);
-    updateFillBasedOnDepth(i);
+    updateStyleBasedShapeState(i);
 
     // display rectangles
     // pending code to display parents first (so children will seem like they're within parent shapes)
@@ -42,8 +42,17 @@ function displayShapes() {
   }
 }
 
-function updateFillBasedOnDepth(indexIn) {
-  fill(255, 200);
+function updateStyleBasedShapeState(indexIn) {
+  // update fill and alpha
+  if (shapes[indexIn].children.length > 0) {
+    fill(34, 42, 53, 25);
+  }
+
+  // update stroke
+  
+  // update text size
+  
+  
 }
 
 function highlightSelectedShape(indexIn) {
@@ -54,7 +63,8 @@ function highlightSelectedShape(indexIn) {
 
 function loadDefaultStyle() {
   fill(255);
-  stroke(150);
+  stroke(180, 199, 231);
+  strokeWeight(1)
 }
 
 function updatePreviousMouseCoordinates() {
@@ -149,7 +159,7 @@ var movingShape;
 var movingShapeOffsetArray = [];
 let rectWidth = 120;
 let rectHeight = 80;
-let rectSpacingInParent = 10;
+let rectSpacingInParent = 40;
 
 function createShape() {
   shapes.push({
