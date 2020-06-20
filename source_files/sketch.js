@@ -29,10 +29,20 @@ NOTES
 - GROUP TYPE SHAPES WILL APPLY "CHILD OF: " TAG TO EVERYTHING ON IT
 - 
 
+
+////////////////////////////////////////////////////////
+
+PENDING FEATURES
+- CAN MAKE A SHAPE BIGGER BY HOVERING OVER EDGE WHILE HOLDING ANOTHER A SHAPE
+- STATIC POSITION IN SHAPE
+- CHILDREN BECOMING SMALLER RATHER THAN PARENTS BECOMING BIGGER
+- PREVENTING INABILITY TO SELECT BECAUSE OF INDEX IN SHAPES ARRAY
+- HOW TO MAKE A MENU
+
 ////////////////////////////////////////////////////////
 
 CURRENTLY WORKING ON:
-- PREVENTING INABILITY TO SELECT BECAUSE OF INDEX IN SHAPES ARRAY
+- RESIZABLE SHAPES
 
 //////////////////////////////////////////////////////*/
 
@@ -54,6 +64,9 @@ var translatedMouseY;
 
 function setup() {
   createCanvas(canvasWidth, canvasHeight);
+  replaceContextMenu();
+  closeContextMenu();
+  disableAutoscroll();
 }
 
 function draw() {
@@ -312,8 +325,8 @@ function shapeIsDropped(indexIn) {
     clearedParent = shapes[indexIn].parent;
     clearParentOfShape(indexIn);
     updateHeightOfFamily(clearedParent);
-    updateDimensionsOfAncestors(clearedParent);
-    updatePositionsOfFamily(clearedParent);
+    // updateDimensionsOfAncestors(clearedParent);
+    // updatePositionsOfFamily(clearedParent);
   }
 
   // updating shape information
@@ -331,10 +344,10 @@ function shapeIsDropped(indexIn) {
     shapes[targetParent].children.push(indexIn);
     console.log('Shape ' + targetParent + ' now has shape ' + indexIn + ' as its child');
 
-    updateDepthOfDescendants(indexIn);
-    updateHeightOfFamily(indexIn);
-    updateDimensionsOfAncestors(targetParent);
-    updatePositionsOfFamily(targetParent);
+    updateDepthOfDescendants(indexIn); // EDIT TO CATER FOR SHAPES BECOMING SMALLER INSTEAD
+    updateHeightOfFamily(indexIn); // EDIT TO CATER FOR SHAPES BECOMING SMALLER INSTEAD
+    // updateDimensionsOfAncestors(targetParent); // EDIT TO CATER FOR SHAPES BECOMING SMALLER INSTEAD
+    // updatePositionsOfFamily(targetParent); // EDIT TO CATER FOR SHAPES BECOMING SMALLER INSTEAD
   }
 }
 
@@ -516,10 +529,52 @@ function logShapesArray() {
 
 // ============================================================================================================================================================================================
 // ==================================================================================== BROWSER
+const cm = document.querySelector('.custom-cm');
 
 // disable browser middle button autoscroll event 
-document.addEventListener('mousedown', (e) => {
-  if (e.button == 1) {
+function disableAutoscroll() {
+  document.getElementById('defaultCanvas0').addEventListener('mousedown', (e) => {
+    if (e.button == 1) {
+      e.preventDefault();
+    }
+  });
+}
+
+// disable default contextmenu and replace with custom menu
+function replaceContextMenu() {
+  document.getElementById('defaultCanvas0').addEventListener('contextmenu', (e) => {
     e.preventDefault();
+    showContextMenu(show = true);
+    
+    // set y position of contextmenu, ensuring it doesnt go off screen
+    if (e.y + cm.offsetHeight > window.innerHeight) {
+      cm.style.top = window.innerHeight - cm.offsetHeight + 'px';
+    } else {
+      cm.style.top = e.y + 'px';
+    }
+
+    // set x position of contextmenu, ensuring it doesnt go off screen
+    if (e.x+ cm.offsetWidth > window.innerWidth) {
+      cm.style.left = window.innerWidth - cm.offsetWidth + 'px';
+    } else {
+      cm.style.left = e.x + 'px';
+    }
+  });
+}
+
+// close contextmenu when clicking outside of it
+function closeContextMenu() {
+  document.getElementById('defaultCanvas0').addEventListener('click', () => {
+    showContextMenu(false);
+  });
+}
+
+// show/hide context menu
+function showContextMenu(show = true) {
+  if (show == true) {
+    cm.style.display = 'block'
+  } else {
+    cm.style.display = 'none'
   }
-});
+}
+
