@@ -1,3 +1,5 @@
+// written by Elijah Jorell Esmero
+
 /*//////////////////////////////////////////////////////
 
 PRINCIPLES
@@ -191,7 +193,9 @@ function doubleClicked() {
     // zoom to shape
     targetShapeWidth = shapes[targetShape].w;
     targetShapeHeight = shapes[targetShape].h;
-    currentScale = canvasHeight/rectHeight * 0.4;
+    if (targetShapeHeight * currentScale < 0.3 * canvasHeight) {
+      currentScale = canvasHeight / rectHeight * 0.3;
+    }
     originX -= (shapes[targetShape].x + rectWidth / 2) * currentScale - canvasWidth / 2 + originX; // can animate this in the future
     originY -= (shapes[targetShape].y + rectHeight / 2) * currentScale - canvasHeight / 2 + originY; // can animate this in the future
   }
@@ -654,3 +658,4 @@ function contextMenuItemIsPressed() {
   
 }
 
+// written by Elijah Jorell Esmero
