@@ -61,6 +61,8 @@ var originX = canvasWidth / 2;
 var originY = canvasHeight / 2;
 var translatedMouseX;
 var translatedMouseY;
+var centreX = 0;
+var centreY = 0;
 
 function setup() {
   createCanvas(canvasWidth, canvasHeight);
@@ -75,7 +77,25 @@ function draw() {
   scale(currentScale);
   shapeIsBeingMoved();
   displayShapes();
+  displayScreenCentre();
+  displayOrigin();
   updatePreviousMouseCoordinates();
+}
+
+function displayOrigin() {
+  fill('blue');
+  stroke('white');
+  strokeWeight(1);
+  ellipse(0, 0, 20);
+}
+
+function displayScreenCentre() {
+  centreX = (canvasWidth / 2 - originX)/currentScale;
+  centreY = (canvasHeight / 2 - originY)/currentScale;
+  fill('yellow');
+  stroke('white');
+  strokeWeight(1);
+  ellipse(centreX, centreY, 20);
 }
 
 function displayShapes() {
@@ -142,6 +162,9 @@ function keyPressed() {
   } else if (keyCode == 68) { // d key
     // REMOVE ITEM 1 FROM CONTEXTMENU
     deleteItemInContextMenu();
+  } else if (keyCode == 90) { // z key
+    console.log('Shape x: ' + shapes[selectedShape].x + ', origin X: ' + originX)
+    console.log('Shape y: ' + shapes[selectedShape].y + ', origin Y: ' + originY)
   }
 }
 
@@ -160,10 +183,16 @@ function mousePressed() {
 }
 
 function doubleClicked() {
-  if (getShapeIndices[0] == undefined) {
+  targetShape = getShapeIndices().splice(-1)[0]; // change from "highest index" to "item with highest order i.e. front, back" 
+  if (targetShape == undefined) {
     // empty
   } else {
-    editShape(getShapeIndices().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
+    // editShape(getShapeIndices().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
+    // zoom to shape
+    
+    // currentScale = canvasHeight/rectHeight;
+    originX -= shapes[targetShape].x - canvasWidth / 2 + originX
+    originY -= shapes[targetShape].y - canvasHeight / 2 + originY
   }
 }
 
@@ -302,39 +331,18 @@ function cancelMovingShape() {
 }
 
 function shapeIsDropped(indexIn) {
-  targetIndices = getShapeIndices();
-  flaggedIndices = [];
+  targetParent = getValidDropTargetShape(indexIn);
 
-  // if not moved outside of parent, reset position and shape
-  for (i = 0; i < targetIndices.length; i++) {
-    if (targetIndices[i] == shapes[movingShape].parent) {
-      updateDimensionsOfShape(shapes[movingShape].parent);
-      updatePositionsOfChildren(shapes[movingShape].parent);
-      return
-    }
-  }
+  // if shape is not moved outside of parent
+  // pending code
 
-  // flag descendants
-  flaggedIndices = flaggedIndices.concat(getDescendantsOfShape(indexIn)); 
-
-  // remove flagged shapes from indices array
-  flaggedIndices = flaggedIndices.sort(function(a, b){return b-a}); // sort flagged indices in descending order to prevent index misalignment
-  for (i = 0; i < flaggedIndices.length; i++) {
-    if (targetIndices.includes(flaggedIndices[i])) { // only if flagged indice is in targetIndices
-      targetIndices.splice(targetIndices.indexOf(flaggedIndices[i]), 1); // find index of flagged shapes and remove
-    }
-  }
-  
-  // set targetParent
-  targetParent = targetIndices.splice(-1)[0]; // change from "highest index" to "item with highest order i.e. front, back"
-
-  // if shape has a parent, clear their relationship
+  // if shape has a parent, clear their relationship and update the information of the parent
   if (shapes[indexIn].parent != undefined) {
     clearedParent = shapes[indexIn].parent;
     clearParentOfShape(indexIn);
     updateHeightOfFamily(clearedParent);
-    // updateDimensionsOfAncestors(clearedParent);
-    // updatePositionsOfFamily(clearedParent);
+    updateDimensionsOfAncestors(clearedParent);
+    updatePositionsOfFamily(clearedParent);
   }
 
   // updating shape information
@@ -342,7 +350,6 @@ function shapeIsDropped(indexIn) {
     updateDepthOfDescendants(indexIn);
     updateHeightOfFamily(indexIn);
     console.log('Shape ' + indexIn + ' was dropped onto the canvas');
-    return;
   } else { // if shape is dropped onto another shape
     // update moved shapes parent
     shapes[indexIn].parent = targetParent;
@@ -354,8 +361,8 @@ function shapeIsDropped(indexIn) {
 
     updateDepthOfDescendants(indexIn); // EDIT TO CATER FOR SHAPES BECOMING SMALLER INSTEAD
     updateHeightOfFamily(indexIn); // EDIT TO CATER FOR SHAPES BECOMING SMALLER INSTEAD
-    // updateDimensionsOfAncestors(targetParent); // EDIT TO CATER FOR SHAPES BECOMING SMALLER INSTEAD
-    // updatePositionsOfFamily(targetParent); // EDIT TO CATER FOR SHAPES BECOMING SMALLER INSTEAD
+    updateDimensionsOfAncestors(targetParent); // EDIT TO CATER FOR SHAPES BECOMING SMALLER INSTEAD
+    updatePositionsOfFamily(targetParent); // EDIT TO CATER FOR SHAPES BECOMING SMALLER INSTEAD
   }
 }
 
@@ -511,6 +518,22 @@ function getGrandestParentOfShape(indexIn) {
   return currentGrandestParent;
 }
 
+function getValidDropTargetShape(indexIn) {
+  targetIndices = getShapeIndices();
+  flaggedIndices = getDescendantsOfShape(indexIn); 
+
+  // remove flagged shapes from indices array
+  flaggedIndices = flaggedIndices.sort(function(a, b){return b-a}); // sort flagged indices in descending order to prevent index misalignment
+  for (i = 0; i < flaggedIndices.length; i++) {
+    if (targetIndices.includes(flaggedIndices[i])) { // only if flagged indice is in targetIndices
+      targetIndices.splice(targetIndices.indexOf(flaggedIndices[i]), 1); // find index of flagged shapes and remove
+    }
+  }
+  validTargetShape = targetIndices.splice(-1)[0];
+
+  return validTargetShape; // change from "highest index" to "item with highest order i.e. front, back"
+}
+
 function getShapeIndices() {
   shapeIndexArray = [];
   for (i = 0; i < shapes.length; i++) {
@@ -601,6 +624,10 @@ function showContextMenu(show = true) {
   } else {
     contextMenu.style.display = 'none'
   }
+}
+
+function openContextMenu() {
+
 }
 
 function customiseContextMenu() {
