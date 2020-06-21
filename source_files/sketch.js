@@ -64,9 +64,7 @@ var translatedMouseY;
 
 function setup() {
   createCanvas(canvasWidth, canvasHeight);
-  replaceContextMenu();
-  closeContextMenu();
-  disableAutoscroll();
+  initialiseBrowserFunctions();
 }
 
 function draw() {
@@ -136,6 +134,14 @@ function keyPressed() {
     createShape();
   } else if (keyCode == 32) { // spacebar
     logShapesArray();
+    
+  } else if (keyCode == 65) { // a key
+    // ADD AN ITEM TO CONTEXTMENU
+    addItemToContextMenu();
+    
+  } else if (keyCode == 68) { // d key
+    // REMOVE ITEM 1 FROM CONTEXTMENU
+    deleteItemInContextMenu();
   }
 }
 
@@ -148,6 +154,8 @@ function mousePressed() {
     selectDeselect(getShapeIndices().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
   } else if (mouseButton == CENTER) {
     beginPanning();
+  } else if (mouseButton == RIGHT) {
+    // pending code to update context menu based on what was right clicked
   }
 }
 
@@ -529,42 +537,59 @@ function logShapesArray() {
 
 // ============================================================================================================================================================================================
 // ==================================================================================== BROWSER
-const cm = document.querySelector('.custom-cm');
+const contextMenu = document.querySelector('.custom-cm');
+var cmCommand;
+var contextMenuItem; // REMOVE
 
-// disable browser middle button autoscroll event 
-function disableAutoscroll() {
-  document.getElementById('defaultCanvas0').addEventListener('mousedown', (e) => {
+function initialiseBrowserFunctions() {
+  disableAutoscroll('defaultCanvas0');
+  disableAutoscroll('custom-cm');
+  disableDefaultContextMenu('defaultCanvas0')
+  disableDefaultContextMenu('custom-cm')
+  addCustomContextMenu('defaultCanvas0');
+  closeContextMenu('defaultCanvas0');
+}
+
+// disable browser middle button autoscroll event in element ID
+function disableAutoscroll(element) {
+  document.getElementById(element).addEventListener('mousedown', (e) => {
     if (e.button == 1) {
       e.preventDefault();
     }
   });
 }
 
-// disable default contextmenu and replace with custom menu
-function replaceContextMenu() {
-  document.getElementById('defaultCanvas0').addEventListener('contextmenu', (e) => {
+// disable default context menu in element ID
+function disableDefaultContextMenu(element) {
+  document.getElementById(element).addEventListener('contextmenu', (e) => {
     e.preventDefault();
+  })
+}
+
+// add custom context menu in element ID
+function addCustomContextMenu(element) {
+  document.getElementById(element).addEventListener('contextmenu', (e) => {
     showContextMenu(show = true);
     
     // set y position of contextmenu, ensuring it doesnt go off screen
-    if (e.y + cm.offsetHeight > window.innerHeight) {
-      cm.style.top = window.innerHeight - cm.offsetHeight + 'px';
+    if (e.y + contextMenu.offsetHeight > window.innerHeight) {
+      contextMenu.style.top = window.innerHeight - contextMenu.offsetHeight + 'px';
     } else {
-      cm.style.top = e.y + 'px';
+      contextMenu.style.top = e.y + 'px';
     }
 
     // set x position of contextmenu, ensuring it doesnt go off screen
-    if (e.x+ cm.offsetWidth > window.innerWidth) {
-      cm.style.left = window.innerWidth - cm.offsetWidth + 'px';
+    if (e.x + contextMenu.offsetWidth > window.innerWidth) {
+      contextMenu.style.left = window.innerWidth - contextMenu.offsetWidth + 'px';
     } else {
-      cm.style.left = e.x + 'px';
+      contextMenu.style.left = e.x + 'px';
     }
   });
 }
 
-// close contextmenu when clicking outside of it
-function closeContextMenu() {
-  document.getElementById('defaultCanvas0').addEventListener('click', () => {
+// close context menu when clicking outside of it
+function closeContextMenu(element) {
+  document.getElementById(element).addEventListener('click', () => {
     showContextMenu(false);
   });
 }
@@ -572,9 +597,32 @@ function closeContextMenu() {
 // show/hide context menu
 function showContextMenu(show = true) {
   if (show == true) {
-    cm.style.display = 'block'
+    contextMenu.style.display = 'block'
   } else {
-    cm.style.display = 'none'
+    contextMenu.style.display = 'none'
   }
+}
+
+function customiseContextMenu() {
+
+}
+
+function addItemToContextMenu() {
+  contextMenuItem = document.createElement('div'); 
+    contextMenuItem.className = 'custom-cm__item';
+    contextMenuItem.innerHTML = "Item #";
+    contextMenu.appendChild(contextMenuItem);
+}
+
+function deleteItemInContextMenu() {
+  contextMenu.firstElementChild.remove();
+}
+
+function addListenerToContextMenuItem() {
+  document.getElementById()
+}
+
+function contextMenuItemIsPressed() {
+  
 }
 
