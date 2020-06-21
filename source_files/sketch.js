@@ -77,8 +77,8 @@ function draw() {
   scale(currentScale);
   shapeIsBeingMoved();
   displayShapes();
-  displayScreenCentre();
   displayOrigin();
+  displayScreenCentre();
   updatePreviousMouseCoordinates();
 }
 
@@ -86,16 +86,16 @@ function displayOrigin() {
   fill('blue');
   stroke('white');
   strokeWeight(1);
-  ellipse(0, 0, 20);
+  ellipse(0, 0, 30 / currentScale);
 }
 
 function displayScreenCentre() {
-  centreX = (canvasWidth / 2 - originX)/currentScale;
-  centreY = (canvasHeight / 2 - originY)/currentScale;
+  centreX = (canvasWidth / 2 - originX) / currentScale;
+  centreY = (canvasHeight / 2 - originY) / currentScale;
   fill('yellow');
   stroke('white');
   strokeWeight(1);
-  ellipse(centreX, centreY, 20);
+  ellipse(centreX, centreY, 20 / currentScale);
 }
 
 function displayShapes() {
@@ -189,10 +189,11 @@ function doubleClicked() {
   } else {
     // editShape(getShapeIndices().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
     // zoom to shape
-    
-    // currentScale = canvasHeight/rectHeight;
-    originX -= shapes[targetShape].x - canvasWidth / 2 + originX
-    originY -= shapes[targetShape].y - canvasHeight / 2 + originY
+    targetShapeWidth = shapes[targetShape].w;
+    targetShapeHeight = shapes[targetShape].h;
+    currentScale = canvasHeight/rectHeight * 0.4;
+    originX -= (shapes[targetShape].x + rectWidth / 2) * currentScale - canvasWidth / 2 + originX; // can animate this in the future
+    originY -= (shapes[targetShape].y + rectHeight / 2) * currentScale - canvasHeight / 2 + originY; // can animate this in the future
   }
 }
 
