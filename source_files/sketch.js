@@ -87,16 +87,16 @@ function draw() {
 function displayOrigin() {
   fill('blue');
   stroke('white');
-  strokeWeight(1);
-  ellipse(0, 0, 30 / currentScale);
+  strokeWeight(1 / currentScale);
+  ellipse(0, 0, 20 / currentScale);
 }
 
 function displayScreenCentre() {
   centreX = (canvasWidth / 2 - originX) / currentScale;
   centreY = (canvasHeight / 2 - originY) / currentScale;
-  fill('yellow');
+  fill('green');
   stroke('white');
-  strokeWeight(1);
+  strokeWeight(1 / currentScale);
   ellipse(centreX, centreY, 20 / currentScale);
 }
 
@@ -154,19 +154,22 @@ function updateTranslatedMouseCoordinates() {
 function keyPressed() {
   if (keyCode == ENTER) {
     createShape();
+
   } else if (keyCode == 32) { // spacebar
-    logShapesArray();
-    
+    zoomToSelectedShape(); 
+  } else if (keyCode == 9) { // tab
+    tabBetweenShapes();
+
   } else if (keyCode == 65) { // a key
     // ADD AN ITEM TO CONTEXTMENU
     addItemToContextMenu();
-    
+
   } else if (keyCode == 68) { // d key
     // REMOVE ITEM 1 FROM CONTEXTMENU
     deleteItemInContextMenu();
-  } else if (keyCode == 90) { // z key
-    console.log('Shape x: ' + shapes[selectedShape].x + ', origin X: ' + originX)
-    console.log('Shape y: ' + shapes[selectedShape].y + ', origin Y: ' + originY)
+
+  } else if (keyCode == 73) { // i key
+    logShapesArray();
   }
 }
 
@@ -185,19 +188,11 @@ function mousePressed() {
 }
 
 function doubleClicked() {
-  targetShape = getShapeIndices().splice(-1)[0]; // change from "highest index" to "item with highest order i.e. front, back" 
   if (targetShape == undefined) {
     // empty
   } else {
     // editShape(getShapeIndices().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
     // zoom to shape
-    targetShapeWidth = shapes[targetShape].w;
-    targetShapeHeight = shapes[targetShape].h;
-    if (targetShapeHeight * currentScale < 0.3 * canvasHeight) {
-      currentScale = canvasHeight / rectHeight * 0.3;
-    }
-    originX -= (shapes[targetShape].x + rectWidth / 2) * currentScale - canvasWidth / 2 + originX; // can animate this in the future
-    originY -= (shapes[targetShape].y + rectHeight / 2) * currentScale - canvasHeight / 2 + originY; // can animate this in the future
   }
 }
 
@@ -242,6 +237,29 @@ function zoom(event) {
   }
   originX -= zoomDirection * translatedMouseX * currentScale * (zoomFactor - 1);
   originY -= zoomDirection * translatedMouseY * currentScale * (zoomFactor - 1);
+}
+
+function zoomToSelectedShape() {
+  if (selectedShape != undefined) {
+    targetShapeWidth = shapes[selectedShape].w;
+    targetShapeHeight = shapes[selectedShape].h;
+    if (targetShapeHeight * currentScale < 0.1 * canvasHeight) {
+      currentScale = canvasHeight / targetShapeHeight * 0.1;
+    }
+    originX -= (shapes[selectedShape].x + targetShapeWidth / 2) * currentScale - canvasWidth / 2 + originX; // can animate this in the future
+    originY -= (shapes[selectedShape].y + targetShapeHeight / 2) * currentScale - canvasHeight / 2 + originY; // can animate this in the future
+  }
+}
+
+function tabBetweenShapes() {
+  if (selectedShape == undefined) {
+    selectedShape = 0;
+  } else if (selectedShape == shapes.length - 1) {
+    selectedShape = 0;
+  } else {
+    selectedShape += 1;
+  }
+  zoomToSelectedShape();
 }
 
 // ============================================================================================================================================================================================
@@ -570,12 +588,22 @@ var cmCommand;
 var contextMenuItem; // REMOVE
 
 function initialiseBrowserFunctions() {
+  disableTabKey();
   disableAutoscroll('defaultCanvas0');
   disableAutoscroll('custom-cm');
   disableDefaultContextMenu('defaultCanvas0')
   disableDefaultContextMenu('custom-cm')
   addCustomContextMenu('defaultCanvas0');
   closeContextMenu('defaultCanvas0');
+}
+
+// disable tab key in document
+function disableTabKey() {
+  document.addEventListener('keydown', (e) => {
+    if (e.which == 9) {
+      e.preventDefault();
+    }
+  })
 }
 
 // disable browser middle button autoscroll event in element ID
