@@ -85,11 +85,16 @@ function draw() {
   updatePreviousMouseCoordinates();
 }
 
-function displayPrototypeBox() {
-  fill(34, 42, 53, 255)
-  rect(10, 10, 100, 100, 5)
+function displayPrototypeBox(indexIn) {
   fill('white')
-  rect(10, 10, 100, 20, 5, 5, 0, 0)
+  rect(10, 10, 300, 20, 5, 5, 0, 0) // title strip
+  
+  fill(255, 0) // transparent
+  rect(10, 10, 300, 100, 5)
+  
+  textAlign(CENTER, CENTER)
+  fill('black')
+  text('PHYSICS', 10, 10, 300, 20)
 }
 
 function displayOrigin() {
@@ -125,9 +130,9 @@ function displayShapes() {
 
 function updateStyleBasedOnShapeState(indexIn) {
   // update fill and alpha
-  if (shapes[indexIn].children.length > 0) {
-    fill(34, 42, 53, 25);
-  }
+  // if (shapes[indexIn].children.length > 0) {
+  //   fill(34, 42, 53, 25);
+  // }
 
   // update lineWeight - UPDATE TO BE BASED ON "HEIGHT" RATHER THAN DEPTH
   strokeWeight(baseStrokeWeight * Math.pow(1.5, shapes[indexIn].height));
