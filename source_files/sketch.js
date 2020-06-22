@@ -81,7 +81,15 @@ function draw() {
   displayShapes();
   displayOrigin();
   displayScreenCentre();
+  displayPrototypeBox();
   updatePreviousMouseCoordinates();
+}
+
+function displayPrototypeBox() {
+  fill(34, 42, 53, 255)
+  rect(10, 10, 100, 100, 5)
+  fill('white')
+  rect(10, 10, 100, 20, 5, 5, 0, 0)
 }
 
 function displayOrigin() {
@@ -105,16 +113,17 @@ function displayShapes() {
   for (i = 0; i < shapes.length; i++) {
     loadDefaultStyle();
     highlightSelectedShape(i);
-    updateStyleBasedShapeState(i);
+    updateStyleBasedOnShapeState(i);
 
     // display rectangles
     // pending code to display parents first (so children will seem like they're within parent shapes)
-    rect(shapes[i].x, shapes[i].y, shapes[i].w, shapes[i].h);
+    rect(shapes[i].x, shapes[i].y, shapes[i].w, shapes[i].h, rectHeight / 6);
+    displayShapeText(i);
     loadDefaultStyle();
   }
 }
 
-function updateStyleBasedShapeState(indexIn) {
+function updateStyleBasedOnShapeState(indexIn) {
   // update fill and alpha
   if (shapes[indexIn].children.length > 0) {
     fill(34, 42, 53, 25);
@@ -147,6 +156,16 @@ function updateTranslatedMouseCoordinates() {
   translatedMouseX = (mouseX - originX) / currentScale;
   translatedMouseY = (mouseY - originY) / currentScale;
 }
+
+function displayShapeText(indexIn) {
+  noStroke();
+  fill('black');
+  textAlign(CENTER, CENTER);
+  text(indexIn, shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].h);
+}
+
+// POSITION AND DIMENSIONS OF SCREEN BASED ON SCALE AND PAN
+// pending code
 
 // ============================================================================================================================================================================================
 // ==================================================================================== KEYBOARD/MOUSE
@@ -188,12 +207,7 @@ function mousePressed() {
 }
 
 function doubleClicked() {
-  if (targetShape == undefined) {
-    // empty
-  } else {
-    // editShape(getShapeIndices().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
-    // zoom to shape
-  }
+
 }
 
 function mouseReleased() {
@@ -235,8 +249,8 @@ function zoom(event) {
     currentScale *= zoomFactor;
     zoomDirection = 1;
   }
-  originX -= zoomDirection * translatedMouseX * currentScale * (zoomFactor - 1);
-  originY -= zoomDirection * translatedMouseY * currentScale * (zoomFactor - 1);
+  originX -= zoomDirection * translatedMouseX * currentScale * (zoomFactor - 1); // not 100% current, zooms less accurately when further from the origin
+  originY -= zoomDirection * translatedMouseY * currentScale * (zoomFactor - 1); // not 100% current, zooms less accurately when further from the origin
 }
 
 function zoomToSelectedShape() {
@@ -244,6 +258,8 @@ function zoomToSelectedShape() {
     targetShapeWidth = shapes[selectedShape].w;
     targetShapeHeight = shapes[selectedShape].h;
     if (targetShapeHeight * currentScale < 0.1 * canvasHeight) {
+      currentScale = canvasHeight / targetShapeHeight * 0.1;
+    } else if (targetShapeHeight * currentScale > 0.05 * canvasHeight) {
       currentScale = canvasHeight / targetShapeHeight * 0.1;
     }
     originX -= (shapes[selectedShape].x + targetShapeWidth / 2) * currentScale - canvasWidth / 2 + originX; // can animate this in the future
