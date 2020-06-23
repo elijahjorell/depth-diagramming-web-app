@@ -84,10 +84,10 @@ function draw() {
   updatePreviousMouseCoordinates();
 }
 
-function displayPrototypeBox(indexIn) {
+function displayPrototypeBox(indexIn) {  // rename function
   // title strip
   fill('white');
-  rect(shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].titleH); // MAKE TITLE STRIP SCALE WITH SIZE
+  rect(shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].titleH);
   
   // box
   fill(255, 0); // transparent
@@ -98,7 +98,7 @@ function displayPrototypeBox(indexIn) {
   textAlign(CENTER, CENTER);
   fill('black');
   textSize(shapes[indexIn].titleH * 0.7);
-  text(shapes[indexIn].id + '. PHYSICS', shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].titleH); // MAKE TITLE STRIP SCALE WITH SIZE
+  text(shapes[indexIn].titleText, shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].titleH);
 }
 
 function displayOrigin() {
@@ -123,26 +123,14 @@ function displayShapes() {
     loadDefaultStyle();
     highlightSelectedShape(i);
     updateStyleBasedOnShapeState(i);
-
-    // display rectangles
-    // pending code to display parents first (so children will seem like they're within parent shapes)
-    displayPrototypeBox(i);
-    // rect(shapes[i].x, shapes[i].y, shapes[i].w, shapes[i].h, rectHeight / 6);
-
+    displayPrototypeBox(i); // rename function
     loadDefaultStyle();
   }
 }
 
-function updateStyleBasedOnShapeState(indexIn) {
-  // update fill and alpha
-  // if (shapes[indexIn].children.length > 0) {
-  //   fill(34, 42, 53, 25);
-  // }
-
+function updateStyleBasedOnShapeState(indexIn) { // maybe remove this function
   // update lineWeight - UPDATE TO BE BASED ON "HEIGHT" RATHER THAN DEPTH
   strokeWeight(baseStrokeWeight * Math.pow(1.5, shapes[indexIn].height));
-  
-  // update text size
 }
 
 function highlightSelectedShape(indexIn) {
@@ -163,26 +151,26 @@ function updatePreviousMouseCoordinates() {
 }
 
 function updateTranslatedMouseCoordinates() {
-  // translatedMouseX = (mouseX - originX) / currentScale;
-  // translatedMouseY = (mouseY - originY) / currentScale;
   translatedMouseCoordinates = convertCoordinatesRawToTranslated(mouseX, mouseY);
   translatedMouseX = translatedMouseCoordinates.x
   translatedMouseY = translatedMouseCoordinates.y
 }
 
 function convertCoordinatesRawToTranslated(xIn, yIn) {
-  translatedMouseX = (xIn - originX) / currentScale;
-  translatedMouseY = (yIn - originY) / currentScale;
+  translatedX = (xIn - originX) / currentScale;
+  translatedY = (yIn - originY) / currentScale;
   return {
-    x: translatedMouseX,
-    y: translatedMouseY
+    x: translatedX,
+    y: translatedY
   }
 }
 
 function convertCoordinatesTranslatedToRaw(xIn, yIn) {
+  rawX = xIn * currentScale + originX;
+  rawY = yIn * currentScale + originY;
   return {
-    x: translatedMouseX * currentScale + originX,
-    y: translatedMouseX * currentScale + originX
+    x: rawX,
+    y: rawY
   }
 }
 
@@ -194,14 +182,21 @@ function convertCoordinatesTranslatedToRaw(xIn, yIn) {
 
 function keyPressed() {
   if (keyCode == ENTER) { // enter
-    createShape(); // pending change, maybe press b to make a box?
-
-    // if a shape is selected add a text to it
-
-    // if nothing is selected, fleeting note in space
-
+    if (titleEditorOpen == true) {
+      updateBoxTitleText(editingShape);
+      closeBoxTitleEditor();
+    } else {
+      createShape(); // pending change, maybe press b to make a box?
+      // if a shape is selected add a text to it
+      // if nothing is selected, fleeting note in space
+    } 
+  } else if (keyCode == ESCAPE) {
+    if (titleEditorOpen == true) {
+      closeBoxTitleEditor();
+    }
   } else if (keyCode == 32) { // spacebar
     zoomToSelectedShape(); 
+
   } else if (keyCode == 9) { // tab
     tabBetweenShapes();
 
@@ -225,6 +220,8 @@ function mouseWheel(event) {
 function mousePressed() {
   if (mouseButton == LEFT) {
     selectDeselect(getBoxIndicesTitleStripOnly().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
+    updateBoxTitleText(editingShape);
+    closeBoxTitleEditor();
   } else if (mouseButton == CENTER) {
     beginPanning();
   } else if (mouseButton == RIGHT) {
@@ -233,7 +230,9 @@ function mousePressed() {
 }
 
 function doubleClicked() {
-  openBoxTitleEditor(getBoxIndicesTitleStripOnly().splice(-1)[0]);
+  if (selectedShape != undefined) {
+    openBoxTitleEditor(getBoxIndicesTitleStripOnly().splice(-1)[0]); // change to get getBoxIndicesTitleTextBoxOnly
+  }
 }
 
 function mouseReleased() {
@@ -312,6 +311,8 @@ function tabBetweenShapes() {
 var selectedShape;
 var movingShape;
 var movingShapeOffsetArray = [];
+var editingShape;
+var titleEditorOpen = false;
 let rectWidth = 120;
 let rectHeight = 80;
 let rectSpacingInParent = 80; // make this scale with depth
@@ -324,6 +325,7 @@ function createShape() {
     y: translatedMouseY - rectHeight/2,
     w: rectWidth,
     h: rectHeight,
+    titleText: 'Shape ' + shapes.length,
     titleW: rectWidth, 
     titleH: rectHeight * boxTitleStripHeightRatio, // make this scale with depth
     parent: undefined,
@@ -564,16 +566,59 @@ function updateDimensionsOfShape(indexIn) {
 }
 
 function openBoxTitleEditor(indexIn) {
-  if (selectedShape != undefined) {
-    console.log('Shape ' + indexIn + "'s title is is being edited");
+  if (selectedShape != undefined) { // change to shape who's title is being edited
+    editingShape = selectedShape;
+    console.log('Shape ' + selectedShape + "'s title is is being edited");
+    titleEditorOpen = true;
+    
+    //create textarea element
     textArea = createElement("textarea");
     textArea.elt.id = 'box-title-editor';
-    textArea.position(shapes[indexIn].x, shapes[indexIn].y);
+    
+    // set position
+    rawBoxCoordinates = convertCoordinatesTranslatedToRaw(shapes[indexIn].x, shapes[indexIn].y);
+    textArea.position(rawBoxCoordinates.x, rawBoxCoordinates.y);
+
+    // set dimensions
+    textArea.style('width', shapes[indexIn].titleW * currentScale + 'px');
+    textArea.style('height', shapes[indexIn].titleH * currentScale + 'px');
+
+    // load shapes current title
+    textArea.elt.value = shapes[selectedShape].titleText;
+
+    // set text size
+    
+    // set alignment
+
+    // focus
+    textArea.elt.focus();
+  }
+}
+
+function repositionBoxTitleEditor() {
+  // add logic to hide when outside the bounds of the screen
+  // make function to determine coordinates of the corners of the screen
+}
+
+function resizeBoxTitleEditor() {
+  // resize based on width
+  // maybe include align to centre here
+}
+
+function updateBoxTitleText(indexIn) {
+  if (titleEditorOpen == true) {
+    shapes[editingShape].titleText = document.getElementById('box-title-editor').value;
   }
 }
 
 function closeBoxTitleEditor() {
-
+  if (titleEditorOpen == true) {
+    // set box's title to box title editor value
+    
+    document.getElementById('box-title-editor').remove();
+    titleEditorOpen = false;
+    editingShape = undefined;
+  }
 }
 
 function getDescendantsOfShape(indexIn) { // 0th index is the ancestor
@@ -611,7 +656,6 @@ function getValidDropTargetShape(indexIn) {
     }
   }
   validTargetShape = targetIndices.splice(-1)[0];
-
   return validTargetShape; // change from "highest index" to "item with highest order i.e. front, back"
 }
 

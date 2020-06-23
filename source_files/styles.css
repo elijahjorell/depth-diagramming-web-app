@@ -2,6 +2,12 @@ body {
     overflow: hidden;
 }
 
+textarea { /* assign to a new class so the base textarea class is not modified */
+    padding: 0;
+    margin: 0;
+    /* add styling e.g. transparency */
+}
+
 .custom-cm {
     background-color: #ffffff;
     border: 1px solid #cccccc;
