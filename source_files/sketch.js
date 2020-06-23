@@ -59,6 +59,7 @@ var canvasHeight = window.innerHeight;
 var currentScale = 1;
 var zoomFactor = 1.05;
 var baseStrokeWeight = 1;
+var shapeDepthSizeFactor; // PENDING CODE
 var originX = canvasWidth / 2;
 var originY = canvasHeight / 2;
 var translatedMouseX;
@@ -81,12 +82,13 @@ function draw() {
   displayShapes();
   displayOrigin();
   displayScreenCentre();
+  removeBoxTitleEditorChar();
   updatePreviousMouseCoordinates();
 }
 
 function displayPrototypeBox(indexIn) {  // rename function
   // title strip
-  fill('white');
+  fill(255);
   rect(shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].titleH);
   
   // box
@@ -96,7 +98,7 @@ function displayPrototypeBox(indexIn) {  // rename function
   // text
   noStroke();
   textAlign(CENTER, CENTER);
-  fill('black');
+  fill(0);
   textSize(shapes[indexIn].titleH * 0.7);
   text(shapes[indexIn].titleText, shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].titleH);
 }
@@ -120,7 +122,7 @@ function displayScreenCentre() {
 function displayShapes() {
   // loop to display shapes
   for (i = 0; i < shapes.length; i++) {
-    loadDefaultStyle();
+    loadDefaultStyle(); // add transparency based on depth
     highlightSelectedShape(i);
     updateStyleBasedOnShapeState(i);
     displayPrototypeBox(i); // rename function
@@ -135,7 +137,7 @@ function updateStyleBasedOnShapeState(indexIn) { // maybe remove this function
 
 function highlightSelectedShape(indexIn) {
   if (indexIn == selectedShape) {
-    stroke('red');
+    stroke('red'); // add transparency based on depth
   }
 }
 
@@ -190,15 +192,25 @@ function keyPressed() {
       // if a shape is selected add a text to it
       // if nothing is selected, fleeting note in space
     } 
-  } else if (keyCode == ESCAPE) {
+  } else if (keyCode == ESCAPE) { // escape key
     if (titleEditorOpen == true) {
       closeBoxTitleEditor();
     }
   } else if (keyCode == 32) { // spacebar
-    zoomToSelectedShape(); 
+    if (titleEditorOpen == false) { // restructure the keyPressed funciton key to consider what elmenet is active e.g. canvas, menu, textarea
+      zoomToSelectedShape(); 
+    }
 
   } else if (keyCode == 9) { // tab
-    tabBetweenShapes();
+    if (titleEditorOpen == false) { // restructure the keyPressed funciton key to consider what elmenet is active e.g. canvas, menu, textarea
+      tabBetweenShapes();
+    }
+
+  } else if (keyCode == 69) { // e key
+    if (titleEditorOpen == false && selectedShape != undefined) {
+      openBoxTitleEditor(selectedShape); // change to get getBoxIndicesTitleTextBoxOnly NEED TO FIX TO PREVENT E GETTING ADDED TO BOX TITLE VALUE
+      boxTitleEditorRemoveCharToken = true;
+    }
 
   } else if (keyCode == 65) { // a key
     // ADD AN ITEM TO CONTEXTMENU
@@ -218,10 +230,10 @@ function mouseWheel(event) {
 }
 
 function mousePressed() {
+  updateBoxTitleText(editingShape);
+  closeBoxTitleEditor();
   if (mouseButton == LEFT) {
     selectDeselect(getBoxIndicesTitleStripOnly().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
-    updateBoxTitleText(editingShape);
-    closeBoxTitleEditor();
   } else if (mouseButton == CENTER) {
     beginPanning();
   } else if (mouseButton == RIGHT) {
@@ -276,6 +288,8 @@ function zoom(event) {
   }
   originX -= zoomDirection * translatedMouseX * currentScale * (zoomFactor - 1); // not 100% current, zooms less accurately when further from the origin
   originY -= zoomDirection * translatedMouseY * currentScale * (zoomFactor - 1); // not 100% current, zooms less accurately when further from the origin
+
+  updateBoxTitleEditorFontSize();
 }
 
 function zoomToSelectedShape() {
@@ -313,6 +327,7 @@ var movingShape;
 var movingShapeOffsetArray = [];
 var editingShape;
 var titleEditorOpen = false;
+var boxTitleEditorRemoveCharToken = false;
 let rectWidth = 120;
 let rectHeight = 80;
 let rectSpacingInParent = 80; // make this scale with depth
@@ -325,9 +340,11 @@ function createShape() {
     y: translatedMouseY - rectHeight/2,
     w: rectWidth,
     h: rectHeight,
-    titleText: 'Shape ' + shapes.length,
+    titleText: '',
+    titleX: undefined, // PENDING CODE
+    titleY: undefined, // PENDING CODE
     titleW: rectWidth, 
-    titleH: rectHeight * boxTitleStripHeightRatio, // make this scale with depth
+    titleH: rectHeight / (1 + boxTitleStripHeightRatio) * boxTitleStripHeightRatio, // make this scale with depth
     parent: undefined,
     children: [],
     depth: 0,
@@ -338,6 +355,7 @@ function createShape() {
 
   // select newly created shape
   selectedShape = shapes.length - 1;
+  openBoxTitleEditor(selectedShape);
 }
 
 function selectDeselect(indexIn) {
@@ -405,11 +423,15 @@ function cancelMovingShape() {
 function shapeIsDropped(indexIn) {
   targetParent = getValidDropTargetShape(indexIn);
 
-  // if shape is not moved outside of parent
-  // pending code
-
-  // if shape has a parent, clear their relationship and update the information of the parent
+  // if shape has a parent shape
   if (shapes[indexIn].parent != undefined) {
+    // if shape is not moved outside of parent
+    if (targetParent == shapes[indexIn].parent) {
+      updatePositionsOfFamily(targetParent);
+      return
+    }
+
+    // if shape has a parent, clear their relationship and update the information of the parent
     clearedParent = shapes[indexIn].parent;
     clearParentOfShape(indexIn);
     updateHeightOfFamily(clearedParent);
@@ -542,6 +564,9 @@ function updateDimensionsOfShape(indexIn) {
   if (shapes[indexIn].children.length == 0) {
     shapes[indexIn].w = rectWidth;
     shapes[indexIn].h = rectHeight;
+    shapes[indexIn].titleW = shapes[indexIn].w;
+    shapes[indexIn].titleH = shapes[indexIn].h / (1 + boxTitleStripHeightRatio) * boxTitleStripHeightRatio; 
+
   } else if (shapes[indexIn].children.length >= 1) { 
     maxWidth = rectWidth;
     totalChildrenHeight = 0;
@@ -574,24 +599,36 @@ function openBoxTitleEditor(indexIn) {
     //create textarea element
     textArea = createElement("textarea");
     textArea.elt.id = 'box-title-editor';
+    disableEnter('box-title-editor');
     
     // set position
     rawBoxCoordinates = convertCoordinatesTranslatedToRaw(shapes[indexIn].x, shapes[indexIn].y);
     textArea.position(rawBoxCoordinates.x, rawBoxCoordinates.y);
 
     // set dimensions
-    textArea.style('width', shapes[indexIn].titleW * currentScale + 'px');
-    textArea.style('height', shapes[indexIn].titleH * currentScale + 'px');
+    textArea.style('width', shapes[editingShape].titleW * currentScale + 'px');
+    textArea.style('height', shapes[editingShape].titleH * currentScale + 'px');
 
     // load shapes current title
-    textArea.elt.value = shapes[selectedShape].titleText;
+    textArea.elt.value = shapes[editingShape].titleText;
+
+    // disable resize
+    textArea.style('resize', 'none');
 
     // set text size
-    
+    textArea.style('font-size', shapes[editingShape].titleH * 0.7 * currentScale + 'px');
+
     // set alignment
 
     // focus
     textArea.elt.focus();
+  }
+}
+
+function removeBoxTitleEditorChar() {
+  if (boxTitleEditorRemoveCharToken == true) {
+    document.getElementById('box-title-editor').value = document.getElementById('box-title-editor').value.slice(0, -1);
+    boxTitleEditorRemoveCharToken = false;
   }
 }
 
@@ -608,6 +645,12 @@ function resizeBoxTitleEditor() {
 function updateBoxTitleText(indexIn) {
   if (titleEditorOpen == true) {
     shapes[editingShape].titleText = document.getElementById('box-title-editor').value;
+  }
+}
+
+function updateBoxTitleEditorFontSize() {
+  if (titleEditorOpen == true) {
+    // pending code
   }
 }
 
@@ -735,6 +778,15 @@ function disableDefaultContextMenu(element) {
   document.getElementById(element).addEventListener('contextmenu', (e) => {
     e.preventDefault();
   })
+}
+
+// disable enter key press event
+function disableEnter(element) {
+  document.getElementById(element).addEventListener('keypress', (e) => {
+    if (e.keyCode == 13) {
+      e.preventDefault();
+    }
+  });
 }
 
 // add custom context menu in element ID

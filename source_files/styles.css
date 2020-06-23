@@ -3,8 +3,9 @@ body {
 }
 
 textarea { /* assign to a new class so the base textarea class is not modified */
-    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
     margin: 0;
+    padding: 0;
     /* add styling e.g. transparency */
 }
 
