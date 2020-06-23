@@ -58,7 +58,7 @@ var canvasWidth = window.innerWidth;
 var canvasHeight = window.innerHeight;
 var currentScale = 1;
 var zoomFactor = 1.05;
-var baseStrokeWeight = 4;
+var baseStrokeWeight = 1;
 var originX = canvasWidth / 2;
 var originY = canvasHeight / 2;
 var translatedMouseX;
@@ -81,20 +81,24 @@ function draw() {
   displayShapes();
   displayOrigin();
   displayScreenCentre();
-  displayPrototypeBox();
   updatePreviousMouseCoordinates();
 }
 
 function displayPrototypeBox(indexIn) {
-  fill('white')
-  rect(10, 10, 300, 20, 5, 5, 0, 0) // title strip
+  // title strip
+  fill('white');
+  rect(shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].titleH); // MAKE TITLE STRIP SCALE WITH SIZE
   
-  fill(255, 0) // transparent
-  rect(10, 10, 300, 100, 5)
+  // box
+  fill(255, 0); // transparent
+  rect(shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].h);
   
-  textAlign(CENTER, CENTER)
-  fill('black')
-  text('PHYSICS', 10, 10, 300, 20)
+  // text
+  noStroke();
+  textAlign(CENTER, CENTER);
+  fill('black');
+  textSize(shapes[indexIn].titleH * 0.7);
+  text(shapes[indexIn].id + '. PHYSICS', shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].titleH); // MAKE TITLE STRIP SCALE WITH SIZE
 }
 
 function displayOrigin() {
@@ -122,8 +126,9 @@ function displayShapes() {
 
     // display rectangles
     // pending code to display parents first (so children will seem like they're within parent shapes)
-    rect(shapes[i].x, shapes[i].y, shapes[i].w, shapes[i].h, rectHeight / 6);
-    displayShapeText(i);
+    displayPrototypeBox(i);
+    // rect(shapes[i].x, shapes[i].y, shapes[i].w, shapes[i].h, rectHeight / 6);
+
     loadDefaultStyle();
   }
 }
@@ -158,15 +163,27 @@ function updatePreviousMouseCoordinates() {
 }
 
 function updateTranslatedMouseCoordinates() {
-  translatedMouseX = (mouseX - originX) / currentScale;
-  translatedMouseY = (mouseY - originY) / currentScale;
+  // translatedMouseX = (mouseX - originX) / currentScale;
+  // translatedMouseY = (mouseY - originY) / currentScale;
+  translatedMouseCoordinates = convertCoordinatesRawToTranslated(mouseX, mouseY);
+  translatedMouseX = translatedMouseCoordinates.x
+  translatedMouseY = translatedMouseCoordinates.y
 }
 
-function displayShapeText(indexIn) {
-  noStroke();
-  fill('black');
-  textAlign(CENTER, CENTER);
-  text(indexIn, shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].h);
+function convertCoordinatesRawToTranslated(xIn, yIn) {
+  translatedMouseX = (xIn - originX) / currentScale;
+  translatedMouseY = (yIn - originY) / currentScale;
+  return {
+    x: translatedMouseX,
+    y: translatedMouseY
+  }
+}
+
+function convertCoordinatesTranslatedToRaw(xIn, yIn) {
+  return {
+    x: translatedMouseX * currentScale + originX,
+    y: translatedMouseX * currentScale + originX
+  }
 }
 
 // POSITION AND DIMENSIONS OF SCREEN BASED ON SCALE AND PAN
@@ -176,8 +193,12 @@ function displayShapeText(indexIn) {
 // ==================================================================================== KEYBOARD/MOUSE
 
 function keyPressed() {
-  if (keyCode == ENTER) {
-    createShape();
+  if (keyCode == ENTER) { // enter
+    createShape(); // pending change, maybe press b to make a box?
+
+    // if a shape is selected add a text to it
+
+    // if nothing is selected, fleeting note in space
 
   } else if (keyCode == 32) { // spacebar
     zoomToSelectedShape(); 
@@ -203,7 +224,7 @@ function mouseWheel(event) {
 
 function mousePressed() {
   if (mouseButton == LEFT) {
-    selectDeselect(getShapeIndices().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
+    selectDeselect(getBoxIndicesTitleStripOnly().splice(-1)[0]); // change from "highest index" to "item with highest order i.e. front, back"
   } else if (mouseButton == CENTER) {
     beginPanning();
   } else if (mouseButton == RIGHT) {
@@ -212,7 +233,7 @@ function mousePressed() {
 }
 
 function doubleClicked() {
-
+  openBoxTitleEditor(getBoxIndicesTitleStripOnly().splice(-1)[0]);
 }
 
 function mouseReleased() {
@@ -264,15 +285,17 @@ function zoomToSelectedShape() {
     targetShapeHeight = shapes[selectedShape].h;
     if (targetShapeHeight * currentScale < 0.1 * canvasHeight) {
       currentScale = canvasHeight / targetShapeHeight * 0.1;
-    } else if (targetShapeHeight * currentScale > 0.05 * canvasHeight) {
-      currentScale = canvasHeight / targetShapeHeight * 0.1;
-    }
+    } 
+    // else if (targetShapeHeight * currentScale > 0.05 * canvasHeight) {
+    //   currentScale = canvasHeight / targetShapeHeight * 0.1;
+    // }
     originX -= (shapes[selectedShape].x + targetShapeWidth / 2) * currentScale - canvasWidth / 2 + originX; // can animate this in the future
     originY -= (shapes[selectedShape].y + targetShapeHeight / 2) * currentScale - canvasHeight / 2 + originY; // can animate this in the future
   }
 }
 
 function tabBetweenShapes() {
+  // add logic to tab between descendants before moving onto another shape
   if (selectedShape == undefined) {
     selectedShape = 0;
   } else if (selectedShape == shapes.length - 1) {
@@ -292,6 +315,7 @@ var movingShapeOffsetArray = [];
 let rectWidth = 120;
 let rectHeight = 80;
 let rectSpacingInParent = 80; // make this scale with depth
+let boxTitleStripHeightRatio = 0.2;
 
 function createShape() {
   shapes.push({
@@ -300,6 +324,8 @@ function createShape() {
     y: translatedMouseY - rectHeight/2,
     w: rectWidth,
     h: rectHeight,
+    titleW: rectWidth, 
+    titleH: rectHeight * boxTitleStripHeightRatio, // make this scale with depth
     parent: undefined,
     children: [],
     depth: 0,
@@ -483,7 +509,7 @@ function updatePositionsOfDescendants(indexIn) {
 }
 
 function updatePositionsOfChildren(indexIn) { // EXPERIENCING ISSUES, MISALIGNED X
-  currentYOffset = rectSpacingInParent;
+  currentYOffset = rectSpacingInParent + shapes[indexIn].titleH;
   currentXOffset = undefined;
 
   for (i = 0; i < shapes[indexIn].children.length; i++) {
@@ -526,17 +552,28 @@ function updateDimensionsOfShape(indexIn) {
       totalChildrenHeight += shapes[shapes[indexIn].children[i]].h;
     }
 
-    // add spacing
+    // set width and height and add spacing
     shapes[indexIn].w = maxWidth + 2 * rectSpacingInParent;
-    shapes[indexIn].h = totalChildrenHeight + rectSpacingInParent + shapes[indexIn].children.length * rectSpacingInParent;
+    shapes[indexIn].titleW = shapes[indexIn].w;
+    shapes[indexIn].h = (totalChildrenHeight + rectSpacingInParent + shapes[indexIn].children.length * rectSpacingInParent) * (1 + boxTitleStripHeightRatio);
+
+    // logic to restrict textSize based on aspect ratio of title strip
+    // pending code
+    shapes[indexIn].titleH = shapes[indexIn].h / (1 + boxTitleStripHeightRatio) * boxTitleStripHeightRatio; 
   }
 }
 
-function editShape(indexIn) {
+function openBoxTitleEditor(indexIn) {
   if (selectedShape != undefined) {
-    console.log('Shape ' + indexIn + ' is being edited');
-    // pending code
+    console.log('Shape ' + indexIn + "'s title is is being edited");
+    textArea = createElement("textarea");
+    textArea.elt.id = 'box-title-editor';
+    textArea.position(shapes[indexIn].x, shapes[indexIn].y);
   }
+}
+
+function closeBoxTitleEditor() {
+
 }
 
 function getDescendantsOfShape(indexIn) { // 0th index is the ancestor
@@ -585,6 +622,19 @@ function getShapeIndices() {
         translatedMouseX < shapes[i].x + shapes[i].w &&
         translatedMouseY > shapes[i].y &&
         translatedMouseY < shapes[i].y + shapes[i].h) {
+        shapeIndexArray.push(i);
+      }
+  }
+  return shapeIndexArray;
+}
+
+function getBoxIndicesTitleStripOnly() {
+  shapeIndexArray = [];
+  for (i = 0; i < shapes.length; i++) {
+    if (translatedMouseX > shapes[i].x &&
+        translatedMouseX < shapes[i].x + shapes[i].titleW &&
+        translatedMouseY > shapes[i].y &&
+        translatedMouseY < shapes[i].y + shapes[i].titleH) {
         shapeIndexArray.push(i);
       }
   }
