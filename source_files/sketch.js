@@ -84,17 +84,18 @@ function draw() {
   displayScreenCentre();
   removeBoxTitleEditorChar();
   updatePreviousMouseCoordinates();
+  // rect covering whole screen for depth-transparency styling
 }
 
 function displayPrototypeBox(indexIn) {  // rename function
+  // box
+  fill(34, 42, 53, 150); // transparent
+  rect(shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].h);
+  
   // title strip
   fill(255);
   rect(shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].titleH);
-  
-  // box
-  fill(255, 0); // transparent
-  rect(shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].h);
-  
+
   // text
   noStroke();
   textAlign(CENTER, CENTER);
@@ -137,7 +138,7 @@ function updateStyleBasedOnShapeState(indexIn) { // maybe remove this function
 
 function highlightSelectedShape(indexIn) {
   if (indexIn == selectedShape) {
-    stroke('red'); // add transparency based on depth
+    stroke(255, 0, 0); // add transparency based on depth
   }
 }
 
@@ -181,14 +182,25 @@ function convertCoordinatesTranslatedToRaw(xIn, yIn) {
 
 // ============================================================================================================================================================================================
 // ==================================================================================== KEYBOARD/MOUSE
+controlKeyIsPressed = false;
 
 function keyPressed() {
+  // modifiers
+  if (keyCode == CONTROL) {
+    controlKeyIsPressed = true;
+    console.log('Control key pressed');
+  }
+  
   if (keyCode == ENTER) { // enter
     if (titleEditorOpen == true) {
       updateBoxTitleText(editingShape);
       closeBoxTitleEditor();
     } else {
-      createShape(); // pending change, maybe press b to make a box?
+      if (controlKeyIsPressed == true) {
+        createShape(); // pending change, maybe press b to make a box?
+      } else if (controlKeyIsPressed == false) {
+        console.log('Create note');
+      }
       // if a shape is selected add a text to it
       // if nothing is selected, fleeting note in space
     } 
@@ -202,9 +214,14 @@ function keyPressed() {
     }
 
   } else if (keyCode == 9) { // tab
-    if (titleEditorOpen == false) { // restructure the keyPressed funciton key to consider what elmenet is active e.g. canvas, menu, textarea
-      tabBetweenShapes();
+    if (titleEditorOpen == true) { // restructure the keyPressed funciton key to consider what elmenet is active e.g. canvas, menu, textarea
+      updateBoxTitleText(editingShape);
+      closeBoxTitleEditor();
     }
+    tabBetweenShapes();
+
+    // shift + tab to go one depth down
+    // control + tab to go one depth up
 
   } else if (keyCode == 69) { // e key
     if (titleEditorOpen == false && selectedShape != undefined) {
@@ -221,13 +238,23 @@ function keyPressed() {
     deleteItemInContextMenu();
 
   } else if (keyCode == 73) { // i key
-    logShapesArray();
+    if (titleEditorOpen == false) {
+      logShapesArray();
+    }
+  }
+}
+
+function keyReleased() {
+  if (keyCode == CONTROL) {
+    controlKeyIsPressed = false;
+    console.log('Control key released');
   }
 }
 
 function mouseWheel(event) {
   zoom(event);
 }
+
 
 function mousePressed() {
   updateBoxTitleText(editingShape);
@@ -243,7 +270,8 @@ function mousePressed() {
 
 function doubleClicked() {
   if (selectedShape != undefined) {
-    openBoxTitleEditor(getBoxIndicesTitleStripOnly().splice(-1)[0]); // change to get getBoxIndicesTitleTextBoxOnly
+    // openBoxTitleEditor(getBoxIndicesTitleStripOnly().splice(-1)[0]); // change to get getBoxIndicesTitleTextBoxOnly
+    // pending code to prevent double clicking after selecting object
   }
 }
 
@@ -336,13 +364,13 @@ let boxTitleStripHeightRatio = 0.2;
 function createShape() {
   shapes.push({
     id: shapes.length,
+    type: undefined, // box/note
+    style: undefined, // title on top in title strip/in the middle with no title strip and in white text)
     x: translatedMouseX - rectWidth/2,
     y: translatedMouseY - rectHeight/2,
     w: rectWidth,
     h: rectHeight,
     titleText: '',
-    titleX: undefined, // PENDING CODE
-    titleY: undefined, // PENDING CODE
     titleW: rectWidth, 
     titleH: rectHeight / (1 + boxTitleStripHeightRatio) * boxTitleStripHeightRatio, // make this scale with depth
     parent: undefined,
