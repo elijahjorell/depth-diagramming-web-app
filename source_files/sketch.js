@@ -38,22 +38,16 @@ PENDING FEATURES
 - CAN MAKE A SHAPE BIGGER BY HOVERING OVER EDGE WHILE HOLDING ANOTHER A SHAPE
 - STATIC POSITION IN SHAPE
 - CHILDREN BECOMING SMALLER RATHER THAN PARENTS BECOMING BIGGER
-- PREVENTING INABILITY TO SELECT BECAUSE OF INDEX IN SHAPES ARRAY
-- HOW TO MAKE A MENU
-
-////////////////////////////////////////////////////////
-
-CURRENTLY WORKING ON:
-- RESIZABLE SHAPES
+- ARRANGEMENTS
 
 //////////////////////////////////////////////////////*/
 
 var shapes = [];
-var parentShapes = [];
 
 // ============================================================================================================================================================================================
 // ==================================================================================== DISPLAY
 
+var displayShapesByDepthArray; // pending code
 var canvasWidth = window.innerWidth;
 var canvasHeight = window.innerHeight;
 var currentScale = 1;
@@ -87,7 +81,7 @@ function draw() {
   // rect covering whole screen for depth-transparency styling
 }
 
-function displayPrototypeBox(indexIn) {  // rename function
+function displayBox(indexIn) {  // rename function
   // box
   fill(34, 42, 53, 150); // transparent
   rect(shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].h);
@@ -122,12 +116,27 @@ function displayScreenCentre() {
 
 function displayShapes() {
   // loop to display shapes
-  for (i = 0; i < shapes.length; i++) {
-    loadDefaultStyle(); // add transparency based on depth
-    highlightSelectedShape(i);
-    updateStyleBasedOnShapeState(i);
-    displayPrototypeBox(i); // rename function
-    loadDefaultStyle();
+
+  currentShape = 0;
+  currentDisplayedHeight = 0;
+  displayedShapes = 0;
+
+  while (displayedShapes < shapes.length) {
+    if (shapes[currentShape].height == currentDisplayedHeight) {
+      loadDefaultStyle(); // add transparency based on depth
+      highlightSelectedShape(currentShape);
+      updateStyleBasedOnShapeState(currentShape);
+      displayBox(currentShape); // rename function
+      loadDefaultStyle();
+      displayedShapes += 1;
+    }
+
+    currentShape += 1;
+
+    if (currentShape == shapes.length) {
+      currentDisplayedHeight += 1;
+      currentShape = 0;
+    }
   }
 }
 
@@ -211,6 +220,7 @@ function keyPressed() {
   } else if (keyCode == 32) { // spacebar
     if (titleEditorOpen == false) { // restructure the keyPressed funciton key to consider what elmenet is active e.g. canvas, menu, textarea
       zoomToSelectedShape(); 
+      // SPACE BAR TO PREVIEW BOX CONTENTS AND NOTES
     }
 
   } else if (keyCode == 9) { // tab
@@ -356,10 +366,10 @@ var movingShapeOffsetArray = [];
 var editingShape;
 var titleEditorOpen = false;
 var boxTitleEditorRemoveCharToken = false;
+let boxTitleStripHeightRatio = 0.2;
 let rectWidth = 120;
 let rectHeight = 80;
 let rectSpacingInParent = 80; // make this scale with depth
-let boxTitleStripHeightRatio = 0.2;
 
 function createShape() {
   shapes.push({
@@ -519,7 +529,7 @@ function updateDepthOfDescendants(indexIn) {
 }
 
 function updateDepthOfShape(indexIn) {
-  if (getShapeIndices() == undefined) {
+  if (getShapeIndices() == undefined) { // change to not be reliant on mouse input
     shapes[indexIn].depth = 0;
   } else {
     currentParent = shapes[indexIn].parent;
