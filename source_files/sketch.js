@@ -83,7 +83,7 @@ function draw() {
 
 function displayBox(indexIn) {  // rename function
   // box
-  fill(34, 42, 53, 150); // transparent
+  fill(34, 42, 53, 180); // make transparent based on depth
   rect(shapes[indexIn].x, shapes[indexIn].y, shapes[indexIn].w, shapes[indexIn].h);
   
   // title strip
@@ -115,12 +115,11 @@ function displayScreenCentre() {
 }
 
 function displayShapes() {
-  // loop to display shapes
-
   currentShape = 0;
   currentDisplayedHeight = 0;
   displayedShapes = 0;
-
+  
+  // loop to display shapes from lowest to heighest height
   while (displayedShapes < shapes.length) {
     if (shapes[currentShape].height == currentDisplayedHeight) {
       loadDefaultStyle(); // add transparency based on depth
@@ -192,6 +191,7 @@ function convertCoordinatesTranslatedToRaw(xIn, yIn) {
 // ============================================================================================================================================================================================
 // ==================================================================================== KEYBOARD/MOUSE
 controlKeyIsPressed = false;
+shiftKeyIsPressed = false;
 
 function keyPressed() {
   // modifiers
@@ -199,7 +199,13 @@ function keyPressed() {
     controlKeyIsPressed = true;
     console.log('Control key pressed');
   }
+
+  if (keyCode == SHIFT) {
+    shiftKeyIsPressed = true;
+    console.log('Shift key pressed');
+  }
   
+  // keys
   if (keyCode == ENTER) { // enter
     if (titleEditorOpen == true) {
       updateBoxTitleText(editingShape);
@@ -223,15 +229,12 @@ function keyPressed() {
       // SPACE BAR TO PREVIEW BOX CONTENTS AND NOTES
     }
 
-  } else if (keyCode == 9) { // tab
+  } else if (keyCode == 9) { // tab (CONTROL+TAB IS RESERVED FOR SWITCHING BETWEEN CHROME TABS)
     if (titleEditorOpen == true) { // restructure the keyPressed funciton key to consider what elmenet is active e.g. canvas, menu, textarea
       updateBoxTitleText(editingShape);
       closeBoxTitleEditor();
     }
     tabBetweenShapes();
-
-    // shift + tab to go one depth down
-    // control + tab to go one depth up
 
   } else if (keyCode == 69) { // e key
     if (titleEditorOpen == false && selectedShape != undefined) {
@@ -252,12 +255,28 @@ function keyPressed() {
       logShapesArray();
     }
   }
+
+  // arrows
+  else if (keyCode == UP_ARROW) {
+    if (controlKeyIsPressed == true && shiftKeyIsPressed == false) {
+      tabIntoShape();
+    }
+  } else if (keyCode == DOWN_ARROW) {
+    if (controlKeyIsPressed == true && shiftKeyIsPressed == false) {
+      tabOutsideOfShape();
+    }
+  }
 }
 
 function keyReleased() {
   if (keyCode == CONTROL) {
     controlKeyIsPressed = false;
     console.log('Control key released');
+  }
+
+  if (keyCode == SHIFT) {
+    shiftKeyIsPressed = false;
+    console.log('Shift key released');
   }
 }
 
@@ -327,6 +346,8 @@ function zoom(event) {
   originX -= zoomDirection * translatedMouseX * currentScale * (zoomFactor - 1); // not 100% current, zooms less accurately when further from the origin
   originY -= zoomDirection * translatedMouseY * currentScale * (zoomFactor - 1); // not 100% current, zooms less accurately when further from the origin
 
+  console.log(currentScale)
+
   updateBoxTitleEditorFontSize();
 }
 
@@ -354,7 +375,23 @@ function tabBetweenShapes() {
   } else {
     selectedShape += 1;
   }
+
+  // change to only zoom/focus to shape if out of screen
   zoomToSelectedShape();
+}
+
+function tabIntoShape() {
+  if (selectedShape != undefined && shapes[selectedShape].children.length > 0) {
+    selectedShape = shapes[selectedShape].children[0];
+    console.log('Tabbing into shape')
+  }
+}
+
+function tabOutsideOfShape() {
+  if (selectedShape != undefined) {
+    selectedShape = shapes[selectedShape].parent;
+    console.log('Tabbing outside of shape')
+  }
 }
 
 // ============================================================================================================================================================================================
@@ -372,6 +409,13 @@ let rectHeight = 80;
 let rectSpacingInParent = 80; // make this scale with depth
 
 function createShape() {
+  // if object is selected, make parent the object selected
+  if (selectedShape != undefined) { // refactor this later
+    shapeParent = selectedShape;
+  } else {
+    shapeParent = undefined;
+  }
+
   shapes.push({
     id: shapes.length,
     type: undefined, // box/note
@@ -383,11 +427,24 @@ function createShape() {
     titleText: '',
     titleW: rectWidth, 
     titleH: rectHeight / (1 + boxTitleStripHeightRatio) * boxTitleStripHeightRatio, // make this scale with depth
-    parent: undefined,
+    parent: shapeParent,
     children: [],
     depth: 0,
     height: 0
   });
+
+  if (selectedShape != undefined) { 
+    /////////////////
+    // refactor this later to function makeShapeChildOf
+    shapes[shapes.length - 1].parent = shapeParent;
+    shapes[shapeParent].children.push(shapes.length - 1);
+    updateDepthOfDescendants(shapes.length - 1);
+    updateHeightOfFamily(shapes.length - 1);
+    updateDimensionsOfAncestors(shapeParent);
+    updatePositionsOfFamily(shapeParent);
+    zoomToSelectedShape(shapes.length - 1); // change to only if outside of the screen
+    /////////////////
+  }
 
   // pending value input
 
@@ -622,9 +679,9 @@ function updateDimensionsOfShape(indexIn) {
     shapes[indexIn].titleW = shapes[indexIn].w;
     shapes[indexIn].h = (totalChildrenHeight + rectSpacingInParent + shapes[indexIn].children.length * rectSpacingInParent) * (1 + boxTitleStripHeightRatio);
 
-    // logic to restrict textSize based on aspect ratio of title strip
-    // pending code
-    shapes[indexIn].titleH = shapes[indexIn].h / (1 + boxTitleStripHeightRatio) * boxTitleStripHeightRatio; 
+    // pending code - logic to restrict textSize based on aspect ratio of title strip
+
+    shapes[indexIn].titleH = shapes[indexIn].h / (1 + boxTitleStripHeightRatio) * boxTitleStripHeightRatio; // limit how tall the title can get
   }
 }
 
