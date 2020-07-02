@@ -1,20 +1,23 @@
+const SCREEN_PAN_SPEED = 0.7;
 var screenCoordinates;
 var screenDimensions;
 var screenCurrentScale = 1;
 var screenPanState = false;
 
 function screenPanBegin() {
-    screenPanOn = true;
+    screenPanState = true;
 }
 
 function screenPanOn() {
     if (screenPanState) {
-
+        coordinatesOrigin.x -= SCREEN_PAN_SPEED * (cursorPreviousCoordinateRelativeToScreen.x - mouseX);
+        coordinatesOrigin.y -= SCREEN_PAN_SPEED * (cursorPreviousCoordinateRelativeToScreen.y - mouseY);
     }
 }
 
 function screenPanEnd() {
-    screenPanOn = false;
+    screenPanPreviousCursorCoordinate = undefined;
+    screenPanState = false;
 }
 
 function screenZoom() {

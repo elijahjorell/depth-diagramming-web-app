@@ -12,8 +12,8 @@ function commandsGrabBegin(targetItems) {
         currentItemIndex = itemsGetIndexOfID(itemsGrabbed[j]);
         commandsGrabItemsOffsetArray.push({
             id: itemsGrabbed[j],
-            offsetX: cursorCoordinatesReal.x - items[currentItemIndex].coordinates.real.x,
-            offsetY: cursorCoordinatesReal.y - items[currentItemIndex].coordinates.real.y
+            offsetX: cursorCoordinateReal.x - items[currentItemIndex].coordinates.real.x,
+            offsetY: cursorCoordinateReal.y - items[currentItemIndex].coordinates.real.y
         })
     }
 }
@@ -21,8 +21,8 @@ function commandsGrabBegin(targetItems) {
 function commandsGrabOn() {
     if (itemsGrabbed.length > 0) {
         for (i = 0; i < commandsGrabItemsOffsetArray.length; i++) {
-            items[commandsGrabItemsOffsetArray[i].id].coordinates.real.x = cursorCoordinatesReal.x - commandsGrabItemsOffsetArray[i].offsetX;
-            items[commandsGrabItemsOffsetArray[i].id].coordinates.real.y = cursorCoordinatesReal.y - commandsGrabItemsOffsetArray[i].offsetY;
+            items[commandsGrabItemsOffsetArray[i].id].coordinates.real.x = cursorCoordinateReal.x - commandsGrabItemsOffsetArray[i].offsetX;
+            items[commandsGrabItemsOffsetArray[i].id].coordinates.real.y = cursorCoordinateReal.y - commandsGrabItemsOffsetArray[i].offsetY;
         }
     }
 }

@@ -1,7 +1,7 @@
 function keyPressed() {
     if (keyCode === ENTER) {
-        itemsCreateNew(cursorCoordinatesReal.x, 
-                       cursorCoordinatesReal.y, 
+        itemsCreateNew(cursorCoordinateReal.x, 
+                       cursorCoordinateReal.y, 
                        50);
     }
 }

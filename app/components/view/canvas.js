@@ -14,21 +14,20 @@ function draw() {
     commandsSelectAreaOn();
     commandsGrabOn();
     canvasDrawItems();
-    canvasDrawAreaSelector();
+    canvasDrawSelectArea();
+    cursorUpdatePreviousCoordinate();
 }
 
 function canvasDrawItems() {
     for (i = 0; i < items.length; i++) {
-        
         // ring
         stroke(180, 199, 231);
         fill(255, 0);
         ellipse(items[i].coordinates.real.x,
                 items[i].coordinates.real.y,
-                items[i].dimensions.real.r * 2);
+                items[i].dimensions.real.r * 2 + 20);
         
-        
-        // inner circle
+        // circle
         noStroke();
         if (commandsSelectAreaDetectedItems.includes(items[i].id)) {
             fill('pink');
@@ -37,15 +36,13 @@ function canvasDrawItems() {
         } else {
             fill(255);
         }
-
         ellipse(items[i].coordinates.real.x,
                 items[i].coordinates.real.y,
-                items[i].dimensions.real.r * 2 - 20);
+                items[i].dimensions.real.r * 2);
     }
 }
 
-function canvasDrawAreaSelector() {
-    
+function canvasDrawSelectArea() {
     if (commandsSelectAreaOriginCoordinate !== undefined) {
         stroke(255);
         fill(255, 120);

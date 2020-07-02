@@ -8,8 +8,8 @@ var commandsSelectAreaState = false;
 function commandsSelectAreaBegin() {
     commandsSelectAreaState = true;
     commandsSelectAreaOriginCoordinate = {
-        x: cursorCoordinatesReal.x,
-        y: cursorCoordinatesReal.y
+        x: cursorCoordinateReal.x,
+        y: cursorCoordinateReal.y
     }
 }
 
@@ -22,38 +22,38 @@ function commandsSelectAreaOn() {
 
 function commandsSelectAreaUpdateBounds() {
     if (commandsSelectAreaOriginCoordinate !== undefined) {
-        if (cursorCoordinatesReal.y < commandsSelectAreaOriginCoordinate.y) {
-            if (cursorCoordinatesReal.x < commandsSelectAreaOriginCoordinate.x) {
+        if (cursorCoordinateReal.y < commandsSelectAreaOriginCoordinate.y) {
+            if (cursorCoordinateReal.x < commandsSelectAreaOriginCoordinate.x) {
             // TOP LEFT QUADRANT
                 commandsSelectAreaTopLeftCoordinate = {
-                    x: cursorCoordinatesReal.x,
-                    y: cursorCoordinatesReal.y
+                    x: cursorCoordinateReal.x,
+                    y: cursorCoordinateReal.y
                 }
                 commandsSelectAreaDimensions = {
-                    w: commandsSelectAreaOriginCoordinate.x - cursorCoordinatesReal.x,
-                    h: commandsSelectAreaOriginCoordinate.y - cursorCoordinatesReal.y
+                    w: commandsSelectAreaOriginCoordinate.x - cursorCoordinateReal.x,
+                    h: commandsSelectAreaOriginCoordinate.y - cursorCoordinateReal.y
                 }
             } else {
             // TOP RIGHT QUADRANT
                 commandsSelectAreaTopLeftCoordinate = {
                     x: commandsSelectAreaOriginCoordinate.x,
-                    y: cursorCoordinatesReal.y
+                    y: cursorCoordinateReal.y
                 }
                 commandsSelectAreaDimensions = {
-                    w: cursorCoordinatesReal.x - commandsSelectAreaOriginCoordinate.x,
-                    h: commandsSelectAreaOriginCoordinate.y - cursorCoordinatesReal.y
+                    w: cursorCoordinateReal.x - commandsSelectAreaOriginCoordinate.x,
+                    h: commandsSelectAreaOriginCoordinate.y - cursorCoordinateReal.y
                 }
             }
         } else {
-            if (cursorCoordinatesReal.x < commandsSelectAreaOriginCoordinate.x) {
+            if (cursorCoordinateReal.x < commandsSelectAreaOriginCoordinate.x) {
             // BOTTOM LEFT QUADRANT
                 commandsSelectAreaTopLeftCoordinate = {
-                    x: cursorCoordinatesReal.x,
+                    x: cursorCoordinateReal.x,
                     y: commandsSelectAreaOriginCoordinate.y
                 }
                 commandsSelectAreaDimensions = {
-                    w: commandsSelectAreaOriginCoordinate.x - cursorCoordinatesReal.x,
-                    h: cursorCoordinatesReal.y - commandsSelectAreaOriginCoordinate.y
+                    w: commandsSelectAreaOriginCoordinate.x - cursorCoordinateReal.x,
+                    h: cursorCoordinateReal.y - commandsSelectAreaOriginCoordinate.y
                 }
             } else {
             // BOTTOM RIGHT QUADRANT
@@ -62,8 +62,8 @@ function commandsSelectAreaUpdateBounds() {
                     y: commandsSelectAreaOriginCoordinate.y
                 }
                 commandsSelectAreaDimensions = {
-                    w: cursorCoordinatesReal.x - commandsSelectAreaOriginCoordinate.x,
-                    h: cursorCoordinatesReal.y - commandsSelectAreaOriginCoordinate.y
+                    w: cursorCoordinateReal.x - commandsSelectAreaOriginCoordinate.x,
+                    h: cursorCoordinateReal.y - commandsSelectAreaOriginCoordinate.y
                 }
             }
         }

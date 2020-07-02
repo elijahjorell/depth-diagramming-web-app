@@ -1,10 +1,7 @@
 function mousePressed() {
     if (mouseButton === LEFT) {
-        // while items are grabbed
-        if (itemsGrabbed.length > 0) { 
-                commandsGrabEnd();
         // while items are selected
-        } else if (itemsSelected.length > 0) { 
+        if (itemsSelected.length > 0) { 
             // click on canvas
             if (cursorDetectedItemID === undefined) {
                 commandsSelectEnd();
@@ -22,11 +19,13 @@ function mousePressed() {
             // click on the canvas
             if (cursorDetectedItemID === undefined) {
                 commandsSelectAreaBegin();
-            // click on canvas
+            // click on item
             } else {
                 commandsSelectItems(cursorDetectedItemID);
             }
         }
+    } else if (mouseButton === CENTER) {
+        screenPanBegin();
     }
 }
 
@@ -35,7 +34,20 @@ function mouseReleased() {
         if (commandsSelectAreaOriginCoordinate !== undefined) {
             commandsSelectItems(commandsSelectAreaDetectedItems);
             commandsSelectAreaEnd();
+        } else {
+            commandsGrabEnd();
         }
+    } else if (mouseButton === CENTER) {
+        screenPanEnd();
     }
 }
 
+function mouseDisableAutoscroll() {
+    document.addEventListener('mousedown', (e) => {
+      if (e.button === 1) {
+        e.preventDefault();
+      }
+    });
+}
+
+mouseDisableAutoscroll();

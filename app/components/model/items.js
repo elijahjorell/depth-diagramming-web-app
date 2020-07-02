@@ -21,7 +21,7 @@ function itemsCreateNew(x, y, r) {
                 real: {
                     r: r
                 },
-                scaled: {
+                relativeToScreen: {
                     r: undefined
                 }
         },
@@ -41,6 +41,8 @@ function itemsCreateNew(x, y, r) {
     });
     itemsUniqueCounter += 1;
 }
+
+function 
 
 function itemsGetIndexOfID(itemID) {
     for (i = 0; i < items.length; i++) {
