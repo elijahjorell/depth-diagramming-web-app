@@ -1,11 +1,14 @@
 <!DOCTYPE html>
   <head>
     <script src="app/libs/p5.js"></script>
-    <script src="app/components/config.js"></script>
-    <script src="app/components/states.js"></script>
-    <script src="app/components/spaces/model.js"></script>
-    <script src="app/components/spaces/controller.js"></script>
-    <script src="app/components/spaces/view.js"></script>
+    <script src="app/components/states/coordinates.js"></script>
+    <script src="app/components/states/items.js"></script>
+    <script src="app/components/states/screen.js"></script>
+    <script src="app/components/states/commandLog.js"></script>
+    <script src="app/components/states/cursor.js"></script>
+    <script src="app/components/commands.js"></script>
+    <script src="app/components/inputs.js"></script>
+    <script src="app/components/display.js"></script>
     <script src="app/main.js"></script>
   </head>
   <body>
@@ -16,5 +19,8 @@
         overflow: hidden;
       }
     </style>
+    <div id='app'>
+    <!-- p5 canvas -->
+    </div>
   </body>
 </html>
