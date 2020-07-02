@@ -1,18 +1,20 @@
 var screenCoordinates;
 var screenDimensions;
 var screenCurrentScale = 1;
-var screenPanning = false;
+var screenPanState = false;
 
 function screenPanBegin() {
-    screenPanning = true;
+    screenPanOn = true;
 }
 
-function screenPanning() {
-    
+function screenPanOn() {
+    if (screenPanState) {
+
+    }
 }
 
 function screenPanEnd() {
-
+    screenPanOn = false;
 }
 
 function screenZoom() {

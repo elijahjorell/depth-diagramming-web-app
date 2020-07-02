@@ -42,15 +42,6 @@ function itemsCreateNew(x, y, r) {
     itemsUniqueCounter += 1;
 }
 
-function itemsUpdateGrabbedItemsCoordinates() {
-    if (itemsGrabbed.length > 0) {
-        for (i = 0; i < commandsGrabItemsOffsetArray.length; i++) {
-            items[commandsGrabItemsOffsetArray[i].id].coordinates.real.x = cursorCoordinatesReal.x - commandsGrabItemsOffsetArray[i].offsetX;
-            items[commandsGrabItemsOffsetArray[i].id].coordinates.real.y = cursorCoordinatesReal.y - commandsGrabItemsOffsetArray[i].offsetY;
-        }
-    }
-}
-
 function itemsGetIndexOfID(itemID) {
     for (i = 0; i < items.length; i++) {
         if (itemID === items[i].id) {
