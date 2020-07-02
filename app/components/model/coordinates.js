@@ -7,7 +7,7 @@ function coordinatesUpdateOrigin() {
     }
 }
 
-function coordinatesConvertRawToTranslated(x, y) {
+function coordinatesConvertRelativeToScreenToReal(x, y) {
     return {
         x: (x - coordinatesOrigin.x) / screenCurrentScale,
         y: (y - coordinatesOrigin.y) / screenCurrentScale

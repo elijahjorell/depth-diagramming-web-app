@@ -1,18 +1,18 @@
 var cursorDetectedItemID;
-var cursorCoordinatesTranslated;
+var cursorCoordinatesReal;
 var cursorStyle = 'default';
 
-function cursorUpdateCoordinatesTranslated() {
-    cursorCoordinatesTranslated = coordinatesConvertRawToTranslated(mouseX, mouseY);
+function cursorUpdateCoordinatesReal() {
+    cursorCoordinatesReal = coordinatesConvertRelativeToScreenToReal(mouseX, mouseY);
 }
 
 function cursorUpdateDetectedItems() {
     var detectedItems = [];
     for (i = 0; i < items.length; i++) {
-        if (dist(cursorCoordinatesTranslated.x,
-                 cursorCoordinatesTranslated.y,
-                 items[i].coordinates.raw.x,
-                 items[i].coordinates.raw.y) < items[i].dimensions.raw.r) {
+        if (dist(cursorCoordinatesReal.x,
+                 cursorCoordinatesReal.y,
+                 items[i].coordinates.real.x,
+                 items[i].coordinates.real.y) < items[i].dimensions.real.r) {
             detectedItems.push(items[i].id);
         }
     }

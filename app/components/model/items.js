@@ -8,13 +8,9 @@ function itemsCreateNew(x, y, r) {
     items.push({
         id: itemsUniqueCounter,
         coordinates: { 
-            raw: {
+            real: {
                 x: x,
                 y: y
-            },
-            translated: {
-                x: undefined,
-                y: undefined
             },
             relativeToScreen: {
                 x: undefined,
@@ -22,7 +18,7 @@ function itemsCreateNew(x, y, r) {
             },
         },
         dimensions: {
-                raw: {
+                real: {
                     r: r
                 },
                 scaled: {
@@ -49,8 +45,8 @@ function itemsCreateNew(x, y, r) {
 function itemsUpdateGrabbedItemsCoordinates() {
     if (itemsGrabbed.length > 0) {
         for (i = 0; i < commandsGrabItemsOffsetArray.length; i++) {
-            items[commandsGrabItemsOffsetArray[i].id].coordinates.raw.x = cursorCoordinatesTranslated.x - commandsGrabItemsOffsetArray[i].offsetX;
-            items[commandsGrabItemsOffsetArray[i].id].coordinates.raw.y = cursorCoordinatesTranslated.y - commandsGrabItemsOffsetArray[i].offsetY;
+            items[commandsGrabItemsOffsetArray[i].id].coordinates.real.x = cursorCoordinatesReal.x - commandsGrabItemsOffsetArray[i].offsetX;
+            items[commandsGrabItemsOffsetArray[i].id].coordinates.real.y = cursorCoordinatesReal.y - commandsGrabItemsOffsetArray[i].offsetY;
         }
     }
 }

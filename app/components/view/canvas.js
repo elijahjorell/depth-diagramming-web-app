@@ -7,23 +7,23 @@ function setup() {
 function draw() {
     translate(coordinatesOrigin.x, coordinatesOrigin.y);
     background(34, 42, 53);
-    cursorUpdateCoordinatesTranslated();
+    cursorUpdateCoordinatesReal();
     cursorUpdateDetectedItems();
     cursorUpdateStyle();
     itemsUpdateGrabbedItemsCoordinates();
-    displayDrawItems();
-    displayDrawAreaSelector();
+    canvasDrawItems();
+    canvasDrawAreaSelector();
 }
 
-function displayDrawItems() {
+function canvasDrawItems() {
     for (i = 0; i < items.length; i++) {
         
         // ring
         stroke(180, 199, 231);
         fill(255, 0);
-        ellipse(items[i].coordinates.raw.x,
-                items[i].coordinates.raw.y,
-                items[i].dimensions.raw.r * 2);
+        ellipse(items[i].coordinates.real.x,
+                items[i].coordinates.real.y,
+                items[i].dimensions.real.r * 2);
         
         
         // inner circle
@@ -35,9 +35,9 @@ function displayDrawItems() {
             fill(255);
         }
 
-        ellipse(items[i].coordinates.raw.x,
-                items[i].coordinates.raw.y,
-                items[i].dimensions.raw.r * 2 - 20);
+        ellipse(items[i].coordinates.real.x,
+                items[i].coordinates.real.y,
+                items[i].dimensions.real.r * 2 - 20);
         
 
 
@@ -45,42 +45,42 @@ function displayDrawItems() {
     }
 }
 
-function displayDrawAreaSelector() {
+function canvasDrawAreaSelector() {
     if (commandsAreaSelectReferenceCoordinate !== undefined) {
         var areaSelectorCoordinate;
         var areaSelectorDimensions;
-        if (cursorCoordinatesTranslated.y < commandsAreaSelectReferenceCoordinate.y) {
-            if (cursorCoordinatesTranslated.x < commandsAreaSelectReferenceCoordinate.x) {
+        if (cursorCoordinatesReal.y < commandsAreaSelectReferenceCoordinate.y) {
+            if (cursorCoordinatesReal.x < commandsAreaSelectReferenceCoordinate.x) {
             // TOP LEFT QUADRANT
                 areaSelectorCoordinate = {
-                    x: cursorCoordinatesTranslated.x,
-                    y: cursorCoordinatesTranslated.y
+                    x: cursorCoordinatesReal.x,
+                    y: cursorCoordinatesReal.y
                 }
                 areaSelectorDimensions = {
-                    w: commandsAreaSelectReferenceCoordinate.x - cursorCoordinatesTranslated.x,
-                    h: commandsAreaSelectReferenceCoordinate.y - cursorCoordinatesTranslated.y
+                    w: commandsAreaSelectReferenceCoordinate.x - cursorCoordinatesReal.x,
+                    h: commandsAreaSelectReferenceCoordinate.y - cursorCoordinatesReal.y
                 }
             } else {
             // TOP RIGHT QUADRANT
                 areaSelectorCoordinate = {
                     x: commandsAreaSelectReferenceCoordinate.x,
-                    y: cursorCoordinatesTranslated.y
+                    y: cursorCoordinatesReal.y
                 }
                 areaSelectorDimensions = {
-                    w: cursorCoordinatesTranslated.x - commandsAreaSelectReferenceCoordinate.x,
-                    h: commandsAreaSelectReferenceCoordinate.y - cursorCoordinatesTranslated.y
+                    w: cursorCoordinatesReal.x - commandsAreaSelectReferenceCoordinate.x,
+                    h: commandsAreaSelectReferenceCoordinate.y - cursorCoordinatesReal.y
                 }
             }
         } else {
-            if (cursorCoordinatesTranslated.x < commandsAreaSelectReferenceCoordinate.x) {
+            if (cursorCoordinatesReal.x < commandsAreaSelectReferenceCoordinate.x) {
             // BOTTOM LEFT QUADRANT
                 areaSelectorCoordinate = {
-                    x: cursorCoordinatesTranslated.x,
+                    x: cursorCoordinatesReal.x,
                     y: commandsAreaSelectReferenceCoordinate.y
                 }
                 areaSelectorDimensions = {
-                    w: commandsAreaSelectReferenceCoordinate.x - cursorCoordinatesTranslated.x,
-                    h: cursorCoordinatesTranslated.y - commandsAreaSelectReferenceCoordinate.y
+                    w: commandsAreaSelectReferenceCoordinate.x - cursorCoordinatesReal.x,
+                    h: cursorCoordinatesReal.y - commandsAreaSelectReferenceCoordinate.y
                 }
             } else {
             // BOTTOM RIGHT QUADRANT
@@ -89,8 +89,8 @@ function displayDrawAreaSelector() {
                     y: commandsAreaSelectReferenceCoordinate.y
                 }
                 areaSelectorDimensions = {
-                    w: cursorCoordinatesTranslated.x - commandsAreaSelectReferenceCoordinate.x,
-                    h: cursorCoordinatesTranslated.y - commandsAreaSelectReferenceCoordinate.y
+                    w: cursorCoordinatesReal.x - commandsAreaSelectReferenceCoordinate.x,
+                    h: cursorCoordinatesReal.y - commandsAreaSelectReferenceCoordinate.y
                 }
             }
         }
