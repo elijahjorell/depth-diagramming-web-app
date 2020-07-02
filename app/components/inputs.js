@@ -10,30 +10,34 @@ function mousePressed() {
 
     // nothing selected
         // click on an item -> selected
-        // click on canvas -> nothing
+        // click on canvas -> area select
 
     // might have to move these to released
-    if (itemsGrabbed.length > 0) {
-        if (cursorDetectedItemID !== undefined) {
-
-        } else {
+    if (mouseButton === LEFT) {
+        if (itemsGrabbed.length > 0) {
             commandsLetGoOfGrabbedItems();
-        }
-    } else if (itemsSelected.length > 0) {
-        if (cursorDetectedItemID === undefined) {
-            commandsDeselectItems();
-        } else if (itemsSelected.includes(cursorDetectedItemID)) {
-            commandsGrabItems(cursorDetectedItemID);
+        } else if (itemsSelected.length > 0) {
+            if (cursorDetectedItemID === undefined) {
+                commandsDeselectItems();
+            } else if (itemsSelected.includes(cursorDetectedItemID)) {
+                commandsGrabItems(cursorDetectedItemID);
+            } else {
+                commandsDeselectItems();
+                commandsSelectItems(cursorDetectedItemID);
+            }
         } else {
-            commandsDeselectItems();
-            commandsSelectItems(cursorDetectedItemID);
+            if (cursorDetectedItemID !== undefined) {
+                commandsSelectItems(cursorDetectedItemID);
+            } else {
+                commandsBeginAreaSelectItems();
+            }
         }
-    } else {
-        if (cursorDetectedItemID !== undefined) {
-            commandsSelectItems(cursorDetectedItemID);
-        } else {
-            return;
-        }
+    }
+}
+
+function mouseReleased() {
+    if (mouseButton === LEFT) {
+        commandsEndAreaSelectItems();
     }
 }
 
@@ -44,6 +48,6 @@ function keyPressed() {
                        50);
     }
     if (keyCode === 32) {
-        console.log(commandLog);
+
     }
 }

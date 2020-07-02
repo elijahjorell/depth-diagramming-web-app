@@ -4,10 +4,6 @@ var cursorStyle = 'default';
 
 function cursorUpdateCoordinatesTranslated() {
     cursorCoordinatesTranslated = coordinatesConvertRawToTranslated(mouseX, mouseY);
-    return {
-        x: cursorCoordinatesTranslated.x,
-        y: cursorCoordinatesTranslated.y
-    };
 }
 
 function cursorUpdateDetectedItems() {
