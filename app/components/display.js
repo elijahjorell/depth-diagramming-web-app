@@ -47,30 +47,55 @@ function displayDrawItems() {
 
 function displayDrawAreaSelector() {
     if (commandsAreaSelectReferenceCoordinate !== undefined) {
-        fill(255);
-        // rect(0, 0, 100, 100)
-
-        areaSelectorTopLeftCorner
-        areaSelectorTopRightCorner
-        areaSelectorBottomLeftCorner
-        areaSelectorBottomRightCorner
-        
-        if (cursorCoordinatesTranslated.y <= commandsAreaSelectReferenceCoordinate.y) {
+        var areaSelectorCoordinate;
+        var areaSelectorDimensions;
+        if (cursorCoordinatesTranslated.y < commandsAreaSelectReferenceCoordinate.y) {
+            if (cursorCoordinatesTranslated.x < commandsAreaSelectReferenceCoordinate.x) {
             // TOP LEFT QUADRANT
-            
+                areaSelectorCoordinate = {
+                    x: cursorCoordinatesTranslated.x,
+                    y: cursorCoordinatesTranslated.y
+                }
+                areaSelectorDimensions = {
+                    w: commandsAreaSelectReferenceCoordinate.x - cursorCoordinatesTranslated.x,
+                    h: commandsAreaSelectReferenceCoordinate.y - cursorCoordinatesTranslated.y
+                }
+            } else {
             // TOP RIGHT QUADRANT
-
+                areaSelectorCoordinate = {
+                    x: commandsAreaSelectReferenceCoordinate.x,
+                    y: cursorCoordinatesTranslated.y
+                }
+                areaSelectorDimensions = {
+                    w: cursorCoordinatesTranslated.x - commandsAreaSelectReferenceCoordinate.x,
+                    h: commandsAreaSelectReferenceCoordinate.y - cursorCoordinatesTranslated.y
+                }
+            }
         } else {
+            if (cursorCoordinatesTranslated.x < commandsAreaSelectReferenceCoordinate.x) {
             // BOTTOM LEFT QUADRANT
-
+                areaSelectorCoordinate = {
+                    x: cursorCoordinatesTranslated.x,
+                    y: commandsAreaSelectReferenceCoordinate.y
+                }
+                areaSelectorDimensions = {
+                    w: commandsAreaSelectReferenceCoordinate.x - cursorCoordinatesTranslated.x,
+                    h: cursorCoordinatesTranslated.y - commandsAreaSelectReferenceCoordinate.y
+                }
+            } else {
             // BOTTOM RIGHT QUADRANT
+                areaSelectorCoordinate = {
+                    x: commandsAreaSelectReferenceCoordinate.x,
+                    y: commandsAreaSelectReferenceCoordinate.y
+                }
+                areaSelectorDimensions = {
+                    w: cursorCoordinatesTranslated.x - commandsAreaSelectReferenceCoordinate.x,
+                    h: cursorCoordinatesTranslated.y - commandsAreaSelectReferenceCoordinate.y
+                }
+            }
         }
-        
-
-        // rect()s
-        console.log(commandsAreaSelectReferenceCoordinate.x,
-                    commandsAreaSelectReferenceCoordinate.y,
-                    cursorCoordinatesTranslated.x,
-                    cursorCoordinatesTranslated.y)
+    stroke(255);
+    fill(255, 120);
+    rect(areaSelectorCoordinate.x, areaSelectorCoordinate.y, areaSelectorDimensions.w, areaSelectorDimensions.h);
     }
 }

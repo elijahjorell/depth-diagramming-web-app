@@ -19,6 +19,7 @@ function mousePressed() {
         } else if (itemsSelected.length > 0) {
             if (cursorDetectedItemID === undefined) {
                 commandsDeselectItems();
+                commandsBeginAreaSelectItems();
             } else if (itemsSelected.includes(cursorDetectedItemID)) {
                 commandsGrabItems(cursorDetectedItemID);
             } else {
@@ -37,7 +38,9 @@ function mousePressed() {
 
 function mouseReleased() {
     if (mouseButton === LEFT) {
-        commandsEndAreaSelectItems();
+        if (commandsAreaSelectReferenceCoordinate !== undefined) {
+            commandsEndAreaSelectItems();
+        }
     }
 }
 
