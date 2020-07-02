@@ -28,18 +28,18 @@ function cursorUpdateDetectedItems() {
 }
 
 function cursorUpdateStyle() {  
-    // var cursorProposedStyle;
+    var cursorProposedStyle;
     
-    // // styling logic
-    // if (cursorDetectedItemID === undefined) {
-    //     cursorProposedStyle = 'default';
-    // } else {
-    //     cursorProposedStyle = 'default';
-    // }
+    // styling logic
+    if (cursorDetectedItemID === undefined) {
+        cursorProposedStyle = 'default';
+    } else {
+        cursorProposedStyle = 'move';
+    }
 
-    // // change cursor only when a new style is proposed
-    // if (cursorProposedStyle !== cursorStyle) {
-    //     cursorStyle = cursorProposedStyle;
-    //     document.getElementById('app').style.cursor = cursorStyle;
-    // }
+    // change cursor only when a new style is proposed
+    if (cursorProposedStyle !== cursorStyle) {
+        cursorStyle = cursorProposedStyle;
+        document.getElementById('app').style.cursor = cursorStyle;
+    }
 }

@@ -10,7 +10,7 @@ function draw() {
     cursorUpdateCoordinatesReal();
     cursorUpdateDetectedItems();
     cursorUpdateStyle();
-    screenPanOn();
+    panOn();
     commandsSelectAreaOn();
     commandsGrabOn();
     canvasDrawItems();
@@ -21,7 +21,11 @@ function draw() {
 function canvasDrawItems() {
     for (i = 0; i < items.length; i++) {
         // ring
-        stroke(180, 199, 231);
+        if (cursorDetectedItemID === items[i].id) {
+            stroke(255, 230, 153);
+        } else {
+            stroke(180, 199, 231);
+        }
         fill(255, 0);
         ellipse(items[i].coordinates.real.x,
                 items[i].coordinates.real.y,
@@ -29,10 +33,9 @@ function canvasDrawItems() {
         
         // circle
         noStroke();
-        if (commandsSelectAreaDetectedItems.includes(items[i].id)) {
-            fill('pink');
-        } else if (itemsSelected.includes(items[i].id)) {
-            fill('red');
+        if (commandsSelectAreaDetectedItems.includes(items[i].id) || 
+            itemsSelected.includes(items[i].id)) {
+            fill(255, 230, 153);
         } else {
             fill(255);
         }

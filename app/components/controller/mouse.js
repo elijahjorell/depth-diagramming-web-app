@@ -13,6 +13,7 @@ function mousePressed() {
             } else {
                 commandsSelectEnd();
                 commandsSelectItems(cursorDetectedItemID);
+                commandsGrabBegin(itemsSelected);
             }
         // while nothing is grabbed or selected
         } else { 
@@ -22,10 +23,11 @@ function mousePressed() {
             // click on item
             } else {
                 commandsSelectItems(cursorDetectedItemID);
+                commandsGrabBegin(itemsSelected);
             }
         }
     } else if (mouseButton === CENTER) {
-        screenPanBegin();
+        panBegin();
     }
 }
 
@@ -38,7 +40,7 @@ function mouseReleased() {
             commandsGrabEnd();
         }
     } else if (mouseButton === CENTER) {
-        screenPanEnd();
+        panEnd();
     }
 }
 

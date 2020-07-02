@@ -1,5 +1,3 @@
-// relationships
-
 function commandsFormParentChildRelationships(child, parent) {
 
 }
