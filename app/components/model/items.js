@@ -7,6 +7,7 @@ var itemsGrabbed = [];
 function itemsCreateNew(x, y, r) {
     items.push({
         id: itemsUniqueCounter,
+        name: 'PHYSICS',
         coordinates: { 
             real: {
                 x: x,
@@ -27,15 +28,15 @@ function itemsCreateNew(x, y, r) {
         },
         structure: {
             parent: undefined,
-            child: [],
-            sibling: [],
+            children: [],
+            siblings: [],
             depth: undefined,
             height: undefined
         },
         process: {
-            predecessor: undefined,
-            successor: [],
-            peer: [],
+            predecessors: [],
+            successors: [],
+            peers: [],
         },
         characteristics: [] 
     });
