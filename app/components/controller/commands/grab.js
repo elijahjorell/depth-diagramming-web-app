@@ -9,7 +9,7 @@ function commandsGrabBegin(targetItems) {
     }
 
     for (j = 0; j < itemsGrabbed.length; j++) { // minimise for loops
-        currentItemIndex = itemsGetIndexOfID(itemsGrabbed[j]);
+        currentItemIndex = commandsFilterGetIndexOfID(itemsGrabbed[j]);
         commandsGrabItemsOffsetArray.push({
             id: itemsGrabbed[j],
             offsetX: cursorCoordinateReal.x - items[currentItemIndex].coordinates.real.x,

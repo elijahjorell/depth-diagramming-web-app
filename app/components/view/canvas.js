@@ -7,7 +7,8 @@ function setup() {
 function draw() {
     translate(coordinatesOrigin.x, coordinatesOrigin.y);
     cursorUpdateCoordinatesReal();
-    cursorUpdateDetectedItems();
+    cursorUpdateDetectedItemsID();
+    cursorUpdateDetectedFrontItemID();
     cursorUpdateStyle();
     panOn();
     commandsSelectAreaOn();
@@ -28,7 +29,7 @@ function canvasDrawBackground() {
 function canvasDrawItems() {
     for (i = 0; i < items.length; i++) {
         // ring
-        if (cursorDetectedItemID === items[i].id) {
+        if (cursorDetectedFrontItemID === items[i].id) {
             stroke(255, 230, 153);
         } else {
             stroke(180, 199, 231);

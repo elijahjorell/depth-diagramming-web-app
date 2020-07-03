@@ -2,6 +2,6 @@ function keyPressed() {
     if (keyCode === ENTER) {
         itemsCreateNew(cursorCoordinateReal.x, 
                        cursorCoordinateReal.y, 
-                       50);
+                       COMMANDS_STYLE_BASE_ITEM_R);
     }
 }

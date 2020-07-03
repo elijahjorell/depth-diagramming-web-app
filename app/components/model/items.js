@@ -28,7 +28,10 @@ function itemsCreateNew(x, y, r) {
         },
         structure: {
             parent: undefined,
+            ancenstors: [],
+            progenitor: undefined,
             children: [],
+            descendants: [],
             siblings: [],
             depth: undefined,
             height: undefined
@@ -41,12 +44,4 @@ function itemsCreateNew(x, y, r) {
         characteristics: [] 
     });
     itemsUniqueCounter += 1;
-}
-
-function itemsGetIndexOfID(itemID) {
-    for (i = 0; i < items.length; i++) {
-        if (itemID === items[i].id) {
-            return i;
-        }
-    }
 }

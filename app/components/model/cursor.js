@@ -1,4 +1,5 @@
-var cursorDetectedItemID;
+var cursorDetectedFrontItemID;
+var cursorDetectedItemsID;
 var cursorCoordinateReal;
 var cursorPreviousCoordinateRelativeToScreen;
 var cursorStyle = 'default';
@@ -14,24 +15,29 @@ function cursorUpdatePreviousCoordinate() {
     };
 }
 
-function cursorUpdateDetectedItems() {
-    var detectedItems = [];
+function cursorUpdateDetectedItemsID() {
+    var detectedItemsID = [];
     for (i = 0; i < items.length; i++) {
         if (dist(cursorCoordinateReal.x,
                  cursorCoordinateReal.y,
                  items[i].coordinates.real.x,
                  items[i].coordinates.real.y) < items[i].dimensions.real.r) {
-            detectedItems.push(items[i].id);
+            detectedItemsID.push(items[i].id);
         }
     }
-    cursorDetectedItemID = detectedItems[0]; // pending logic to select item with highest order
+    cursorDetectedItemsID = detectedItemsID;
+}
+
+function cursorUpdateDetectedFrontItemID() {
+    // pending logic to select item with highest order
+    cursorDetectedFrontItemID = commandsFilterGetFrontItemID(cursorDetectedItemsID);
 }
 
 function cursorUpdateStyle() {  
     var cursorProposedStyle;
     
     // styling logic
-    if (cursorDetectedItemID === undefined) {
+    if (cursorDetectedFrontItemID === undefined) {
         cursorProposedStyle = 'default';
     } else {
         cursorProposedStyle = 'move';
