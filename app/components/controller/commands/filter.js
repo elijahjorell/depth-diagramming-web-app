@@ -10,6 +10,18 @@ function commandsFilterGetFrontItemID(itemsID) {
     return itemsID[0];
 }
 
-function commandsFilterGetIndex() {
-
+function commandsFilterExcludeValuesFromArray(values, array) {
+    if (Array.isArray(array)) {
+        if (!Array.isArray(values)) {
+            values = [values];
+        }
+        
+        var currentValueIndex;
+        for (currentValueIndex = 0; currentValueIndex < values.length; currentValueIndex++) {
+            if (array.includes(values[currentValueIndex])) {
+                array.splice(array.indexOf(values[currentValueIndex]))
+            }
+        }
+        return array;
+    }
 }
