@@ -1,92 +1,92 @@
-var commandsSelectAreaOriginCoordinate;
-var commandsSelectAreaTopLeftCoordinate;
-var commandsSelectAreaDimensions;
-var commandsSelectAreaDetectedItems = [];
-var commandsSelectAreaState = false;
+var cSelectAreaOriginCoordinate;
+var cSelectAreaTopLeftCoordinate;
+var cSelectAreaDimensions;
+var cSelectAreaDetectedItems = [];
+var cSelectAreaState = false;
 
 
-function commandsSelectAreaBegin() {
-    commandsSelectAreaState = true;
-    commandsSelectAreaOriginCoordinate = {
-        x: cursorCoordinateReal.x,
-        y: cursorCoordinateReal.y
+function cSelectAreaBegin() {
+    cSelectAreaState = true;
+    cSelectAreaOriginCoordinate = {
+        x: mCursor.coordinate.current.x,
+        y: mCursor.coordinate.current.y
     }
 }
 
-function commandsSelectAreaOn() {
-    if (commandsSelectAreaState) {
-        commandsSelectAreaUpdateBounds();
-        commandsSelectAreaDetect();
+function cSelectAreaOn() {
+    if (cSelectAreaState) {
+        cSelectAreaUpdateBounds();
+        cSelectAreaDetect();
     }
 }
 
-function commandsSelectAreaUpdateBounds() {
-    if (commandsSelectAreaOriginCoordinate !== undefined) {
-        if (cursorCoordinateReal.y < commandsSelectAreaOriginCoordinate.y) {
-            if (cursorCoordinateReal.x < commandsSelectAreaOriginCoordinate.x) {
+function cSelectAreaUpdateBounds() {
+    if (cSelectAreaOriginCoordinate !== undefined) {
+        if (mCursor.coordinate.current.y < cSelectAreaOriginCoordinate.y) {
+            if (mCursor.coordinate.current.x < cSelectAreaOriginCoordinate.x) {
             // TOP LEFT QUADRANT
-                commandsSelectAreaTopLeftCoordinate = {
-                    x: cursorCoordinateReal.x,
-                    y: cursorCoordinateReal.y
+                cSelectAreaTopLeftCoordinate = {
+                    x: mCursor.coordinate.current.x,
+                    y: mCursor.coordinate.current.y
                 }
-                commandsSelectAreaDimensions = {
-                    w: commandsSelectAreaOriginCoordinate.x - cursorCoordinateReal.x,
-                    h: commandsSelectAreaOriginCoordinate.y - cursorCoordinateReal.y
+                cSelectAreaDimensions = {
+                    w: cSelectAreaOriginCoordinate.x - mCursor.coordinate.current.x,
+                    h: cSelectAreaOriginCoordinate.y - mCursor.coordinate.current.y
                 }
             } else {
             // TOP RIGHT QUADRANT
-                commandsSelectAreaTopLeftCoordinate = {
-                    x: commandsSelectAreaOriginCoordinate.x,
-                    y: cursorCoordinateReal.y
+                cSelectAreaTopLeftCoordinate = {
+                    x: cSelectAreaOriginCoordinate.x,
+                    y: mCursor.coordinate.current.y
                 }
-                commandsSelectAreaDimensions = {
-                    w: cursorCoordinateReal.x - commandsSelectAreaOriginCoordinate.x,
-                    h: commandsSelectAreaOriginCoordinate.y - cursorCoordinateReal.y
+                cSelectAreaDimensions = {
+                    w: mCursor.coordinate.current.x - cSelectAreaOriginCoordinate.x,
+                    h: cSelectAreaOriginCoordinate.y - mCursor.coordinate.current.y
                 }
             }
         } else {
-            if (cursorCoordinateReal.x < commandsSelectAreaOriginCoordinate.x) {
+            if (mCursor.coordinate.current.x < cSelectAreaOriginCoordinate.x) {
             // BOTTOM LEFT QUADRANT
-                commandsSelectAreaTopLeftCoordinate = {
-                    x: cursorCoordinateReal.x,
-                    y: commandsSelectAreaOriginCoordinate.y
+                cSelectAreaTopLeftCoordinate = {
+                    x: mCursor.coordinate.current.x,
+                    y: cSelectAreaOriginCoordinate.y
                 }
-                commandsSelectAreaDimensions = {
-                    w: commandsSelectAreaOriginCoordinate.x - cursorCoordinateReal.x,
-                    h: cursorCoordinateReal.y - commandsSelectAreaOriginCoordinate.y
+                cSelectAreaDimensions = {
+                    w: cSelectAreaOriginCoordinate.x - mCursor.coordinate.current.x,
+                    h: mCursor.coordinate.current.y - cSelectAreaOriginCoordinate.y
                 }
             } else {
             // BOTTOM RIGHT QUADRANT
-                commandsSelectAreaTopLeftCoordinate = {
-                    x: commandsSelectAreaOriginCoordinate.x,
-                    y: commandsSelectAreaOriginCoordinate.y
+                cSelectAreaTopLeftCoordinate = {
+                    x: cSelectAreaOriginCoordinate.x,
+                    y: cSelectAreaOriginCoordinate.y
                 }
-                commandsSelectAreaDimensions = {
-                    w: cursorCoordinateReal.x - commandsSelectAreaOriginCoordinate.x,
-                    h: cursorCoordinateReal.y - commandsSelectAreaOriginCoordinate.y
+                cSelectAreaDimensions = {
+                    w: mCursor.coordinate.current.x - cSelectAreaOriginCoordinate.x,
+                    h: mCursor.coordinate.current.y - cSelectAreaOriginCoordinate.y
                 }
             }
         }
     }
 }
 
-function commandsSelectAreaDetect() {
+function cSelectAreaDetect() {
     var detectedItems = []
-    for (i = 0; i < items.length; i++) {
-        if (items[i].coordinates.real.x > commandsSelectAreaTopLeftCoordinate.x &&
-            items[i].coordinates.real.x < commandsSelectAreaTopLeftCoordinate.x + commandsSelectAreaDimensions.w &&
-            items[i].coordinates.real.y > commandsSelectAreaTopLeftCoordinate.y &&
-            items[i].coordinates.real.y < commandsSelectAreaTopLeftCoordinate.y + commandsSelectAreaDimensions.h) {
-                detectedItems.push(items[i].id);  
+    for (i = 0; i < mItems.IDs.length; i++) {
+        if (mItems.IDs[i].coordinate.x > cSelectAreaTopLeftCoordinate.x &&
+            mItems.IDs[i].coordinate.x < cSelectAreaTopLeftCoordinate.x + cSelectAreaDimensions.w &&
+            mItems.IDs[i].coordinate.y > cSelectAreaTopLeftCoordinate.y &&
+            mItems.IDs[i].coordinate.y < cSelectAreaTopLeftCoordinate.y + cSelectAreaDimensions.h) {
+                detectedItems.push(mItems.IDs[i].id);  
         }
     }
-    commandsSelectAreaDetectedItems = detectedItems;
+    cSelectAreaDetectedItems = detectedItems;
 }
 
-function commandsSelectAreaEnd() {
-    commandsSelectAreaOriginCoordinate = undefined;
-    commandsSelectAreaTopLeftCoordinate = undefined;
-    commandsSelectAreaDimensions = undefined;
-    commandsSelectAreaDetectedItems = [];
-    commandsSelectAreaState = false;
+function cSelectAreaEnd() {
+    cSelectAreaOriginCoordinate = undefined;
+    cSelectAreaTopLeftCoordinate = undefined;
+    cSelectAreaDimensions = undefined;
+    cSelectAreaDetectedItems = [];
+    cSelectAreaState = false;
 }

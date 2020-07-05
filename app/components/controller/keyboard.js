@@ -1,7 +1,11 @@
 function keyPressed() {
     if (keyCode === ENTER) {
-        itemsCreateNew(cursorCoordinateReal.x, 
-                       cursorCoordinateReal.y, 
-                       COMMANDS_STYLE_BASE_ITEM_R);
+        itemsCreateNew(mCursor.coordinate.current.x, 
+                       mCursor.coordinate.current.y, 
+                       BASE_ITEM_RADIUS);
+    }
+
+    if (keyCode === 32) {
+        console.log(mItems.IDs);
     }
 }

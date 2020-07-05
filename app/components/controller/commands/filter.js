@@ -1,16 +1,16 @@
-function commandsFilterGetIndexOfID(itemID) {
-    for (i = 0; i < items.length; i++) {
-        if (itemID === items[i].id) {
+function cFilterGetIndexOfID(itemID) {
+    for (i = 0; i < mItems.IDs.length; i++) {
+        if (itemID === mItems.IDs[i].id) {
             return i;
         }
     }
 }
 
-function commandsFilterGetFrontItemID(itemsID) {
+function cFilterGetFrontItemID(itemsID) {
     return itemsID[0];
 }
 
-function commandsFilterExcludeValuesFromArray(values, array) {
+function cFilterExcludeValuesFromArray(values, array) {
     if (Array.isArray(array)) {
         if (!Array.isArray(values)) {
             values = [values];

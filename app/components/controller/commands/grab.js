@@ -1,35 +1,62 @@
-var commandsGrabItemsOffsetArray = [];
+var cGrab = {
+    IDs: [],
+    offsets: {
+        x: [],
+        y: []
+    },
+    targetDepth: undefined
+};
 
-function commandsGrabBegin(targetItems) {
-    commandLog.push('Grabbed item(s): ' + itemsSelected) 
+function cGrabBegin(targetItems) {
+    cLog.push('Grabbed item(s): ' + cSelectItemsArray) 
     if (Array.isArray(targetItems)) {
-        itemsGrabbed = itemsGrabbed.concat(targetItems);
+        cGrab.IDs = cGrab.IDs.concat(targetItems);
     } else {
-        itemsGrabbed.push(targetItems);
+        cGrab.IDs.push(targetItems);
     }
-
-    for (j = 0; j < itemsGrabbed.length; j++) { // minimise for loops
-        currentItemIndex = commandsFilterGetIndexOfID(itemsGrabbed[j]);
-        commandsGrabItemsOffsetArray.push({
-            id: itemsGrabbed[j],
-            offsetX: cursorCoordinateReal.x - items[currentItemIndex].coordinates.real.x,
-            offsetY: cursorCoordinateReal.y - items[currentItemIndex].coordinates.real.y
-        })
+    for (j = 0; j < cGrab.IDs.length; j++) { // minimise for loops
+        currentItemIndex = cFilterGetIndexOfID(cGrab.IDs[j]);
+        cGrab.offsets.x.push(mCursor.coordinate.current.x - mItems.IDs[currentItemIndex].coordinate.x);
+        cGrab.offsets.y.push(mCursor.coordinate.current.y - mItems.IDs[currentItemIndex].coordinate.y);
     }
 }
 
-function commandsGrabOn() {
-    if (itemsGrabbed.length > 0) {
-        for (i = 0; i < commandsGrabItemsOffsetArray.length; i++) {
-            items[commandsGrabItemsOffsetArray[i].id].coordinates.real.x = cursorCoordinateReal.x - commandsGrabItemsOffsetArray[i].offsetX;
-            items[commandsGrabItemsOffsetArray[i].id].coordinates.real.y = cursorCoordinateReal.y - commandsGrabItemsOffsetArray[i].offsetY;
+function cGrabOn() {
+    if (cGrab.IDs.length > 0) {
+        for (i = 0; i < cGrab.IDs.length; i++) {
+            mItems.IDs[cGrab.IDs[i]].coordinate.x = mCursor.coordinate.current.x - cGrab.offsets.x[i];
+            mItems.IDs[cGrab.IDs[i]].coordinate.y = mCursor.coordinate.current.y - cGrab.offsets.y[i];
         }
+        cGrabUpdateGrabbedItemsDepth();
     }
 }
 
-function commandsGrabEnd() {
-    commandLog.push('Letting go of grabbed item(s): ' + itemsGrabbed)  
-    itemsGrabbed = [];
-    commandsGrabItemsOffsetArray = [];
+function cGrabUpdateGrabbedItemsDepth() {
+    var currentGrabbedItemIndex;
+    var targetParentID = cFilterGetFrontItemID(mCursor.IDs.detectedExcludingGrabbed);
+    var targetDepth;
+
+    if (targetParentID === undefined) {
+        targetDepth = 0;
+    } else {
+        targetDepth = mItems.IDs[cFilterGetIndexOfID(targetParentID)].structure.depth + 1;
+    }
+
+    if (targetParentID !== undefined) {
+        for (currentGrabbedItemIndex = 0; currentGrabbedItemIndex < cGrab.IDs.length; currentGrabbedItemIndex++) {
+            mItems.IDs[cGrab.IDs[currentGrabbedItemIndex]].structure.depth = targetDepth;
+        }    
+    }
+}
+
+
+function cGrabEnd() {
+    cLog.push('Letting go of grabbed item(s): ' + cGrab.IDs)  
+    //cGrabUpdateGrabbedItemsDepth
+    cGrab.IDs = [];
+    cGrab.offsets = {
+        x: [],
+        y: []
+    }
 }
 

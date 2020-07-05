@@ -1,16 +1,19 @@
-function commandsSelectItems(targetItems) {
+var cSelectItemsArray = [];
+
+function cSelectItems(targetItems) {
     if (Array.isArray(targetItems)) {
-        itemsSelected = itemsSelected.concat(targetItems);
-        commandLog.push('Selected items: ' + itemsSelected);
+        cSelectItemsArray = cSelectItemsArray.concat(targetItems);
     } else {
-        itemsSelected.push(targetItems);
-        commandLog.push('Selected item: ' + itemsSelected);
+        cSelectItemsArray.push(targetItems);
     }
     
+    if (cSelectItemsArray.length > 0) {
+        cLog.push('Selected mItems.IDs: ' + cSelectItemsArray);
+    }    
 }
 
-function commandsSelectEnd() {
-    commandLog.push('Deselected item(s): ' + itemsSelected);
-    itemsSelected = [];
+function cSelectEnd() {
+    cLog.push('Deselected item(s): ' + cSelectItemsArray);
+    cSelectItemsArray = [];
 }
 

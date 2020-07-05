@@ -2,18 +2,18 @@ const PAN_SPEED = 0.7;
 
 var panState = false;
 
-function panBegin() {
+function cPanBegin() {
     panState = true;
 }
 
-function panOn() {
+function cPanOn() {
     if (panState) {
         coordinatesOrigin.x -= PAN_SPEED * (cursorPreviousCoordinateRelativeToScreen.x - mouseX);
         coordinatesOrigin.y -= PAN_SPEED * (cursorPreviousCoordinateRelativeToScreen.y - mouseY);
     }
 }
 
-function panEnd() {
+function cPanEnd() {
     screenPanPreviousCursorCoordinate = undefined;
     panState = false;
 }

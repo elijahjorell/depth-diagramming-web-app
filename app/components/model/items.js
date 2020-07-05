@@ -1,30 +1,18 @@
-var items = [];
-var itemsUniqueCounter = 0;
-var itemsHighlighted = [];
-var itemsSelected = [];
-var itemsGrabbed = [];
+var mItems = {
+    IDs: [],
+    uniqueCounter: 0
+}
 
 function itemsCreateNew(x, y, r) {
-    items.push({
-        id: itemsUniqueCounter,
+    mItems.IDs.push({
+        id: mItems.uniqueCounter,
         name: 'PHYSICS',
-        coordinates: { 
-            real: {
-                x: x,
-                y: y
-            },
-            relativeToScreen: {
-                x: undefined,
-                y: undefined
-            },
+        coordinate: { 
+            x: x,
+            y: y
         },
         dimensions: {
-                real: {
-                    r: r
-                },
-                relativeToScreen: {
-                    r: undefined
-                }
+            r: r
         },
         structure: {
             parent: undefined,
@@ -33,7 +21,7 @@ function itemsCreateNew(x, y, r) {
             children: [],
             descendants: [],
             siblings: [],
-            depth: undefined,
+            depth: 0,
             height: undefined
         },
         process: {
@@ -43,5 +31,5 @@ function itemsCreateNew(x, y, r) {
         },
         characteristics: [] 
     });
-    itemsUniqueCounter += 1;
+    mItems.uniqueCounter += 1;
 }
