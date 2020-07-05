@@ -1,6 +1,3 @@
-var cursorPreviousCoordinateRelativeToScreen;
-var cursorStyle = 'default';
-
 var mCursor = {
     IDs: {
         detected: undefined,
@@ -12,7 +9,7 @@ var mCursor = {
             x: undefined,
             y: undefined
         },
-        previous: {
+        previousRelativeToScreen: {
             x: undefined,
             y: undefined
         }
@@ -20,51 +17,45 @@ var mCursor = {
     style: 'default'
 };
 
-function cursorUpdateCoordinatesReal() {
-    mCursor.coordinate.current = coordinatesConvertRelativeToScreenToReal(mouseX, mouseY);
+function mCursorUpdateCoordinate() {
+    var updatedCursorCoordinate = coordinatesConvertRelativeToScreenToReal(mouseX, mouseY);
+    mCursor.coordinate.current.x = updatedCursorCoordinate.x;
+    mCursor.coordinate.current.y = updatedCursorCoordinate.y
 }
 
-function cursorUpdatePreviousCoordinate() {
-    cursorPreviousCoordinateRelativeToScreen = {
-        x: mouseX,
-        y: mouseY
-    };
+function mCursorUpdateCoordinatePreviousRelativeToScreen() {
+    mCursor.coordinate.previousRelativeToScreen.x = mouseX;
+    mCursor.coordinate.previousRelativeToScreen.y = mouseY;
 }
 
-function cursorUpdateDetectedItemsID() {
-    var detectedItemsID = [];
+function mCursorUpdateIDs() {
+    var updatedIDsDetected = [];
     for (i = 0; i < mItems.IDs.length; i++) {
         if (dist(mCursor.coordinate.current.x,
                  mCursor.coordinate.current.y,
                  mItems.IDs[i].coordinate.x,
                  mItems.IDs[i].coordinate.y) < mItems.IDs[i].dimensions.r) {
-            detectedItemsID.push(mItems.IDs[i].id);
+            updatedIDsDetected.push(mItems.IDs[i].id);
         }
     }
-    mCursor.IDs.detected = detectedItemsID;
-}
-
-function cursorUpdateDetectedItemsExcludingGrabbedID() {
+    mCursor.IDs.detected = updatedIDsDetected;
     mCursor.IDs.detectedExcludingGrabbed = cFilterExcludeValuesFromArray(cGrab.IDs, mCursor.IDs.detected);
-}
-
-function cursorUpdateDetectedFrontItemID() {
     mCursor.IDs.front = cFilterGetFrontItemID(mCursor.IDs.detected);
 }
 
-function cursorUpdateStyle() {  
-    var cursorProposedStyle;
+function mCursorUpdateStyle() {  
+    var updatedStyle;
     
     // styling logic
     if (mCursor.IDs.front === undefined) {
-        cursorProposedStyle = 'default';
+        updatedStyle = 'default';
     } else {
-        cursorProposedStyle = 'move';
+        updatedStyle = 'move';
     }
 
     // change cursor only when a new style is proposed
-    if (cursorProposedStyle !== cursorStyle) {
-        cursorStyle = cursorProposedStyle;
-        document.getElementById('app').style.cursor = cursorStyle;
+    if (updatedStyle !== mCursor.style) {
+        mCursor.style = updatedStyle;
+        document.getElementById('app').style.cursor = mCursor.style;
     }
 }

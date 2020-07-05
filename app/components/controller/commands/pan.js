@@ -8,8 +8,8 @@ function cPanBegin() {
 
 function cPanOn() {
     if (panState) {
-        coordinatesOrigin.x -= PAN_SPEED * (cursorPreviousCoordinateRelativeToScreen.x - mouseX);
-        coordinatesOrigin.y -= PAN_SPEED * (cursorPreviousCoordinateRelativeToScreen.y - mouseY);
+        coordinatesOrigin.x -= PAN_SPEED * (mCursor.coordinate.previousRelativeToScreen.x - mouseX);
+        coordinatesOrigin.y -= PAN_SPEED * (mCursor.coordinate.previousRelativeToScreen.y - mouseY);
     }
 }
 

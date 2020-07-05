@@ -6,18 +6,16 @@ function setup() {
 
 function draw() {
     translate(coordinatesOrigin.x, coordinatesOrigin.y);
-    cursorUpdateCoordinatesReal();
-    cursorUpdateDetectedItemsID();
-    cursorUpdateDetectedItemsExcludingGrabbedID()
-    cursorUpdateDetectedFrontItemID();
-    cursorUpdateStyle();
+    mCursorUpdateCoordinate();
+    mCursorUpdateIDs();
+    mCursorUpdateStyle();
     cPanOn();
     cSelectAreaOn();
     cGrabOn();
     canvasDrawBackground();
     canvasDrawItems();
     canvasDrawSelectArea();
-    cursorUpdatePreviousCoordinate();
+    mCursorUpdateCoordinatePreviousRelativeToScreen();
 }
 
 function canvasDrawBackground() {
