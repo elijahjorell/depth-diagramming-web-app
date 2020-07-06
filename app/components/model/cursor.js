@@ -4,7 +4,7 @@ var mCursor = {
         detectedExcludingGrabbed: [],
         front: undefined
     },
-    coordinate: {
+    coordinates: {
         current: {
             x: undefined,
             y: undefined
@@ -19,21 +19,21 @@ var mCursor = {
 
 function mCursorUpdateCoordinateCurrent() {
     var updatedCursorCoordinate = mScreenConvertCoordinateRelativeToReal(mouseX, mouseY);
-    mCursor.coordinate.current.x = updatedCursorCoordinate.x;
-    mCursor.coordinate.current.y = updatedCursorCoordinate.y;
+    mCursor.coordinates.current.x = updatedCursorCoordinate.x;
+    mCursor.coordinates.current.y = updatedCursorCoordinate.y;
 }
 
 function mCursorUpdateCoordinatePreviousRelativeToScreen() {
-    mCursor.coordinate.previousRelativeToScreen.x = mouseX;
-    mCursor.coordinate.previousRelativeToScreen.y = mouseY;
+    mCursor.coordinates.previousRelativeToScreen.x = mouseX;
+    mCursor.coordinates.previousRelativeToScreen.y = mouseY;
 }
 
 function mCursorUpdateIDs() {
     var i;
     var updatedIDsDetected = [];
     for (i = 0; i < mItems.database.length; i++) {
-        if (dist(mCursor.coordinate.current.x,
-                 mCursor.coordinate.current.y,
+        if (dist(mCursor.coordinates.current.x,
+                 mCursor.coordinates.current.y,
                  mItems.database[i].coordinate.x,
                  mItems.database[i].coordinate.y) < mItems.database[i].dimensions.r) {
             updatedIDsDetected.push(mItems.database[i].id);

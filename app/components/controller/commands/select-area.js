@@ -19,8 +19,8 @@ var cSelectArea = {
 
 function cSelectAreaBegin() {
     cSelectArea.state = true;
-    cSelectArea.coordinates.origin.x = mCursor.coordinate.current.x;
-    cSelectArea.coordinates.origin.y = mCursor.coordinate.current.y;
+    cSelectArea.coordinates.origin.x = mCursor.coordinates.current.x;
+    cSelectArea.coordinates.origin.y = mCursor.coordinates.current.y;
 }
 
 function cSelectAreaOn() {
@@ -31,33 +31,33 @@ function cSelectAreaOn() {
 }
 
 function cSelectAreaUpdateBounds() {
-    if (mCursor.coordinate.current.y < cSelectArea.coordinates.origin.y) {
-        if (mCursor.coordinate.current.x < cSelectArea.coordinates.origin.x) {
+    if (mCursor.coordinates.current.y < cSelectArea.coordinates.origin.y) {
+        if (mCursor.coordinates.current.x < cSelectArea.coordinates.origin.x) {
         // TOP LEFT QUADRANT
-            cSelectArea.coordinates.topLeftCorner.x = mCursor.coordinate.current.x;
-            cSelectArea.coordinates.topLeftCorner.y = mCursor.coordinate.current.y;
-            cSelectArea.dimensions.w = cSelectArea.coordinates.origin.x - mCursor.coordinate.current.x;
-            cSelectArea.dimensions.h = cSelectArea.coordinates.origin.y - mCursor.coordinate.current.y;
+            cSelectArea.coordinates.topLeftCorner.x = mCursor.coordinates.current.x;
+            cSelectArea.coordinates.topLeftCorner.y = mCursor.coordinates.current.y;
+            cSelectArea.dimensions.w = cSelectArea.coordinates.origin.x - mCursor.coordinates.current.x;
+            cSelectArea.dimensions.h = cSelectArea.coordinates.origin.y - mCursor.coordinates.current.y;
         } else {
         // TOP RIGHT QUADRANT
             cSelectArea.coordinates.topLeftCorner.x = cSelectArea.coordinates.origin.x;
-            cSelectArea.coordinates.topLeftCorner.y = mCursor.coordinate.current.y;
-            cSelectArea.dimensions.w = mCursor.coordinate.current.x - cSelectArea.coordinates.origin.x;
-            cSelectArea.dimensions.h = cSelectArea.coordinates.origin.y - mCursor.coordinate.current.y;
+            cSelectArea.coordinates.topLeftCorner.y = mCursor.coordinates.current.y;
+            cSelectArea.dimensions.w = mCursor.coordinates.current.x - cSelectArea.coordinates.origin.x;
+            cSelectArea.dimensions.h = cSelectArea.coordinates.origin.y - mCursor.coordinates.current.y;
         }
     } else {
-        if (mCursor.coordinate.current.x < cSelectArea.coordinates.origin.x) {
+        if (mCursor.coordinates.current.x < cSelectArea.coordinates.origin.x) {
         // BOTTOM LEFT QUADRANT
-            cSelectArea.coordinates.topLeftCorner.x = mCursor.coordinate.current.x;
+            cSelectArea.coordinates.topLeftCorner.x = mCursor.coordinates.current.x;
             cSelectArea.coordinates.topLeftCorner.y = cSelectArea.coordinates.origin.y;
-            cSelectArea.dimensions.w = cSelectArea.coordinates.origin.x - mCursor.coordinate.current.x;
-            cSelectArea.dimensions.h = mCursor.coordinate.current.y - cSelectArea.coordinates.origin.y;
+            cSelectArea.dimensions.w = cSelectArea.coordinates.origin.x - mCursor.coordinates.current.x;
+            cSelectArea.dimensions.h = mCursor.coordinates.current.y - cSelectArea.coordinates.origin.y;
         } else {
         // BOTTOM RIGHT QUADRANT
             cSelectArea.coordinates.topLeftCorner.x = cSelectArea.coordinates.origin.x;
             cSelectArea.coordinates.topLeftCorner.y = cSelectArea.coordinates.origin.y;
-            cSelectArea.dimensions.w = mCursor.coordinate.current.x - cSelectArea.coordinates.origin.x;
-            cSelectArea.dimensions.h = mCursor.coordinate.current.y - cSelectArea.coordinates.origin.y;
+            cSelectArea.dimensions.w = mCursor.coordinates.current.x - cSelectArea.coordinates.origin.x;
+            cSelectArea.dimensions.h = mCursor.coordinates.current.y - cSelectArea.coordinates.origin.y;
         }
     }
 }

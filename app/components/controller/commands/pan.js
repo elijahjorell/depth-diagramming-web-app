@@ -9,8 +9,8 @@ function cPanBegin() {
 
 function cPanOn() {
     if (cPan.state) {
-        mOrigin.coordinate.x -= cPan.speed * (mCursor.coordinate.previousRelativeToScreen.x - mouseX);
-        mOrigin.coordinate.y -= cPan.speed * (mCursor.coordinate.previousRelativeToScreen.y - mouseY);
+        mOrigin.coordinate.x -= cPan.speed * (mCursor.coordinates.previousRelativeToScreen.x - mouseX);
+        mOrigin.coordinate.y -= cPan.speed * (mCursor.coordinates.previousRelativeToScreen.y - mouseY);
     }
 }
 
