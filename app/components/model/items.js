@@ -30,6 +30,20 @@ class Item {
             successors: [],
             peers: [],
         };
+        this.style = 'default';
         this.characteristics = []; 
     }
+}
+
+function mItemsGetIndexOfID(itemID) {
+    var i;
+    for (i = 0; i < mItems.database.length; i++) {
+        if (itemID === mItems.database[i].id) {
+            return i;
+        }
+    }
+}
+
+function mItemsGetFrontIDFromIDs(itemIDs) {
+    return itemIDs[0];
 }

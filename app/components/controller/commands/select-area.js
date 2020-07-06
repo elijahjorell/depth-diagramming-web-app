@@ -1,5 +1,5 @@
 var cSelectArea = {
-    state: false,
+    active: false,
     IDs: [],
     coordinates: {
         origin: {
@@ -18,13 +18,13 @@ var cSelectArea = {
 }
 
 function cSelectAreaBegin() {
-    cSelectArea.state = true;
+    cSelectArea.active = true;
     cSelectArea.coordinates.origin.x = mCursor.coordinates.current.x;
     cSelectArea.coordinates.origin.y = mCursor.coordinates.current.y;
 }
 
 function cSelectAreaOn() {
-    if (cSelectArea.state) {
+    if (cSelectArea.active) {
         cSelectAreaUpdateBounds();
         cSelectAreaDetect();
     }
@@ -70,7 +70,7 @@ function cSelectAreaDetect() {
             mItems.database[i].coordinate.x < cSelectArea.coordinates.topLeftCorner.x + cSelectArea.dimensions.w &&
             mItems.database[i].coordinate.y > cSelectArea.coordinates.topLeftCorner.y &&
             mItems.database[i].coordinate.y < cSelectArea.coordinates.topLeftCorner.y + cSelectArea.dimensions.h) {
-                detectedItems.push(mItems.database[i].id);  
+                detectedItems.push(mItems.database[i].id);
         }
     }
     cSelectArea.IDs = detectedItems;
@@ -78,7 +78,7 @@ function cSelectAreaDetect() {
 
 function cSelectAreaEnd() {
     cSelectArea = {
-        state: false,
+        active: false,
         IDs: [],
         coordinates: {
             origin: {

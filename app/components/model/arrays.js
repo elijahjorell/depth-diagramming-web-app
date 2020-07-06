@@ -1,17 +1,4 @@
-function cFilterGetIndexOfID(itemID) {
-    var i;
-    for (i = 0; i < mItems.database.length; i++) {
-        if (itemID === mItems.database[i].id) {
-            return i;
-        }
-    }
-}
-
-function cFilterGetFrontItemID(itemsID) {
-    return itemsID[0];
-}
-
-function cFilterExcludeValuesFromArray(values, array) {
+function mArraysExcludeValuesFromArray(values, array) {
     var i;
     var arrayClone = [].concat(array);
     if (Array.isArray(arrayClone)) {

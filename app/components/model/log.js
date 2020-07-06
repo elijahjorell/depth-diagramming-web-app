@@ -1,5 +1,5 @@
 // pending update to store states of commands
-// can even savethe entire state of the item database
+// can even savethe entire active of the item database
 
 var mLogProxied = [];
 var mLog = new Proxy(mLogProxied, {

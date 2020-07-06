@@ -1,8 +1,8 @@
 var mCursor = {
     IDs: {
         detected: [],
-        detectedExcludingGrabbed: [],
-        front: undefined
+        detectedExcludingGrabbed: [], // remove
+        front: undefined // remove
     },
     coordinates: {
         current: {
@@ -40,8 +40,8 @@ function mCursorUpdateIDs() {
         }
     }
     mCursor.IDs.detected = updatedIDsDetected;
-    mCursor.IDs.detectedExcludingGrabbed = cFilterExcludeValuesFromArray(cGrab.IDs, mCursor.IDs.detected);
-    mCursor.IDs.front = cFilterGetFrontItemID(mCursor.IDs.detected);
+    mCursor.IDs.detectedExcludingGrabbed = mArraysExcludeValuesFromArray(cGrab.IDs, mCursor.IDs.detected);
+    mCursor.IDs.front = mItemsGetFrontIDFromIDs(mCursor.IDs.detected);
 }
 
 function mCursorUpdateStyle() {  

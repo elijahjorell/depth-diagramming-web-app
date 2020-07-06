@@ -43,7 +43,7 @@ function canvasDrawItems() {
         noStroke();
         if (cSelectArea.IDs.includes(mItems.database[i].id) || 
             cSelect.IDs.includes(mItems.database[i].id)) {
-            fill(255, 230, 153,);
+            fill(255, 230, 153);
         } else {
             fill(255);
         }
@@ -57,17 +57,11 @@ function canvasDrawItems() {
         text(mItems.database[i].name, 
              mItems.database[i].coordinate.x - textWidth(mItems.database[i].name)/2,
              mItems.database[i].coordinate.y + textAscent()/2);
-
-        // stroke(0);
-        // line(mItems.database[i].coordinate.x - mItems.database[i].dimensions.r,
-        //      mItems.database[i].coordinate.y,
-        //      mItems.database[i].coordinate.x + mItems.database[i].dimensions.r,
-        //      mItems.database[i].coordinate.y)
     }
 }
 
 function canvasDrawSelectArea() {
-    if (cSelectArea.state) {
+    if (cSelectArea.active) {
         stroke(255);
         fill(255, 120);
         rect(cSelectArea.coordinates.topLeftCorner.x, 

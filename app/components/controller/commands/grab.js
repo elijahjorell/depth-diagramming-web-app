@@ -1,5 +1,6 @@
 var cGrab = {
-    state: false,
+    active: false,
+    state: undefined,
     IDs: [],
     coordinates: {
         initial: {
@@ -12,9 +13,15 @@ var cGrab = {
         }
     },
     offsets: {
-        x: [],
-        y: []
-    },
+        original: {
+            x: [],
+            y: []
+        },
+        animated: {
+            x: [],
+            y: []
+        }
+    },  
     targetDepth: undefined
 };
 
@@ -22,7 +29,7 @@ function cGrabBegin(targetItems) {
     var i;
     var currentItemIndex;
     mLog.push('Grabbed IDs: ' + cSelect.IDs) 
-    cGrab.state = true;
+    cGrab.active = true;
     cGrab.coordinates.initial.x = mCursor.coordinates.current.x;
     cGrab.coordinates.initial.y = mCursor.coordinates.current.y;
     if (Array.isArray(targetItems)) {
@@ -31,9 +38,11 @@ function cGrabBegin(targetItems) {
         cGrab.IDs.push(targetItems);
     }
     for (i = 0; i < cGrab.IDs.length; i++) { // minimise for loops
-        currentItemIndex = cFilterGetIndexOfID(cGrab.IDs[i]);
-        cGrab.offsets.x.push(cGrab.coordinates.initial.x - mItems.database[currentItemIndex].coordinate.x);
-        cGrab.offsets.y.push(cGrab.coordinates.initial.y - mItems.database[currentItemIndex].coordinate.y);
+        currentItemIndex = mItemsGetIndexOfID(cGrab.IDs[i]);
+        cGrab.offsets.original.x.push(cGrab.coordinates.initial.x - mItems.database[currentItemIndex].coordinate.x);
+        cGrab.offsets.original.y.push(cGrab.coordinates.initial.y - mItems.database[currentItemIndex].coordinate.y);
+        cGrab.offsets.animated.x.push(cGrab.offsets.original.x[i]);
+        cGrab.offsets.animated.y.push(cGrab.offsets.original.y[i]);
     }
 }
 
@@ -42,13 +51,13 @@ function cGrabOn() {
     var currentIndex;
     cGrab.coordinates.final.x = mCursor.coordinates.current.x;
     cGrab.coordinates.final.y = mCursor.coordinates.current.y;
-    if (cGrab.state) {
+    if (cGrab.active) {
         for (i = 0; i < cGrab.IDs.length; i++) {
-            currentIndex = cFilterGetIndexOfID(cGrab.IDs[i]);
-            mItems.database[currentIndex].coordinate.x = cGrab.coordinates.final.x - cGrab.offsets.x[i];
-            mItems.database[currentIndex].coordinate.y = cGrab.coordinates.final.y - cGrab.offsets.y[i];
+            currentIndex = mItemsGetIndexOfID(cGrab.IDs[i]);
+            mItems.database[currentIndex].coordinate.x = cGrab.coordinates.final.x - cGrab.offsets.animated.x[i];
+            mItems.database[currentIndex].coordinate.y = cGrab.coordinates.final.y - cGrab.offsets.animated.y[i];
         }
-        cStructureSetParentOfIDsTo(cGrab.IDs, cFilterGetFrontItemID(mCursor.IDs.detectedExcludingGrabbed));
+        cStructureSetParentOfIDsTo(cGrab.IDs, mItemsGetFrontIDFromIDs(mCursor.IDs.detectedExcludingGrabbed));
     }
 }
 
@@ -56,7 +65,7 @@ function cGrabEnd() {
     mLog.push('Ending grab for IDs: ' + cGrab.IDs);
     // mLog.push(model states)
     cGrab = {
-        state: false,
+        active: false,
         IDs: [],
         coordinates: {
             initial: {
@@ -69,9 +78,15 @@ function cGrabEnd() {
             }
         },
         offsets: {
-            x: [],
-            y: []
-        },
+            original: {
+                x: [],
+                y: []
+            },
+            animated: {
+                x: [],
+                y: []
+            }
+        },  
         targetDepth: undefined
     };
 }

@@ -33,7 +33,7 @@ function mousePressed() {
 
 function mouseReleased() {
     if (mouseButton === LEFT) {
-        if (cSelectArea.state) {
+        if (cSelectArea.active) {
             cSelectBegin(cSelectArea.IDs);
             cSelectAreaEnd();
         } else {

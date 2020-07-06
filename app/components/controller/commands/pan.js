@@ -1,14 +1,14 @@
 var cPan = {
-    state: false,
+    active: false,
     speed: 0.7
 }
 
 function cPanBegin() {
-    cPan.state = true;
+    cPan.active = true;
 }
 
 function cPanOn() {
-    if (cPan.state) {
+    if (cPan.active) {
         mOrigin.coordinate.x -= cPan.speed * (mCursor.coordinates.previousRelativeToScreen.x - mouseX);
         mOrigin.coordinate.y -= cPan.speed * (mCursor.coordinates.previousRelativeToScreen.y - mouseY);
     }
@@ -16,5 +16,5 @@ function cPanOn() {
 
 function cPanEnd() {
     screenPanPreviousCursorCoordinate = undefined;
-    cPan.state = false;
+    cPan.active = false;
 }
