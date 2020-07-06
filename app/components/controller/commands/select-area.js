@@ -1,71 +1,63 @@
-var cSelectAreaOriginCoordinate;
-var cSelectAreaTopLeftCoordinate;
-var cSelectAreaDimensions;
-var cSelectAreaDetectedItems = [];
-var cSelectAreaState = false;
-
-
-function cSelectAreaBegin() {
-    cSelectAreaState = true;
-    cSelectAreaOriginCoordinate = {
-        x: mCursor.coordinate.current.x,
-        y: mCursor.coordinate.current.y
+var cSelectArea = {
+    state: false,
+    IDs: [],
+    coordinates: {
+        origin: {
+            x: undefined,
+            y: undefined
+        },
+        topLeftCorner: {
+            x: undefined,
+            y: undefined
+        }
+    },
+    dimensions: {
+        w: undefined,
+        h: undefined
     }
 }
 
+function cSelectAreaBegin() {
+    cSelectArea.state = true;
+    cSelectArea.coordinates.origin.x = mCursor.coordinate.current.x;
+    cSelectArea.coordinates.origin.y = mCursor.coordinate.current.y;
+}
+
 function cSelectAreaOn() {
-    if (cSelectAreaState) {
+    if (cSelectArea.state) {
         cSelectAreaUpdateBounds();
         cSelectAreaDetect();
     }
 }
 
 function cSelectAreaUpdateBounds() {
-    if (cSelectAreaOriginCoordinate !== undefined) {
-        if (mCursor.coordinate.current.y < cSelectAreaOriginCoordinate.y) {
-            if (mCursor.coordinate.current.x < cSelectAreaOriginCoordinate.x) {
-            // TOP LEFT QUADRANT
-                cSelectAreaTopLeftCoordinate = {
-                    x: mCursor.coordinate.current.x,
-                    y: mCursor.coordinate.current.y
-                }
-                cSelectAreaDimensions = {
-                    w: cSelectAreaOriginCoordinate.x - mCursor.coordinate.current.x,
-                    h: cSelectAreaOriginCoordinate.y - mCursor.coordinate.current.y
-                }
-            } else {
-            // TOP RIGHT QUADRANT
-                cSelectAreaTopLeftCoordinate = {
-                    x: cSelectAreaOriginCoordinate.x,
-                    y: mCursor.coordinate.current.y
-                }
-                cSelectAreaDimensions = {
-                    w: mCursor.coordinate.current.x - cSelectAreaOriginCoordinate.x,
-                    h: cSelectAreaOriginCoordinate.y - mCursor.coordinate.current.y
-                }
-            }
+    if (mCursor.coordinate.current.y < cSelectArea.coordinates.origin.y) {
+        if (mCursor.coordinate.current.x < cSelectArea.coordinates.origin.x) {
+        // TOP LEFT QUADRANT
+            cSelectArea.coordinates.topLeftCorner.x = mCursor.coordinate.current.x;
+            cSelectArea.coordinates.topLeftCorner.y = mCursor.coordinate.current.y;
+            cSelectArea.dimensions.w = cSelectArea.coordinates.origin.x - mCursor.coordinate.current.x;
+            cSelectArea.dimensions.h = cSelectArea.coordinates.origin.y - mCursor.coordinate.current.y;
         } else {
-            if (mCursor.coordinate.current.x < cSelectAreaOriginCoordinate.x) {
-            // BOTTOM LEFT QUADRANT
-                cSelectAreaTopLeftCoordinate = {
-                    x: mCursor.coordinate.current.x,
-                    y: cSelectAreaOriginCoordinate.y
-                }
-                cSelectAreaDimensions = {
-                    w: cSelectAreaOriginCoordinate.x - mCursor.coordinate.current.x,
-                    h: mCursor.coordinate.current.y - cSelectAreaOriginCoordinate.y
-                }
-            } else {
-            // BOTTOM RIGHT QUADRANT
-                cSelectAreaTopLeftCoordinate = {
-                    x: cSelectAreaOriginCoordinate.x,
-                    y: cSelectAreaOriginCoordinate.y
-                }
-                cSelectAreaDimensions = {
-                    w: mCursor.coordinate.current.x - cSelectAreaOriginCoordinate.x,
-                    h: mCursor.coordinate.current.y - cSelectAreaOriginCoordinate.y
-                }
-            }
+        // TOP RIGHT QUADRANT
+            cSelectArea.coordinates.topLeftCorner.x = cSelectArea.coordinates.origin.x;
+            cSelectArea.coordinates.topLeftCorner.y = mCursor.coordinate.current.y;
+            cSelectArea.dimensions.w = mCursor.coordinate.current.x - cSelectArea.coordinates.origin.x;
+            cSelectArea.dimensions.h = cSelectArea.coordinates.origin.y - mCursor.coordinate.current.y;
+        }
+    } else {
+        if (mCursor.coordinate.current.x < cSelectArea.coordinates.origin.x) {
+        // BOTTOM LEFT QUADRANT
+            cSelectArea.coordinates.topLeftCorner.x = mCursor.coordinate.current.x;
+            cSelectArea.coordinates.topLeftCorner.y = cSelectArea.coordinates.origin.y;
+            cSelectArea.dimensions.w = cSelectArea.coordinates.origin.x - mCursor.coordinate.current.x;
+            cSelectArea.dimensions.h = mCursor.coordinate.current.y - cSelectArea.coordinates.origin.y;
+        } else {
+        // BOTTOM RIGHT QUADRANT
+            cSelectArea.coordinates.topLeftCorner.x = cSelectArea.coordinates.origin.x;
+            cSelectArea.coordinates.topLeftCorner.y = cSelectArea.coordinates.origin.y;
+            cSelectArea.dimensions.w = mCursor.coordinate.current.x - cSelectArea.coordinates.origin.x;
+            cSelectArea.dimensions.h = mCursor.coordinate.current.y - cSelectArea.coordinates.origin.y;
         }
     }
 }
@@ -73,20 +65,33 @@ function cSelectAreaUpdateBounds() {
 function cSelectAreaDetect() {
     var detectedItems = []
     for (i = 0; i < mItems.IDs.length; i++) {
-        if (mItems.IDs[i].coordinate.x > cSelectAreaTopLeftCoordinate.x &&
-            mItems.IDs[i].coordinate.x < cSelectAreaTopLeftCoordinate.x + cSelectAreaDimensions.w &&
-            mItems.IDs[i].coordinate.y > cSelectAreaTopLeftCoordinate.y &&
-            mItems.IDs[i].coordinate.y < cSelectAreaTopLeftCoordinate.y + cSelectAreaDimensions.h) {
+        if (mItems.IDs[i].coordinate.x > cSelectArea.coordinates.topLeftCorner.x &&
+            mItems.IDs[i].coordinate.x < cSelectArea.coordinates.topLeftCorner.x + cSelectArea.dimensions.w &&
+            mItems.IDs[i].coordinate.y > cSelectArea.coordinates.topLeftCorner.y &&
+            mItems.IDs[i].coordinate.y < cSelectArea.coordinates.topLeftCorner.y + cSelectArea.dimensions.h) {
                 detectedItems.push(mItems.IDs[i].id);  
         }
     }
-    cSelectAreaDetectedItems = detectedItems;
+    cSelectArea.IDs = detectedItems;
 }
 
 function cSelectAreaEnd() {
-    cSelectAreaOriginCoordinate = undefined;
-    cSelectAreaTopLeftCoordinate = undefined;
-    cSelectAreaDimensions = undefined;
-    cSelectAreaDetectedItems = [];
-    cSelectAreaState = false;
+    cSelectArea = {
+        state: false,
+        IDs: [],
+        coordinates: {
+            origin: {
+                x: undefined,
+                y: undefined
+            },
+            topLeftCorner: {
+                x: undefined,
+                y: undefined
+            }
+        },
+        dimensions: {
+            w: undefined,
+            h: undefined
+        }
+    };
 }

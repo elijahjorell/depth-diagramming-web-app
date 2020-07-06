@@ -1,19 +1,19 @@
 function mousePressed() {
     if (mouseButton === LEFT) {
         // while mItems.IDs are selected
-        if (cSelectItemsArray.length > 0) { 
+        if (cSelect.IDs.length > 0) { 
             // click on canvas
             if (mCursor.IDs.front === undefined) {
                 cSelectEnd();
                 cSelectAreaBegin();
             // click on a selected item
-            } else if (cSelectItemsArray.includes(mCursor.IDs.front)) {
-                cGrabBegin(cSelectItemsArray);
+            } else if (cSelect.IDs.includes(mCursor.IDs.front)) {
+                cGrabBegin(cSelect.IDs);
             // click on a non-selected item
             } else {
                 cSelectEnd();
-                cSelectItems(mCursor.IDs.front);
-                cGrabBegin(cSelectItemsArray);
+                cSelectBegin(mCursor.IDs.front);
+                cGrabBegin(cSelect.IDs);
             }
         // while nothing is grabbed or selected
         } else { 
@@ -22,8 +22,8 @@ function mousePressed() {
                 cSelectAreaBegin();
             // click on item
             } else {
-                cSelectItems(mCursor.IDs.front);
-                cGrabBegin(cSelectItemsArray);
+                cSelectBegin(mCursor.IDs.front);
+                cGrabBegin(cSelect.IDs);
             }
         }
     } else if (mouseButton === CENTER) {
@@ -33,8 +33,8 @@ function mousePressed() {
 
 function mouseReleased() {
     if (mouseButton === LEFT) {
-        if (cSelectAreaOriginCoordinate !== undefined) {
-            cSelectItems(cSelectAreaDetectedItems);
+        if (cSelectArea.state) {
+            cSelectBegin(cSelectArea.IDs);
             cSelectAreaEnd();
         } else {
             cGrabEnd();

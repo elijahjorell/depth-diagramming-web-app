@@ -1,19 +1,20 @@
-const PAN_SPEED = 0.7;
-
-var panState = false;
+var cPan = {
+    state: false,
+    speed: 0.7
+}
 
 function cPanBegin() {
-    panState = true;
+    cPan.state = true;
 }
 
 function cPanOn() {
-    if (panState) {
-        coordinatesOrigin.x -= PAN_SPEED * (mCursor.coordinate.previousRelativeToScreen.x - mouseX);
-        coordinatesOrigin.y -= PAN_SPEED * (mCursor.coordinate.previousRelativeToScreen.y - mouseY);
+    if (cPan.state) {
+        mOrigin.coordinate.x -= cPan.speed * (mCursor.coordinate.previousRelativeToScreen.x - mouseX);
+        mOrigin.coordinate.y -= cPan.speed * (mCursor.coordinate.previousRelativeToScreen.y - mouseY);
     }
 }
 
 function cPanEnd() {
     screenPanPreviousCursorCoordinate = undefined;
-    panState = false;
+    cPan.state = false;
 }

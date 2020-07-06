@@ -1,19 +1,23 @@
-var cSelectItemsArray = [];
+var cSelect = {
+    IDs: []
+}
 
-function cSelectItems(targetItems) {
+function cSelectBegin(targetItems) {
     if (Array.isArray(targetItems)) {
-        cSelectItemsArray = cSelectItemsArray.concat(targetItems);
+        cSelect.IDs = cSelect.IDs.concat(targetItems);
     } else {
-        cSelectItemsArray.push(targetItems);
+        cSelect.IDs.push(targetItems);
     }
     
-    if (cSelectItemsArray.length > 0) {
-        cLog.push('Selected mItems.IDs: ' + cSelectItemsArray);
+    if (cSelect.IDs.length > 0) {
+        mLog.push('Selected mItems.IDs: ' + cSelect.IDs);
     }    
 }
 
 function cSelectEnd() {
-    cLog.push('Deselected item(s): ' + cSelectItemsArray);
-    cSelectItemsArray = [];
+    mLog.push('Deselected item(s): ' + cSelect.IDs);
+    cSelect = {
+        IDs: []
+    }
 }
 

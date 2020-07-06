@@ -1,12 +1,12 @@
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight);
     canvas.parent('app');
-    coordinatesUpdateOrigin();
+    mOriginInitialise();
 }
 
 function draw() {
-    translate(coordinatesOrigin.x, coordinatesOrigin.y);
-    mCursorUpdateCoordinate();
+    translate(mOrigin.coordinate.x, mOrigin.coordinate.y);
+    mCursorUpdateCoordinateCurrent();
     mCursorUpdateIDs();
     mCursorUpdateStyle();
     cPanOn();
@@ -21,8 +21,8 @@ function draw() {
 function canvasDrawBackground() {
     background(255);
     noStroke();
-    fill(34, 42, 53)
-    rect(-windowWidth/2, - windowHeight/2, windowWidth, windowHeight)
+    fill(34, 42, 53);
+    rect(-windowWidth/2, - windowHeight/2, windowWidth, windowHeight);
 }
 
 function canvasDrawItems() {
@@ -40,8 +40,8 @@ function canvasDrawItems() {
         
         // circle
         noStroke();
-        if (cSelectAreaDetectedItems.includes(mItems.IDs[i].id) || 
-            cSelectItemsArray.includes(mItems.IDs[i].id)) {
+        if (cSelectArea.IDs.includes(mItems.IDs[i].id) || 
+            cSelect.IDs.includes(mItems.IDs[i].id)) {
             fill(255, 230, 153,);
         } else {
             fill(255);
@@ -66,9 +66,12 @@ function canvasDrawItems() {
 }
 
 function canvasDrawSelectArea() {
-    if (cSelectAreaOriginCoordinate !== undefined) {
+    if (cSelectArea.state) {
         stroke(255);
         fill(255, 120);
-        rect(cSelectAreaTopLeftCoordinate.x, cSelectAreaTopLeftCoordinate.y, cSelectAreaDimensions.w, cSelectAreaDimensions.h);
+        rect(cSelectArea.coordinates.topLeftCorner.x, 
+             cSelectArea.coordinates.topLeftCorner.y, 
+             cSelectArea.dimensions.w, 
+             cSelectArea.dimensions.h);
     }
 }

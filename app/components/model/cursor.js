@@ -1,7 +1,7 @@
 var mCursor = {
     IDs: {
-        detected: undefined,
-        detectedExcludingGrabbed: undefined,
+        detected: [],
+        detectedExcludingGrabbed: [],
         front: undefined
     },
     coordinate: {
@@ -17,10 +17,10 @@ var mCursor = {
     style: 'default'
 };
 
-function mCursorUpdateCoordinate() {
-    var updatedCursorCoordinate = coordinatesConvertRelativeToScreenToReal(mouseX, mouseY);
+function mCursorUpdateCoordinateCurrent() {
+    var updatedCursorCoordinate = mScreenConvertCoordinateRelativeToReal(mouseX, mouseY);
     mCursor.coordinate.current.x = updatedCursorCoordinate.x;
-    mCursor.coordinate.current.y = updatedCursorCoordinate.y
+    mCursor.coordinate.current.y = updatedCursorCoordinate.y;
 }
 
 function mCursorUpdateCoordinatePreviousRelativeToScreen() {
@@ -47,13 +47,13 @@ function mCursorUpdateStyle() {
     var updatedStyle;
     
     // styling logic
-    if (mCursor.IDs.front === undefined) {
+    if (mCursor.IDs.detected.length === 0) {
         updatedStyle = 'default';
     } else {
         updatedStyle = 'move';
     }
 
-    // change cursor only when a new style is proposed
+    // change cursor style only when a different style is proposed
     if (updatedStyle !== mCursor.style) {
         mCursor.style = updatedStyle;
         document.getElementById('app').style.cursor = mCursor.style;

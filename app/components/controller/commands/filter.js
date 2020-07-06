@@ -11,17 +11,18 @@ function cFilterGetFrontItemID(itemsID) {
 }
 
 function cFilterExcludeValuesFromArray(values, array) {
-    if (Array.isArray(array)) {
+    var arrayClone = [].concat(array);
+    var currentValueIndex;
+    if (Array.isArray(arrayClone)) {
         if (!Array.isArray(values)) {
             values = [values];
         }
         
-        var currentValueIndex;
         for (currentValueIndex = 0; currentValueIndex < values.length; currentValueIndex++) {
-            if (array.includes(values[currentValueIndex])) {
-                array.splice(array.indexOf(values[currentValueIndex]))
+            if (arrayClone.includes(values[currentValueIndex])) {
+                arrayClone.splice(arrayClone.indexOf(values[currentValueIndex]), 1);
             }
         }
-        return array;
+        return arrayClone;
     }
 }

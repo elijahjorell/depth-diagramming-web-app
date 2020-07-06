@@ -1,4 +1,5 @@
 var cGrab = {
+    state: false,
     IDs: [],
     offsets: {
         x: [],
@@ -8,7 +9,9 @@ var cGrab = {
 };
 
 function cGrabBegin(targetItems) {
-    cLog.push('Grabbed item(s): ' + cSelectItemsArray) 
+    mLog.push('Grabbed item(s): ' + cSelect.IDs) 
+    cGrab.state = true;
+    
     if (Array.isArray(targetItems)) {
         cGrab.IDs = cGrab.IDs.concat(targetItems);
     } else {
@@ -22,7 +25,7 @@ function cGrabBegin(targetItems) {
 }
 
 function cGrabOn() {
-    if (cGrab.IDs.length > 0) {
+    if (cGrab.state) {
         for (i = 0; i < cGrab.IDs.length; i++) {
             mItems.IDs[cGrab.IDs[i]].coordinate.x = mCursor.coordinate.current.x - cGrab.offsets.x[i];
             mItems.IDs[cGrab.IDs[i]].coordinate.y = mCursor.coordinate.current.y - cGrab.offsets.y[i];
@@ -51,12 +54,15 @@ function cGrabUpdateGrabbedItemsDepth() {
 
 
 function cGrabEnd() {
-    cLog.push('Letting go of grabbed item(s): ' + cGrab.IDs)  
-    //cGrabUpdateGrabbedItemsDepth
-    cGrab.IDs = [];
-    cGrab.offsets = {
-        x: [],
-        y: []
-    }
+    mLog.push('Letting go of grabbed item(s): ' + cGrab.IDs)
+    cGrab = {
+        state: false,
+        IDs: [],
+        offsets: {
+            x: [],
+            y: []
+        },
+        targetDepth: undefined
+    };
 }
 

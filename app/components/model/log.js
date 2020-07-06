@@ -1,8 +1,8 @@
-var cLogProxied = [];
-var cLog = new Proxy(cLogProxied, {
+var mLogProxied = [];
+var mLog = new Proxy(mLogProxied, {
     set: function(target, property, value) {
         if (property === 'length') {
-          console.log(cLog[value - 1])
+          console.log(mLog[value - 1])
         }
         target[property] = value;
         return true;
