@@ -8,7 +8,6 @@ function cStructureSetParentOfIDsTo(childIDs, parentID) {
     if (!Array.isArray(childIDs)) {
         childIDs = [childIDs];
     }
-    
     parentIndex = cFilterGetIndexOfID(parentID);
     for (i = 0; i < childIDs.length; i++) {
         childIndex = cFilterGetIndexOfID(childIDs[i]);
@@ -23,10 +22,7 @@ function cStructureSetParentOfIDsTo(childIDs, parentID) {
                 // if the child's previous parent is another item
                 if (previousParentID !== undefined) {
                     // clear child from previous parent's children
-                    previousParentIndex = cFilterGetIndexOfID(previousParentID);
-                    childIndexInPreviousParentID = mItems.database[previousParentIndex].structure.children.indexOf(childIDs[i]);
-                    mItems.database[previousParentIndex].structure.children.splice(childIndexInPreviousParentID, 1);
-                    console.log('ID: ' + childIDs[i] + ' is no longer a child of ' + previousParentID);
+                    cStructureRemoveChildIDsFrom(childIDs[i], previousParentID)
                     previousParentID = undefined;
                 }
 
@@ -43,5 +39,22 @@ function cStructureSetParentOfIDsTo(childIDs, parentID) {
             }
         }     
     }
-    
+}
+
+function cStructureRemoveChildIDsFrom(childIDs, parentID) {
+    var i;
+    var childIndex;
+    var childIndexInParentID;
+    var parentIndex = cFilterGetIndexOfID(parentID);
+
+    if (!Array.isArray(childIDs)) {
+        childIDs = [childIDs];
+    }
+
+    for (i = 0; i < childIDs.length; i++) {
+        childIndex = cFilterGetIndexOfID(childIDs[i]);
+        childIndexInParentID = mItems.database[parentIndex].structure.children.indexOf(childIDs[i]);
+        mItems.database[parentIndex].structure.children.splice(childIndexInParentID, 1);
+        console.log('ID: ' + childIDs[i] + ' is no longer a child of ' + parentID);
+    }
 }
