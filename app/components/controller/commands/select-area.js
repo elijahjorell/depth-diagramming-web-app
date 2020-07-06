@@ -63,13 +63,14 @@ function cSelectAreaUpdateBounds() {
 }
 
 function cSelectAreaDetect() {
-    var detectedItems = []
-    for (i = 0; i < mItems.IDs.length; i++) {
-        if (mItems.IDs[i].coordinate.x > cSelectArea.coordinates.topLeftCorner.x &&
-            mItems.IDs[i].coordinate.x < cSelectArea.coordinates.topLeftCorner.x + cSelectArea.dimensions.w &&
-            mItems.IDs[i].coordinate.y > cSelectArea.coordinates.topLeftCorner.y &&
-            mItems.IDs[i].coordinate.y < cSelectArea.coordinates.topLeftCorner.y + cSelectArea.dimensions.h) {
-                detectedItems.push(mItems.IDs[i].id);  
+    var i;
+    var detectedItems = [];
+    for (i = 0; i < mItems.database.length; i++) {
+        if (mItems.database[i].coordinate.x > cSelectArea.coordinates.topLeftCorner.x &&
+            mItems.database[i].coordinate.x < cSelectArea.coordinates.topLeftCorner.x + cSelectArea.dimensions.w &&
+            mItems.database[i].coordinate.y > cSelectArea.coordinates.topLeftCorner.y &&
+            mItems.database[i].coordinate.y < cSelectArea.coordinates.topLeftCorner.y + cSelectArea.dimensions.h) {
+                detectedItems.push(mItems.database[i].id);  
         }
     }
     cSelectArea.IDs = detectedItems;

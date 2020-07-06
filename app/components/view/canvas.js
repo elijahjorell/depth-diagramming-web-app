@@ -26,42 +26,43 @@ function canvasDrawBackground() {
 }
 
 function canvasDrawItems() {
-    for (i = 0; i < mItems.IDs.length; i++) {
+    var i;
+    for (i = 0; i < mItems.database.length; i++) {
         // ring
-        if (mCursor.IDs.front === mItems.IDs[i].id) {
+        if (mCursor.IDs.front === mItems.database[i].id) {
             stroke(255, 230, 153);
         } else {
             stroke(180, 199, 231);
         }
         fill(255, 0);
-        ellipse(mItems.IDs[i].coordinate.x,
-                mItems.IDs[i].coordinate.y,
-                mItems.IDs[i].dimensions.r * 2 + 20);
+        ellipse(mItems.database[i].coordinate.x,
+                mItems.database[i].coordinate.y,
+                mItems.database[i].dimensions.r * 2 + 20);
         
         // circle
         noStroke();
-        if (cSelectArea.IDs.includes(mItems.IDs[i].id) || 
-            cSelect.IDs.includes(mItems.IDs[i].id)) {
+        if (cSelectArea.IDs.includes(mItems.database[i].id) || 
+            cSelect.IDs.includes(mItems.database[i].id)) {
             fill(255, 230, 153,);
         } else {
             fill(255);
         }
-        ellipse(mItems.IDs[i].coordinate.x,
-                mItems.IDs[i].coordinate.y,
-                mItems.IDs[i].dimensions.r * 2);
+        ellipse(mItems.database[i].coordinate.x,
+                mItems.database[i].coordinate.y,
+                mItems.database[i].dimensions.r * 2);
 
         // text
         fill(0);
         textSize(18);
-        text(mItems.IDs[i].name, 
-             mItems.IDs[i].coordinate.x - textWidth(mItems.IDs[i].name)/2,
-             mItems.IDs[i].coordinate.y + textAscent()/2);
+        text(mItems.database[i].name, 
+             mItems.database[i].coordinate.x - textWidth(mItems.database[i].name)/2,
+             mItems.database[i].coordinate.y + textAscent()/2);
 
         // stroke(0);
-        // line(mItems.IDs[i].coordinate.x - mItems.IDs[i].dimensions.r,
-        //      mItems.IDs[i].coordinate.y,
-        //      mItems.IDs[i].coordinate.x + mItems.IDs[i].dimensions.r,
-        //      mItems.IDs[i].coordinate.y)
+        // line(mItems.database[i].coordinate.x - mItems.database[i].dimensions.r,
+        //      mItems.database[i].coordinate.y,
+        //      mItems.database[i].coordinate.x + mItems.database[i].dimensions.r,
+        //      mItems.database[i].coordinate.y)
     }
 }
 

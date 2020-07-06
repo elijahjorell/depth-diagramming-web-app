@@ -1,6 +1,6 @@
 function mousePressed() {
     if (mouseButton === LEFT) {
-        // while mItems.IDs are selected
+        // while mItems.database are selected
         if (cSelect.IDs.length > 0) { 
             // click on canvas
             if (mCursor.IDs.front === undefined) {

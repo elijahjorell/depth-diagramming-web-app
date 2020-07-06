@@ -1,6 +1,7 @@
 function cFilterGetIndexOfID(itemID) {
-    for (i = 0; i < mItems.IDs.length; i++) {
-        if (itemID === mItems.IDs[i].id) {
+    var i;
+    for (i = 0; i < mItems.database.length; i++) {
+        if (itemID === mItems.database[i].id) {
             return i;
         }
     }
@@ -11,16 +12,16 @@ function cFilterGetFrontItemID(itemsID) {
 }
 
 function cFilterExcludeValuesFromArray(values, array) {
+    var i;
     var arrayClone = [].concat(array);
-    var currentValueIndex;
     if (Array.isArray(arrayClone)) {
         if (!Array.isArray(values)) {
             values = [values];
         }
         
-        for (currentValueIndex = 0; currentValueIndex < values.length; currentValueIndex++) {
-            if (arrayClone.includes(values[currentValueIndex])) {
-                arrayClone.splice(arrayClone.indexOf(values[currentValueIndex]), 1);
+        for (i = 0; i < values.length; i++) {
+            if (arrayClone.includes(values[i])) {
+                arrayClone.splice(arrayClone.indexOf(values[i]), 1);
             }
         }
         return arrayClone;

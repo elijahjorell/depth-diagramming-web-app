@@ -10,12 +10,12 @@ function cSelectBegin(targetItems) {
     }
     
     if (cSelect.IDs.length > 0) {
-        mLog.push('Selected mItems.IDs: ' + cSelect.IDs);
+        mLog.push('Selected IDs: ' + cSelect.IDs);
     }    
 }
 
 function cSelectEnd() {
-    mLog.push('Deselected item(s): ' + cSelect.IDs);
+    mLog.push('Deselected IDs: ' + cSelect.IDs);
     cSelect = {
         IDs: []
     }

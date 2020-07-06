@@ -1,20 +1,21 @@
 var mItems = {
-    IDs: [],
-    uniqueCounter: 0
+    database: [],
+    uniqueCounter: 0,
+    baseRadius: 50
 }
 
-function itemsCreateNew(x, y, r) {
-    mItems.IDs.push({
-        id: mItems.uniqueCounter,
-        name: 'PHYSICS',
-        coordinate: { 
+class Item {
+    constructor (x, y, r) {
+        this.id = mItems.uniqueCounter;
+        this.name = 'PHYSICS';
+        this.coordinate = { 
             x: x,
             y: y
-        },
-        dimensions: {
+        };
+        this.dimensions = {
             r: r
-        },
-        structure: {
+        };
+        this.structure = {
             parent: undefined,
             ancenstors: [],
             progenitor: undefined,
@@ -23,13 +24,12 @@ function itemsCreateNew(x, y, r) {
             siblings: [],
             depth: 0,
             height: undefined
-        },
-        process: {
+        };
+        this.process = {
             predecessors: [],
             successors: [],
             peers: [],
-        },
-        characteristics: [] 
-    });
-    mItems.uniqueCounter += 1;
+        };
+        this.characteristics = []; 
+    }
 }

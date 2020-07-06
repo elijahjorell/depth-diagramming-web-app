@@ -29,13 +29,14 @@ function mCursorUpdateCoordinatePreviousRelativeToScreen() {
 }
 
 function mCursorUpdateIDs() {
+    var i;
     var updatedIDsDetected = [];
-    for (i = 0; i < mItems.IDs.length; i++) {
+    for (i = 0; i < mItems.database.length; i++) {
         if (dist(mCursor.coordinate.current.x,
                  mCursor.coordinate.current.y,
-                 mItems.IDs[i].coordinate.x,
-                 mItems.IDs[i].coordinate.y) < mItems.IDs[i].dimensions.r) {
-            updatedIDsDetected.push(mItems.IDs[i].id);
+                 mItems.database[i].coordinate.x,
+                 mItems.database[i].coordinate.y) < mItems.database[i].dimensions.r) {
+            updatedIDsDetected.push(mItems.database[i].id);
         }
     }
     mCursor.IDs.detected = updatedIDsDetected;
