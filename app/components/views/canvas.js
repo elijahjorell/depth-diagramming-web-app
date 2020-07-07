@@ -34,7 +34,7 @@ function canvasDrawItems() {
     var styleColour;
     for (i = 0; i < mItems.database.length; i++) {
         // access style
-        itemStyle = mStylesAccessStyle(mItems.database[i].style);
+        itemStyle = mStylesAccessComponentStyle('items', mItems.database[i].style);
         
         // ring
 
