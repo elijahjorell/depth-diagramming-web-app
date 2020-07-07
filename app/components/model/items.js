@@ -1,13 +1,21 @@
 var mItems = {
     database: [],
     uniqueCounter: 0,
-    baseRadius: 50
+    baseRadius: 50,
+    basePaddingRatio: 0.1
 }
 
 class Item {
     constructor (x, y, r) {
         this.id = mItems.uniqueCounter;
-        this.name = 'PHYSICS'; // textbox.value + textbox.font etc.etc.
+        this.textBox = {
+            value: 'SCIENCE',
+            fontSize: 20,
+            dimensions: {
+                w: undefined,
+                h: undefined
+            }
+        };
         this.coordinate = { 
             x: x,
             y: y
@@ -33,6 +41,16 @@ class Item {
         this.style = 'default';
         this.characteristics = []; 
     }
+}
+
+function mItemsUpdateTextBox(itemID) {
+    var itemIndex = mItemsGetIndexOfID(itemID)
+    console.log('Updating textbox of ID: ' + itemID);
+    textSize(mItems.database[itemIndex].textBox.fontSize);
+    mItems.database[itemIndex].textBox.dimensions.w = textWidth(mItems.database[itemIndex].textBox.value)/2;
+    mItems.database[itemIndex].textBox.dimensions.h = textAscent() * 0.8 / 2;
+
+    // loop to reduce font size til within bounds of circle including padding
 }
 
 function mItemsGetIndexOfID(itemID) {

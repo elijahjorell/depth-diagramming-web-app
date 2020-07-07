@@ -1,8 +1,8 @@
 var mCursor = {
     IDs: {
         detected: [],
-        detectedExcludingGrabbed: [], // remove
-        front: undefined // remove
+        detectedExcludingGrabbed: [],
+        front: undefined
     },
     coordinates: {
         current: {
@@ -48,10 +48,14 @@ function mCursorUpdateStyle() {
     var updatedStyle;
     
     // styling logic
-    if (mCursor.IDs.detected.length === 0) {
-        updatedStyle = 'default';
-    } else {
+    if (cPan.active) {
+        updatedStyle = 'grabbing';
+    // } else if (cSelect.active) {
+
+    } else if (mCursor.IDs.detected.length > 0) {
         updatedStyle = 'move';
+    } else {
+        updatedStyle = 'default';
     }
 
     // change cursor style only when a different style is proposed

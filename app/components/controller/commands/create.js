@@ -1,6 +1,5 @@
-function cCreateNewItemAtCursor() {
-    mItems.database.push(new Item(mCursor.coordinates.current.x, 
-                         mCursor.coordinates.current.y, 
-                         mItems.baseRadius));
+function cCreateNewItem(x, y) {
+    mItems.database.push(new Item(x, y, mItems.baseRadius));
+    mItemsUpdateTextBox(mItems.uniqueCounter);
     mItems.uniqueCounter += 1;
 }

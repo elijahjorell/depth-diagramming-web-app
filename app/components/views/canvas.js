@@ -3,6 +3,16 @@ function setup() {
     canvas.parent('app');
     mOriginInitialise();
     mStylesInitialise();
+    
+
+    //-----------------
+    // textSize(15)
+    // var lowerCaseAlphabet = 'abcdefghijklmnopqrstuvwxyz'
+    // var upperCaseAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVYWXZ'
+    // var i;
+    // for (i = 0; i < upperCaseAlphabet.length; i++) {
+    //     console.log(upperCaseAlphabet[i], textWidth(upperCaseAlphabet[i]));
+    // }
 }
 
 function draw() {
@@ -18,7 +28,6 @@ function draw() {
     canvasDrawItems();
     canvasDrawSelectArea();
     mCursorUpdateCoordinatePreviousRelativeToScreen();
-    fill([255, 255, 255, 255])
 }
 
 function canvasDrawBackground() {
@@ -54,10 +63,15 @@ function canvasDrawItems() {
         // text
         noStroke();
         fill(itemStyle.textFillColour);
-        textSize(18);
-        text(mItems.database[i].name, 
-             mItems.database[i].coordinate.x - textWidth(mItems.database[i].name)/2,
-             mItems.database[i].coordinate.y + textAscent()/2);
+        textSize(mItems.database[i].textBox.fontSize);
+        // rect(mItems.database[i].coordinate.x - mItems.database[i].dimensions.w,
+        //      mItems.database[i].coordinate.y - mItems.database[i].dimensions.h,
+        //      mItems.database[i].dimensions.w,
+        //      mItems.database[i].dimensions.h)
+
+        text(mItems.database[i].textBox.value, 
+             mItems.database[i].coordinate.x - mItems.database[i].textBox.dimensions.w,
+             mItems.database[i].coordinate.y + mItems.database[i].textBox.dimensions.h);
     }
 }
 

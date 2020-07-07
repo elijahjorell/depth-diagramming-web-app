@@ -37,8 +37,15 @@ function cGrabBegin(targetItems) {
     } else {
         cGrab.IDs.push(targetItems);
     }
-    for (i = 0; i < cGrab.IDs.length; i++) { // minimise for loops
+    for (i = 0; i < cGrab.IDs.length; i++) {
+        // move to end of items database (so it is displayed in front)
         currentItemIndex = mItemsGetIndexOfID(cGrab.IDs[i]);
+        mItems.database.push(mItems.database.splice(currentItemIndex, 1)[0]);
+
+        // get new index
+        currentItemIndex = mItemsGetIndexOfID(cGrab.IDs[i]);
+
+        // get offsets (to keep items at the same distance from initial coordinate throughout the grab)
         cGrab.offsets.original.x.push(cGrab.coordinates.initial.x - mItems.database[currentItemIndex].coordinate.x);
         cGrab.offsets.original.y.push(cGrab.coordinates.initial.y - mItems.database[currentItemIndex].coordinate.y);
         cGrab.offsets.animated.x.push(cGrab.offsets.original.x[i]);
