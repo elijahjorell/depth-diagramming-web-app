@@ -5,7 +5,9 @@ var mCursor = {
         front: undefined
     },
     components: {
-
+        frontID: {
+            
+        }
     },
     coordinates: {
         current: {
@@ -35,10 +37,7 @@ function mCursorUpdateDetectedIDs() {
     var i;
     var updatedDetectedIDs = [];
     for (i = 0; i < mItems.database.length; i++) {
-        if (dist(mCursor.coordinates.current.x,
-                 mCursor.coordinates.current.y,
-                 mItems.database[i].coordinate.x,
-                 mItems.database[i].coordinate.y) < mItems.database[i].dimensions.r) {
+        if (mDetectionIsCoordinateWithinCircle(mCursor.coordinates.current, mItems.database[i].coordinate, mItems.database[i].dimensions.r)) {
             updatedDetectedIDs.push(mItems.database[i].id);
         }
     }

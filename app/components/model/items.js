@@ -67,7 +67,6 @@ function mItemsGetFrontIDFromIDs(itemIDs) {
     var highestIndex = -1;
     var highestIndexID;
     var currentIndex;
-
     for (i = 0; i < itemIDs.length; i++) {
         currentIndex = mItemsGetIndexOfID(itemIDs[i]);
         if (currentIndex > highestIndex) {
@@ -75,6 +74,5 @@ function mItemsGetFrontIDFromIDs(itemIDs) {
             highestIndexID = itemIDs[i];
         } 
     }
-
     return highestIndexID;
 }
