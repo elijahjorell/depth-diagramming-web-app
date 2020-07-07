@@ -4,6 +4,9 @@ var mCursor = {
         detectedExcludingGrabbed: [],
         front: undefined
     },
+    components: {
+
+    },
     coordinates: {
         current: {
             x: undefined,
@@ -28,18 +31,18 @@ function mCursorUpdateCoordinatePreviousRelativeToScreen() {
     mCursor.coordinates.previousRelativeToScreen.y = mouseY;
 }
 
-function mCursorUpdateIDs() {
+function mCursorUpdateDetectedIDs() {
     var i;
-    var updatedIDsDetected = [];
+    var updatedDetectedIDs = [];
     for (i = 0; i < mItems.database.length; i++) {
         if (dist(mCursor.coordinates.current.x,
                  mCursor.coordinates.current.y,
                  mItems.database[i].coordinate.x,
                  mItems.database[i].coordinate.y) < mItems.database[i].dimensions.r) {
-            updatedIDsDetected.push(mItems.database[i].id);
+            updatedDetectedIDs.push(mItems.database[i].id);
         }
     }
-    mCursor.IDs.detected = updatedIDsDetected;
+    mCursor.IDs.detected = updatedDetectedIDs;
     mCursor.IDs.detectedExcludingGrabbed = mArraysExcludeValuesFromArray(cGrab.IDs, mCursor.IDs.detected);
     mCursor.IDs.front = mItemsGetFrontIDFromIDs(mCursor.IDs.detected);
 }

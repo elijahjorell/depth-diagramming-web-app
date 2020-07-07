@@ -63,5 +63,18 @@ function mItemsGetIndexOfID(itemID) {
 }
 
 function mItemsGetFrontIDFromIDs(itemIDs) {
-    return itemIDs[0];
+    var i;
+    var highestIndex = -1;
+    var highestIndexID;
+    var currentIndex;
+
+    for (i = 0; i < itemIDs.length; i++) {
+        currentIndex = mItemsGetIndexOfID(itemIDs[i]);
+        if (currentIndex > highestIndex) {
+            highestIndex = currentIndex;
+            highestIndexID = itemIDs[i];
+        } 
+    }
+
+    return highestIndexID;
 }

@@ -18,7 +18,7 @@ function setup() {
 function draw() {
     translate(mOrigin.coordinate.x, mOrigin.coordinate.y);
     mCursorUpdateCoordinateCurrent();
-    mCursorUpdateIDs();
+    mCursorUpdateDetectedIDs();
     mCursorUpdateStyle();
     mStylesUpdateItems();
     cPanOn();
