@@ -2,6 +2,7 @@ function setup() {
     var canvas = createCanvas(windowWidth, windowHeight);
     canvas.parent('app');
     mOriginInitialise();
+    mStylesInitialise();
 }
 
 function draw() {
@@ -9,6 +10,7 @@ function draw() {
     mCursorUpdateCoordinateCurrent();
     mCursorUpdateIDs();
     mCursorUpdateStyle();
+    mStylesUpdateItems();
     cPanOn();
     cSelectAreaOn();
     cGrabOn();
@@ -16,6 +18,7 @@ function draw() {
     canvasDrawItems();
     canvasDrawSelectArea();
     mCursorUpdateCoordinatePreviousRelativeToScreen();
+    fill([255, 255, 255, 255])
 }
 
 function canvasDrawBackground() {
@@ -27,32 +30,30 @@ function canvasDrawBackground() {
 
 function canvasDrawItems() {
     var i;
+    var itemStyle;
+    var styleColour;
     for (i = 0; i < mItems.database.length; i++) {
+        // access style
+        itemStyle = mStylesAccessStyle(mItems.database[i].style);
+        
         // ring
-        if (mCursor.IDs.front === mItems.database[i].id) {
-            stroke(255, 230, 153);
-        } else {
-            stroke(180, 199, 231);
-        }
-        fill(255, 0);
+
+        stroke(itemStyle.ringsStrokeColour)
+        fill(itemStyle.ringsFillColour);
         ellipse(mItems.database[i].coordinate.x,
                 mItems.database[i].coordinate.y,
                 mItems.database[i].dimensions.r * 2 + 20);
         
         // circle
-        noStroke();
-        if (cSelectArea.IDs.includes(mItems.database[i].id) || 
-            cSelect.IDs.includes(mItems.database[i].id)) {
-            fill(255, 230, 153);
-        } else {
-            fill(255);
-        }
+        stroke(itemStyle.circleStrokeColour)
+        fill(itemStyle.circleFillColour);
         ellipse(mItems.database[i].coordinate.x,
                 mItems.database[i].coordinate.y,
                 mItems.database[i].dimensions.r * 2);
 
         // text
-        fill(0);
+        noStroke();
+        fill(itemStyle.textFillColour);
         textSize(18);
         text(mItems.database[i].name, 
              mItems.database[i].coordinate.x - textWidth(mItems.database[i].name)/2,
@@ -70,3 +71,4 @@ function canvasDrawSelectArea() {
              cSelectArea.dimensions.h);
     }
 }
+

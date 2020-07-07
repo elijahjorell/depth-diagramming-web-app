@@ -1,40 +1,43 @@
 var mStyles = {
-    database: []
+    items: []
 }
 
 class Style {
-    constructor(name, circleFillHex, circleFillAlpha, 
-                circleStrokeHex, circleStrokeAlpha, ringsFillHex,
-                ringsFillAlpha, ringsStrokeHex, ringsStrokeAlpha,
-                textFillHex, textFillAlpha) {
+    constructor(name, circleFillColour, circleStrokeColour, ringsFillColour, ringsStrokeColour, textFillColour) {
         this.name = name;
-        this.circleFillHex = circleFillHex;
-        this.circleFillAlpha = circleFillAlpha;
-        this.circleStrokeHex =  circleStrokeHex;
-        this.circleStrokeAlpha = circleStrokeAlpha;
-        this.ringsFillHex = ringsFillHex;
-        this.ringsFillAlpha = ringsFillAlpha;
-        this.ringsStrokeHex =  ringsStrokeHex;
-        this.ringsStrokeAlpha = ringsStrokeAlpha;
-        this.textFillHex = textFillHex;
-        this.textFillAlpha = textFillAlpha;
+        this.circleFillColour = circleFillColour;
+        this.circleStrokeColour = circleStrokeColour;
+        this.ringsFillColour = ringsFillColour;
+        this.ringsStrokeColour = ringsStrokeColour;
+        this.textFillColour = textFillColour;
     }
 }
 
-mStyles.database.push(new Style('default', '#FFFFFF', 255, '#FFFFFF', 255, '#FFFFFF', 0, '#FFFFFF', 255, '#000000', 255));
-mStyles.database.push(new Style('default-hover', '#FFFFFF', 255, '#FFFFFF', 255, '#FFFFFF', 0, '#FFE699', 255, '#000000', 255));
-mStyles.database.push(new Style('default-selected', '#FFE699', 255, '#FFE699', 255, '#FFE699', 0, '#FFFFFF', 255, '#000000', 255));
-mStyles.database.push(new Style('default-selected-hover', '#FFE699', 255, '#FFE699', 255, '#FFE699', 0, '#FFE699', 255, '#000000', 255));
-mStyles.database.push(new Style('parent', '#FFFFFF', 0, '#FFFFFF', 255, '#FFFFFF', 0, '#FFFFFF', 255, '#FFFFFF', 255));
-mStyles.database.push(new Style('parent-hover', '#FFFFFF', 0, '#FFFFFF', 255, '#FFFFFF', 0, '#FFE699', 255, '#FFFFFF', 255));
-mStyles.database.push(new Style('parent-selected', '#FFE699', 0, '#FFE699', 255, '#FFE699', 0, '#FFFFFF', 255, '#FFFFFF', 255));
-mStyles.database.push(new Style('parent-selected-hover', '#FFE699', 0, '#FFE699', 255, '#FFE699', 0, '#FFE699', 255, '#FFFFFF', 255));
+function mStylesCreateNew(name, circleFillValues, circleStrokeValues, ringsFillValues, ringsStrokeValues, textFillValues) {
+    mStyles.items.push(new Style(name, 
+                                 mColoursCreateNew(circleFillValues[0], circleFillValues[1]),
+                                 mColoursCreateNew(circleStrokeValues[0], circleStrokeValues[1]),
+                                 mColoursCreateNew(ringsFillValues[0], ringsFillValues[1]),
+                                 mColoursCreateNew(ringsStrokeValues[0], ringsStrokeValues[1]),
+                                 mColoursCreateNew(textFillValues[0], textFillValues[1])))
+}
+
+function mStylesInitialise() {
+    mStylesCreateNew('default', ['#FFFFFF', 255], ['#FFFFFF', 255], ['#FFFFFF', 0], ['#FFFFFF', 255], ['#000000', 255]);
+    mStylesCreateNew('default-hover', ['#FFFFFF', 255], ['#FFFFFF', 255], ['#FFFFFF', 0], ['#FFE699', 255], ['#000000', 255]);
+    mStylesCreateNew('default-selected', ['#FFE699', 255], ['#FFE699', 255], ['#FFE699', 0], ['#FFFFFF', 255], ['#000000', 255]);
+    mStylesCreateNew('default-selected-hover', ['#FFE699', 255], ['#FFE699', 255], ['#FFE699', 0], ['#FFE699', 255], ['#000000', 255]);
+    mStylesCreateNew('parent', ['#FFFFFF', 0], ['#FFFFFF', 255], ['#FFFFFF', 0], ['#FFFFFF', 255], ['#FFFFFF', 255]);
+    mStylesCreateNew('parent-hover', ['#FFFFFF', 0], ['#FFFFFF', 255], ['#FFFFFF', 0], ['#FFE699', 255], ['#FFFFFF', 255]);
+    mStylesCreateNew('parent-selected', ['#FFE699', 0], ['#FFE699', 255], ['#FFE699', 0], ['#FFFFFF', 255], ['#FFFFFF', 255]);
+    mStylesCreateNew('parent-selected-hover', ['#FFE699', 0], ['#FFE699', 255], ['#FFE699', 0], ['#FFE699', 255], ['#FFFFFF', 255]);
+}
 
 function mStylesUpdateItems() {
     var i;
     for (i = 0; i < mItems.database.length; i++) {
         // if default
-        if (mItems.database[i].structure.parent !== undefined) {
+        if (mItems.database[i].structure.children.length === 0) {
         
             // if selected + hovered
             if ((cSelectArea.IDs.includes(mItems.database[i].id) || cSelect.IDs.includes(mItems.database[i].id)) &&
@@ -80,9 +83,9 @@ function mStylesUpdateItems() {
 
 function mStylesAccessStyle(styleName) {
     var i;
-    for (i = 0; i < mStyles.database.length; i++) {
-        if (mStyles.database[i].name === styleName) {
-            return mStyles.database[i];
+    for (i = 0; i < mStyles.items.length; i++) {
+        if (mStyles.items[i].name === styleName) {
+            return mStyles.items[i];
         }
     }
 }

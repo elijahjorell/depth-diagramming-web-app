@@ -7,7 +7,7 @@ var mItems = {
 class Item {
     constructor (x, y, r) {
         this.id = mItems.uniqueCounter;
-        this.name = 'PHYSICS';
+        this.name = 'PHYSICS'; // textbox.value + textbox.font etc.etc.
         this.coordinate = { 
             x: x,
             y: y
