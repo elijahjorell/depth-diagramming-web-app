@@ -1,8 +1,10 @@
 var cSelect = {
+    active: false,
     IDs: []
 }
 
 function cSelectBegin(targetItems) {
+    cSelect.active = true;
     if (Array.isArray(targetItems)) {
         cSelect.IDs = cSelect.IDs.concat(targetItems);
     } else {
@@ -16,6 +18,7 @@ function cSelectBegin(targetItems) {
 
 function cSelectEnd() {
     mLog.push('Deselected IDs: ' + cSelect.IDs);
+    cSelect.active = false;
     cSelect = {
         IDs: []
     }

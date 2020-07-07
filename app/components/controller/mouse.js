@@ -31,6 +31,19 @@ function mousePressed() {
     }
 }
 
+function doubleClicked() {
+    if (mouseButton === LEFT) {
+        if (cSelect.IDs.includes(mCursor.IDs.front)) {
+            var frontIDIndex = mItemsGetIndexOfID(mCursor.IDs.front);
+            if (mDetectionIsCoordinateWithinRect(mCursor.coordinates.current,
+                                                 mItems.database[frontIDIndex].textBox.coordinate,
+                                                 mItems.database[frontIDIndex].textBox.dimensions)) {
+                cEditItemTextBox(mCursor.IDs.front);
+            }
+        }
+    }
+} 
+
 function mouseReleased() {
     if (mouseButton === LEFT) {
         if (cSelectArea.active) {

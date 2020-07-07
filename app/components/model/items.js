@@ -11,6 +11,10 @@ class Item {
         this.textBox = {
             value: 'SCIENCE',
             fontSize: 20,
+            coordinate: {
+                x: undefined,
+                y: undefined
+            },
             dimensions: {
                 w: undefined,
                 h: undefined
@@ -43,14 +47,22 @@ class Item {
     }
 }
 
-function mItemsUpdateTextBox(itemID) {
+function mItemsTextBoxInitialise(itemID) {
     var itemIndex = mItemsGetIndexOfID(itemID)
     console.log('Updating textbox of ID: ' + itemID);
     textSize(mItems.database[itemIndex].textBox.fontSize);
-    mItems.database[itemIndex].textBox.dimensions.w = textWidth(mItems.database[itemIndex].textBox.value)/2;
-    mItems.database[itemIndex].textBox.dimensions.h = textAscent() * 0.8 / 2;
-
+    mItems.database[itemIndex].textBox.dimensions.w = textWidth(mItems.database[itemIndex].textBox.value);
+    mItems.database[itemIndex].textBox.dimensions.h = textAscent() * 0.8;
+    
     // loop to reduce font size til within bounds of circle including padding
+}
+
+function mItemsTextBoxUpdateCoordinates() {
+    var i;
+    for (i = 0; i < mItems.database.length; i++) {
+        mItems.database[i].textBox.coordinate.x = mItems.database[i].coordinate.x - mItems.database[i].textBox.dimensions.w / 2;
+        mItems.database[i].textBox.coordinate.y = mItems.database[i].coordinate.y - mItems.database[i].textBox.dimensions.h / 2;
+    }   
 }
 
 function mItemsGetIndexOfID(itemID) {

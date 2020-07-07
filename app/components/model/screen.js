@@ -10,9 +10,16 @@ var mScreen = {
     scale: 1,
 }
 
-function mScreenConvertCoordinateRelativeToReal(x, y) {
+function mScreenConvertCoordinateRelativeToReal(xRelative, yRelative) {
     return {
-        x: (x - mOrigin.coordinate.x) / mScreen.scale,
-        y: (y - mOrigin.coordinate.y) / mScreen.scale
+        x: (xRelative - mOrigin.coordinate.x) / mScreen.scale,
+        y: (yRelative - mOrigin.coordinate.y) / mScreen.scale
+    };
+}
+
+function mScreenConvertCoordinateRealToRelative(xReal, yReal) {
+    return {
+        x: mScreen.scale * xReal + mOrigin.coordinate.x,
+        y: mScreen.scale * yReal + mOrigin.coordinate.y
     };
 }

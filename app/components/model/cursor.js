@@ -4,11 +4,6 @@ var mCursor = {
         detectedExcludingGrabbed: [],
         front: undefined
     },
-    components: {
-        frontID: {
-            
-        }
-    },
     coordinates: {
         current: {
             x: undefined,

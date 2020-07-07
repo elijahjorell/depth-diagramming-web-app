@@ -3,16 +3,6 @@ function setup() {
     canvas.parent('app');
     mOriginInitialise();
     mStylesInitialise();
-    
-
-    //-----------------
-    // textSize(15)
-    // var lowerCaseAlphabet = 'abcdefghijklmnopqrstuvwxyz'
-    // var upperCaseAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVYWXZ'
-    // var i;
-    // for (i = 0; i < upperCaseAlphabet.length; i++) {
-    //     console.log(upperCaseAlphabet[i], textWidth(upperCaseAlphabet[i]));
-    // }
 }
 
 function draw() {
@@ -21,6 +11,7 @@ function draw() {
     mCursorUpdateDetectedIDs();
     mCursorUpdateStyle();
     mStylesUpdateItems();
+    mItemsTextBoxUpdateCoordinates();
     cPanOn();
     cSelectAreaOn();
     cGrabOn();
@@ -40,13 +31,11 @@ function canvasDrawBackground() {
 function canvasDrawItems() {
     var i;
     var itemStyle;
-    var styleColour;
     for (i = 0; i < mItems.database.length; i++) {
         // access style
         itemStyle = mStylesAccessComponentStyle('items', mItems.database[i].style);
         
         // ring
-
         stroke(itemStyle.ringsStrokeColour)
         fill(itemStyle.ringsFillColour);
         ellipse(mItems.database[i].coordinate.x,
@@ -64,14 +53,9 @@ function canvasDrawItems() {
         noStroke();
         fill(itemStyle.textFillColour);
         textSize(mItems.database[i].textBox.fontSize);
-        // rect(mItems.database[i].coordinate.x - mItems.database[i].dimensions.w,
-        //      mItems.database[i].coordinate.y - mItems.database[i].dimensions.h,
-        //      mItems.database[i].dimensions.w,
-        //      mItems.database[i].dimensions.h)
-
         text(mItems.database[i].textBox.value, 
-             mItems.database[i].coordinate.x - mItems.database[i].textBox.dimensions.w,
-             mItems.database[i].coordinate.y + mItems.database[i].textBox.dimensions.h);
+             mItems.database[i].coordinate.x - mItems.database[i].textBox.dimensions.w / 2,
+             mItems.database[i].coordinate.y + mItems.database[i].textBox.dimensions.h / 2); // does not use textBox coordinate because text lags behind when moving fast
     }
 }
 
