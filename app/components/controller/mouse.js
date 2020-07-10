@@ -38,7 +38,7 @@ function doubleClicked() {
             if (mDetectionIsCoordinateWithinRect(mCursor.coordinates.current,
                                                  mItems.database[frontIDIndex].textBox.coordinate,
                                                  mItems.database[frontIDIndex].textBox.dimensions)) {
-                cEditItemTextBox(mCursor.IDs.front);
+                cEditItemTextBoxBegin(mCursor.IDs.front);
             }
         }
     }

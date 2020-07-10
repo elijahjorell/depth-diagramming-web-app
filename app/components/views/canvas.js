@@ -15,6 +15,7 @@ function draw() {
     cPanOn();
     cSelectAreaOn();
     cGrabOn();
+    cEditItemTextBoxOn();
     canvasDrawBackground();
     canvasDrawItems();
     canvasDrawSelectArea();

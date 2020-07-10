@@ -48,13 +48,17 @@ class Item {
 }
 
 function mItemsTextBoxInitialise(itemID) {
-    var itemIndex = mItemsGetIndexOfID(itemID)
     console.log('Updating textbox of ID: ' + itemID);
+    mItemsTextBoxUpdateDimensions(itemID);
+    
+    // loop to reduce font size til within bounds of circle including padding
+}
+
+function mItemsTextBoxUpdateDimensions(itemID) {
+    var itemIndex = mItemsGetIndexOfID(itemID)
     textSize(mItems.database[itemIndex].textBox.fontSize);
     mItems.database[itemIndex].textBox.dimensions.w = textWidth(mItems.database[itemIndex].textBox.value);
     mItems.database[itemIndex].textBox.dimensions.h = textAscent() * 0.8;
-    
-    // loop to reduce font size til within bounds of circle including padding
 }
 
 function mItemsTextBoxUpdateCoordinates() {
