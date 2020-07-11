@@ -9,6 +9,7 @@ function draw() {
     translate(mOrigin.coordinate.x, mOrigin.coordinate.y);
     mCursorUpdateCoordinateCurrent();
     mCursorUpdateDetectedIDs();
+    mCursorUpdateDetectedComponentOfSelectedIDs();
     mCursorUpdateStyle();
     mStylesUpdateItems();
     mItemsTextBoxUpdateCoordinates();

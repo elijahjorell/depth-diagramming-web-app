@@ -33,13 +33,8 @@ function mousePressed() {
 
 function doubleClicked() {
     if (mouseButton === LEFT) {
-        if (cSelect.IDs.includes(mCursor.IDs.front)) {
-            var frontIDIndex = mItemsGetIndexOfID(mCursor.IDs.front);
-            if (mDetectionIsCoordinateWithinRect(mCursor.coordinates.current,
-                                                 mItems.database[frontIDIndex].textBox.coordinate,
-                                                 mItems.database[frontIDIndex].textBox.dimensions)) {
-                cEditItemTextBoxBegin(mCursor.IDs.front);
-            }
+        if (mCursor.components.selected.textBoxID !== undefined) {
+            cEditItemTextBoxBegin(mCursor.IDs.front);
         }
     }
 } 

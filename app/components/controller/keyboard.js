@@ -8,6 +8,6 @@ function keyPressed() {
         cDeleteIDs(cSelect.IDs);
         cSelectEnd();
     } else if (keyCode === 32) {
-        console.log(mItems.database);
+        // console.log(mItems.database);
     }
 }

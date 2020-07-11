@@ -29,6 +29,7 @@ function cEditItemTextBoxBegin(itemID) {
             }
           });
         cEdit.itemTextBoxEditor.elt.focus();
+        cEdit.itemTextBoxEditor.elt.select();
     }
 }
 
@@ -44,7 +45,7 @@ function cEditItemTextBoxOn() {
 }
 
 function cEditItemTextBoxUpdateValue() {
-    if (mItems.database[mItemsGetIndexOfID(cEdit.id)].textBox.value !== cEdit.itemTextBoxEditor.value) {
+    if (mItems.database[mItemsGetIndexOfID(cEdit.id)].textBox.value !== cEdit.itemTextBoxEditor.value) {        
         mItems.database[mItemsGetIndexOfID(cEdit.id)].textBox.value = cEdit.itemTextBoxEditor.elt.value.toUpperCase();
     }
 }

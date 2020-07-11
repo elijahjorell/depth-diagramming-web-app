@@ -4,6 +4,11 @@ var mCursor = {
         detectedExcludingGrabbed: [],
         front: undefined
     },
+    components: {
+        selected: {
+            textBoxID: undefined
+        }
+    },
     coordinates: {
         current: {
             x: undefined,
@@ -41,14 +46,33 @@ function mCursorUpdateDetectedIDs() {
     mCursor.IDs.front = mItemsGetFrontIDFromIDs(mCursor.IDs.detected);
 }
 
+function mCursorUpdateDetectedComponentOfSelectedIDs() {
+    var i;
+    var itemIndex;
+    var updatedDetectedComponentIDs = [];
+    if (cSelect.active) {
+        for (i = 0; i < cSelect.IDs.length; i++) {
+            itemIndex = mItemsGetIndexOfID(cSelect.IDs[i]);
+            if (mDetectionIsCoordinateWithinRect(mCursor.coordinates.current, 
+                                                 mItems.database[itemIndex].textBox.coordinate,
+                                                 mItems.database[itemIndex].textBox.dimensions)) {
+                updatedDetectedComponentIDs.push(i);
+            }
+        }
+        mCursor.components.selected.textBoxID = mItemsGetFrontIDFromIDs(updatedDetectedComponentIDs);
+    } 
+}
+
 function mCursorUpdateStyle() {  
     var updatedStyle;
     
     // styling logic
     if (cPan.active) {
         updatedStyle = 'grabbing';
-    // } else if (cSelect.active) {
-
+    } else if (cGrab.active) {
+        updatedStyle = 'move';
+    } else if (mCursor.components.selected.textBoxID !== undefined) {
+        updatedStyle = 'text';
     } else if (mCursor.IDs.detected.length > 0) {
         updatedStyle = 'move';
     } else {
