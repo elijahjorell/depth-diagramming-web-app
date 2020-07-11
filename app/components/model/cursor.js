@@ -66,12 +66,12 @@ function mCursorUpdateDetectedComponentOfSelectedIDs() {
 function mCursorUpdateStyle() {  
     var updatedStyle;
     
-    // styling logic
-    if (cPan.active) {
+    // styling logic (need to organise)
+    if (cEdit.active && cGrab.active) {
+        updatedStyle = 'none';
+    } else if (cPan.active) {
         updatedStyle = 'grabbing';
-    } else if (cGrab.active) {
-        updatedStyle = 'move';
-    } else if (mCursor.components.selected.textBoxID !== undefined) {
+    } else if (mCursor.components.selected.textBoxID !== undefined && !cEdit.active && !cGrab.active) {
         updatedStyle = 'text';
     } else if (mCursor.IDs.detected.length > 0) {
         updatedStyle = 'move';

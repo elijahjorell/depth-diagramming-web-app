@@ -1,6 +1,8 @@
 function cDeleteIDs(IDsToBeDelete) {
     var i;
     console.log('Deleted IDs: ' + IDsToBeDelete)
+    cSelectEnd();
+    cGrabEnd();
     if (IDsToBeDelete.length > 0) {
         for (i = 0; i < IDsToBeDelete.length; i++) {
             mItems.database.splice(mItemsGetIndexOfID(IDsToBeDelete[i]), 1);

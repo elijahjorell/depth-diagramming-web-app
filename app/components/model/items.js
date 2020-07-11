@@ -47,28 +47,6 @@ class Item {
     }
 }
 
-function mItemsTextBoxInitialise(itemID) {
-    console.log('Updating textbox of ID: ' + itemID);
-    mItemsTextBoxUpdateDimensions(itemID);
-    
-    // loop to reduce font size til within bounds of circle including padding
-}
-
-function mItemsTextBoxUpdateDimensions(itemID) {
-    var itemIndex = mItemsGetIndexOfID(itemID)
-    textSize(mItems.database[itemIndex].textBox.fontSize);
-    mItems.database[itemIndex].textBox.dimensions.w = textWidth(mItems.database[itemIndex].textBox.value);
-    mItems.database[itemIndex].textBox.dimensions.h = textAscent() * 0.8;
-}
-
-function mItemsTextBoxUpdateCoordinates() {
-    var i;
-    for (i = 0; i < mItems.database.length; i++) {
-        mItems.database[i].textBox.coordinate.x = mItems.database[i].coordinate.x - mItems.database[i].textBox.dimensions.w / 2;
-        mItems.database[i].textBox.coordinate.y = mItems.database[i].coordinate.y - mItems.database[i].textBox.dimensions.h / 2;
-    }   
-}
-
 function mItemsGetIndexOfID(itemID) {
     var i;
     for (i = 0; i < mItems.database.length; i++) {
@@ -91,4 +69,35 @@ function mItemsGetFrontIDFromIDs(itemIDs) {
         } 
     }
     return highestIndexID;
+}
+
+function mItemsMoveIDsToEndOfDatabase(itemIDs) {
+    var i;
+    var itemIndex;
+    for (i = 0; i < itemIDs.length; i++) {
+        itemIndex = mItemsGetIndexOfID(itemIDs[i]);
+        mItems.database.push(mItems.database.splice(itemIndex, 1)[0]);
+    }
+}
+
+function mItemsTextBoxInitialise(itemID) {
+    console.log('Updating textbox of ID: ' + itemID);
+    mItemsTextBoxUpdateDimensions(itemID);
+    
+    // loop to reduce font size til within bounds of circle including padding
+}
+
+function mItemsTextBoxUpdateDimensions(itemID) {
+    var itemIndex = mItemsGetIndexOfID(itemID)
+    textSize(mItems.database[itemIndex].textBox.fontSize);
+    mItems.database[itemIndex].textBox.dimensions.w = textWidth(mItems.database[itemIndex].textBox.value);
+    mItems.database[itemIndex].textBox.dimensions.h = textAscent() * 0.8;
+}
+
+function mItemsTextBoxUpdateCoordinates() {
+    var i;
+    for (i = 0; i < mItems.database.length; i++) {
+        mItems.database[i].textBox.coordinate.x = mItems.database[i].coordinate.x - mItems.database[i].textBox.dimensions.w / 2;
+        mItems.database[i].textBox.coordinate.y = mItems.database[i].coordinate.y - mItems.database[i].textBox.dimensions.h / 2;
+    }   
 }

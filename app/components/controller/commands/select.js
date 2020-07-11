@@ -9,11 +9,10 @@ function cSelectBegin(targetItems) {
     } else {
         cSelect.IDs.push(targetItems);
     }
-    
     if (cSelect.IDs.length > 0) {
         cSelect.active = true;
         mLog.push('Selected IDs: ' + cSelect.IDs);
-    }   
+    }
 }
 
 function cSelectEnd() {

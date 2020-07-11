@@ -17,11 +17,13 @@ function cEditItemTextBoxBegin(itemID) {
         cEdit.itemTextBoxEditor.style('background-color', 'rgba(0, 0, 0, 0)');
         cEdit.itemTextBoxEditor.style('border', '0');
         cEdit.itemTextBoxEditor.style('color', 'rgba(0, 0, 0, 0)');
+        cEdit.itemTextBoxEditor.style('caret-color', 'rgba(0, 0, 0, 255)');
         cEdit.itemTextBoxEditor.style('font-family', 'sans-serif');
         cEdit.itemTextBoxEditor.style('font-size', mItems.database[itemIndex].textBox.fontSize + 'px');
         cEdit.itemTextBoxEditor.style('margin', '0');
         cEdit.itemTextBoxEditor.style('overflow', 'hidden');
         cEdit.itemTextBoxEditor.style('padding', '0');
+        cEdit.itemTextBoxEditor.style('pointer-events', 'none');
         cEdit.itemTextBoxEditor.style('text-transform', 'uppercase');
         document.getElementById(itemID + '-textbox').addEventListener('keypress', (e) => {
             if (e.keyCode === 13) {

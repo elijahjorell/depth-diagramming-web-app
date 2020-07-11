@@ -17,20 +17,21 @@ function draw() {
     cSelectAreaOn();
     cGrabOn();
     cEditItemTextBoxOn();
-    canvasDrawBackground();
-    canvasDrawItems();
-    canvasDrawSelectArea();
+    cMoveArrowKeysOn();
+    vCanvasDrawBackground();
+    vCanvasDrawItems();
+    vCanvasDrawSelectArea();
     mCursorUpdateCoordinatePreviousRelativeToScreen();
 }
 
-function canvasDrawBackground() {
+function vCanvasDrawBackground() {
     background(255);
     noStroke();
     fill(34, 42, 53);
     rect(-windowWidth/2, - windowHeight/2, windowWidth, windowHeight);
 }
 
-function canvasDrawItems() {
+function vCanvasDrawItems() {
     var i;
     var itemStyle;
     for (i = 0; i < mItems.database.length; i++) {
@@ -61,7 +62,7 @@ function canvasDrawItems() {
     }
 }
 
-function canvasDrawSelectArea() {
+function vCanvasDrawSelectArea() {
     if (cSelectArea.active) {
         stroke(255);
         fill(255, 120);
