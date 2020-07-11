@@ -9,7 +9,7 @@ class Item {
     constructor (x, y, r) {
         this.id = mItems.uniqueCounter;
         this.textBox = {
-            value: 'SCIENCE',
+            value: 'ITEM ' + this.id,
             fontSize: 20,
             coordinate: {
                 x: undefined,

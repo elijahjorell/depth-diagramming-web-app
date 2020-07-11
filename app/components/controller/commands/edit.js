@@ -23,6 +23,11 @@ function cEditItemTextBoxBegin(itemID) {
         cEdit.itemTextBoxEditor.style('overflow', 'hidden');
         cEdit.itemTextBoxEditor.style('padding', '0');
         cEdit.itemTextBoxEditor.style('text-transform', 'uppercase');
+        document.getElementById(itemID + '-textbox').addEventListener('keypress', (e) => {
+            if (e.keyCode === 13) {
+              e.preventDefault();
+            }
+          });
         cEdit.itemTextBoxEditor.elt.focus();
     }
 }
@@ -57,8 +62,17 @@ function cEditItemTextBoxUpdatePositionAndDimensions() {
                                  mItems.database[itemIndex].textBox.dimensions.h + textAreaTopPaddingHeight * 2);
 }
 
+function cEditItemTextBoxIfBlank(itemID) {
+    var itemIndex = mItemsGetIndexOfID(itemID);
+    if (mItems.database[itemIndex].textBox.value === '') {
+        mItems.database[itemIndex].textBox.value = 'ITEM ' + mItems.database[itemIndex].id;
+        mItemsTextBoxUpdateDimensions(itemID);
+    }
+}
+
 function cEditItemTextBoxEnd() {
     cEdit.itemTextBoxEditor.remove();
+    cEditItemTextBoxIfBlank(cEdit.id);
     cEdit.id = undefined;
     cEdit.active = false;
 }
