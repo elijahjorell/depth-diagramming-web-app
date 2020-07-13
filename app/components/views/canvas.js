@@ -7,28 +7,30 @@ function setup() {
 
 function draw() {
     translate(mOrigin.coordinate.x, mOrigin.coordinate.y);
+    scale(mScreen.scale);
     mCursorUpdateCoordinateCurrent();
     mCursorUpdateDetectedIDs();
     mCursorUpdateDetectedComponentOfSelectedIDs();
     mCursorUpdateStyle();
     mStylesUpdateItems();
-    mItemsTextBoxUpdateCoordinates();
+    mItemsTextBoxUpdateCoordinate();
     cPanOn();
     cSelectAreaOn();
     cGrabOn();
     cEditItemTextBoxOn();
     cMoveArrowKeysOn();
     vCanvasDrawBackground();
+    vCanvasDrawOrigin();
     vCanvasDrawItems();
     vCanvasDrawSelectArea();
     mCursorUpdateCoordinatePreviousRelativeToScreen();
 }
 
 function vCanvasDrawBackground() {
-    background(255);
+    background(34, 42, 53);
     noStroke();
-    fill(34, 42, 53);
-    rect(-windowWidth/2, - windowHeight/2, windowWidth, windowHeight);
+    // fill(34, 42, 53);
+    // rect(-windowWidth/2, - windowHeight/2, windowWidth, windowHeight);
 }
 
 function vCanvasDrawItems() {
@@ -73,3 +75,9 @@ function vCanvasDrawSelectArea() {
     }
 }
 
+function vCanvasDrawOrigin() {
+    fill('blue');
+    stroke('white');
+    strokeWeight(1 / mScreen.scale);
+    ellipse(0, 0, 10 / mScreen.scale);
+}

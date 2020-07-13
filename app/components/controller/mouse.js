@@ -64,6 +64,10 @@ function mouseReleased() {
     }
 }
 
+function mouseWheel(event) {
+    cZoomOn(event);
+}
+
 function mouseDisableAutoscroll() {
     document.addEventListener('mousedown', (e) => {
       if (e.button === 1) {

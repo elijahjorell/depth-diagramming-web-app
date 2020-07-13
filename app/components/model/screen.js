@@ -7,7 +7,7 @@ var mScreen = {
         w: undefined,
         h: undefined
     },
-    scale: 1,
+    scale: 1
 }
 
 function mScreenConvertCoordinateRelativeToReal(xRelative, yRelative) {

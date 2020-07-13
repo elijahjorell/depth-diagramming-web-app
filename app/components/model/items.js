@@ -2,7 +2,8 @@ var mItems = {
     database: [],
     uniqueCounter: 0,
     baseRadius: 50,
-    basePaddingRatio: 0.1
+    basePaddingRatio: 0.1, 
+    baseTextBoxTextSize: 20
 }
 
 class Item {
@@ -10,7 +11,7 @@ class Item {
         this.id = mItems.uniqueCounter;
         this.textBox = {
             value: 'ITEM ' + this.id,
-            fontSize: 20,
+            fontSize: mItems.baseTextBoxTextSize,
             coordinate: {
                 x: undefined,
                 y: undefined
@@ -83,8 +84,6 @@ function mItemsMoveIDsToEndOfDatabase(itemIDs) {
 function mItemsTextBoxInitialise(itemID) {
     console.log('Updating textbox of ID: ' + itemID);
     mItemsTextBoxUpdateDimensions(itemID);
-    
-    // loop to reduce font size til within bounds of circle including padding
 }
 
 function mItemsTextBoxUpdateDimensions(itemID) {
@@ -94,7 +93,7 @@ function mItemsTextBoxUpdateDimensions(itemID) {
     mItems.database[itemIndex].textBox.dimensions.h = textAscent() * 0.8;
 }
 
-function mItemsTextBoxUpdateCoordinates() {
+function mItemsTextBoxUpdateCoordinate() {
     var i;
     for (i = 0; i < mItems.database.length; i++) {
         mItems.database[i].textBox.coordinate.x = mItems.database[i].coordinate.x - mItems.database[i].textBox.dimensions.w / 2;
