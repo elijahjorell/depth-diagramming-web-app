@@ -1,16 +1,18 @@
 var cZoom = {
-    zoomFactor: 1.05,
+    zoomFactor: 1.2,
 }
 
 function cZoomOn(event) {
-    var zoomDirection;
+    // zoom out
     if (event.deltaY > 0) {
-        mScreen.scale /= cZoom.zoomFactor;
-        zoomDirection = -1;
-      } else if (event.deltaY < 0) {
-        mScreen.scale *= cZoom.zoomFactor;
-        zoomDirection = 1;
-      }
-    // mOrigin.coordinate.x -= zoomDirection * mCursor.coordinates.current * mScreen.scale * (cZoom.zoomFactor - 1);
-    // mOrigin.coordinate.y -= zoomDirection * mCursor.coordinates.current * mScreen.scale * (cZoom.zoomFactor - 1);
+        mScreen.scale /= cZoom.zoomFactor; 
+        mOrigin.coordinate.x += mCursor.coordinates.current.x * mScreen.scale * (cZoom.zoomFactor - 1);
+        mOrigin.coordinate.y += mCursor.coordinates.current.y * mScreen.scale * (cZoom.zoomFactor - 1);
+        
+    // zoom in
+    } else if (event.deltaY < 0) {
+        mOrigin.coordinate.x -= mCursor.coordinates.current.x * mScreen.scale * (cZoom.zoomFactor - 1);
+        mOrigin.coordinate.y -= mCursor.coordinates.current.y * mScreen.scale * (cZoom.zoomFactor - 1);
+        mScreen.scale *= cZoom.zoomFactor; 
+    }
 }
