@@ -2,27 +2,37 @@ function setup() {
     var canvas = createCanvas(windowWidth, windowHeight);
     canvas.parent('app');
     mOriginInitialise();
+    mScreenInitialise();
     mStylesInitialise();
 }
 
 function draw() {
     translate(mOrigin.coordinate.x, mOrigin.coordinate.y);
     scale(mScreen.scale);
+    
+    // model
     mCursorUpdateCoordinateCurrent();
     mCursorUpdateDetectedIDs();
     mCursorUpdateDetectedComponentOfSelectedIDs();
     mCursorUpdateStyle();
     mStylesUpdateItems();
     mItemsTextBoxUpdateCoordinate();
+
+    // controller
     cPanOn();
     cSelectAreaOn();
     cGrabOn();
     cEditItemTextBoxOn();
+    
     cMoveArrowKeysOn();
+
+    // view
     vCanvasDrawBackground();
     vCanvasDrawOrigin();
+    vCanvasDrawScreenCentre();
     vCanvasDrawItems();
     vCanvasDrawSelectArea();
+    
     mCursorUpdateCoordinatePreviousRelativeToScreen();
 }
 
@@ -80,4 +90,13 @@ function vCanvasDrawOrigin() {
     stroke('white');
     strokeWeight(1 / mScreen.scale);
     ellipse(0, 0, 10 / mScreen.scale);
+}
+
+function vCanvasDrawScreenCentre() {
+    fill('green');
+    stroke('white');
+    strokeWeight(1 / mScreen.scale);
+    ellipse(mScreen.coordinate.x + mScreen.dimensions.w / 2, 
+            mScreen.coordinate.y + mScreen.dimensions.h / 2, 
+            10 / mScreen.scale);
 }

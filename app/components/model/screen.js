@@ -23,3 +23,14 @@ function mScreenConvertCoordinateRealToRelative(xReal, yReal) {
         y: mScreen.scale * yReal + mOrigin.coordinate.y
     };
 }
+
+function mScreenUpdate() {
+    mScreen.dimensions.w = windowWidth / mScreen.scale;
+    mScreen.dimensions.h = windowHeight / mScreen.scale;
+    mScreen.coordinate.x = mScreenConvertCoordinateRelativeToReal(0, 0).x;
+    mScreen.coordinate.y = mScreenConvertCoordinateRelativeToReal(0, 0).y;
+}
+
+function mScreenInitialise() {
+    mScreenUpdate();
+}

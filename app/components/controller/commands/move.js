@@ -9,7 +9,6 @@ function cMoveArrowKeysStart() {
     if (!cMove.active && cSelect.active && !cGrab.active) {      
         cMove.active = true;
         mItemsMoveIDsToEndOfDatabase(cSelect.IDs);
-        console.log(mItems.database);
     }
 }
 
@@ -51,6 +50,5 @@ function cMoveArrowKeysOn() {
 function cMoveArrowKeysEnd() {
     if (cMove.active) {
         cMove.active = false;
-        console.log(mItems.database);
     }
 }

@@ -11,6 +11,7 @@ function cPanOn() {
     if (cPan.active) {
         mOrigin.coordinate.x -= cPan.speed * (mCursor.coordinates.previousRelativeToScreen.x - mouseX);
         mOrigin.coordinate.y -= cPan.speed * (mCursor.coordinates.previousRelativeToScreen.y - mouseY);
+        mScreenUpdate();
     }
 }
 
