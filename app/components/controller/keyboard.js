@@ -10,7 +10,7 @@ function keyPressed() {
         } else if (keyCode === DELETE) {
             cDeleteIDs(cSelect.IDs);
             cSelectEnd();
-        } else if (keyCode === 32) {
+        } else if (keyCode === 32 && keyIsDown(CONTROL)) {
             console.log(mItems.database);
         } else if (keyCode === 83 && keyIsDown(CONTROL)) {
             cSaveNew();

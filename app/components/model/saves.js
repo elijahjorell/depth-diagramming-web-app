@@ -13,7 +13,6 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 var mSaves = {
-    local: [],
     cloud: firebase.firestore()
 };
 
