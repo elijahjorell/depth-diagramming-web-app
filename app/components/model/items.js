@@ -6,48 +6,6 @@ var mItems = {
     baseTextBoxTextSize: 20
 }
 
-class Item {
-    constructor (x, y, r) {
-        this.id = mItems.uniqueCounter;
-        this.textBox = {
-            value: 'ITEM ' + this.id,
-            fontSize: mItems.baseTextBoxTextSize,
-            coordinate: {
-                x: undefined,
-                y: undefined
-            },
-            dimensions: {
-                w: undefined,
-                h: undefined
-            }
-        };
-        this.coordinate = { 
-            x: x,
-            y: y
-        };
-        this.dimensions = {
-            r: r
-        };
-        this.structure = {
-            parent: undefined,
-            ancenstors: [],
-            progenitor: undefined,
-            children: [],
-            descendants: [],
-            siblings: [],
-            depth: 0,
-            height: undefined
-        };
-        this.process = {
-            predecessors: [],
-            successors: [],
-            peers: [],
-        };
-        this.style = 'default';
-        this.characteristics = []; 
-    }
-}
-
 function mItemsGetIndexOfID(itemID) {
     var i;
     for (i = 0; i < mItems.database.length; i++) {

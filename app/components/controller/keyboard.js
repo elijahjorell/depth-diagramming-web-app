@@ -12,6 +12,8 @@ function keyPressed() {
             cSelectEnd();
         } else if (keyCode === 32) {
             console.log(mItems.database);
+        } else if (keyCode === 83 && keyIsDown(CONTROL)) {
+            cSaveNew();
         } else if (keyCode === UP_ARROW) {
             cMoveArrowKeysStart();
         } else if (keyCode === DOWN_ARROW) {
@@ -30,3 +32,13 @@ function keyPressed() {
         }
     }
 }
+
+function keyboardDisableCtrlS() {
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.keyCode === 83) {
+        e.preventDefault();
+      }
+    });
+}
+
+keyboardDisableCtrlS();
