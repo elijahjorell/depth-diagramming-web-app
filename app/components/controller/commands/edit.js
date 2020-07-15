@@ -20,7 +20,7 @@ function cEditItemTextBoxBegin(itemID) {
         cEdit.itemTextBoxEditor.style('color', 'rgba(0, 0, 0, 0)');
         cEdit.itemTextBoxEditor.style('caret-color', 'rgba(0, 0, 0, 255)');
         cEdit.itemTextBoxEditor.style('font-family', 'sans-serif');
-        cEdit.itemTextBoxEditor.style('font-size', mItems.database[itemIndex].textBox.fontSize + 'px');
+        cEdit.itemTextBoxEditor.style('font-size', mItems.database[itemIndex].textBox.fontSize * mScreen.scale + 'px');
         cEdit.itemTextBoxEditor.style('margin', '0');
         cEdit.itemTextBoxEditor.style('overflow', 'hidden');
         cEdit.itemTextBoxEditor.style('padding', '0');
@@ -41,6 +41,7 @@ function cEditItemTextBoxOn() {
         if (document.activeElement.id !== cEdit.id + '-textbox') {
             cEditItemTextBoxEnd();
         } else {
+            cEditItemTextBoxUpdateFontSize();
             cEditItemTextBoxUpdateValue();
             cEditItemTextBoxReduceTextSizeToKeepWIthinItemBounds();
             cEditItemTextBoxUpdatePositionAndDimensions();
@@ -57,10 +58,13 @@ function cEditItemTextBoxUpdateValue() {
     }
 }
 
+function cEditItemTextBoxUpdateFontSize() {
+    cEdit.itemTextBoxEditor.style('font-size', mItems.database[mItemsGetIndexOfID(cEdit.id)].textBox.fontSize * mScreen.scale + 'px');
+}
+
 function cEditItemTextBoxUpdatePositionAndDimensions() {
     var itemIndex = mItemsGetIndexOfID(cEdit.id);
-    var itemTextCoordinateRelative = mScreenConvertCoordinateRealToRelative(mItems.database[itemIndex].textBox.coordinate.x,
-        mItems.database[itemIndex].textBox.coordinate.y);
+    var itemTextCoordinateRelative;
     var textAreaTopPaddingHeight;
     
     mItemsTextBoxUpdateDimensions(cEdit.id);
@@ -68,7 +72,9 @@ function cEditItemTextBoxUpdatePositionAndDimensions() {
     // update textarea
     textSize(mItems.database[itemIndex].textBox.fontSize);
     textAreaTopPaddingHeight = textAscent() * 0.2;
-    cEdit.itemTextBoxEditor.position(itemTextCoordinateRelative.x, itemTextCoordinateRelative.y - textAreaTopPaddingHeight);
+    itemTextCoordinateRelative = mScreenConvertCoordinateRealToRelative(mItems.database[itemIndex].textBox.coordinate.x,
+        mItems.database[itemIndex].textBox.coordinate.y)
+    cEdit.itemTextBoxEditor.position(itemTextCoordinateRelative.x, itemTextCoordinateRelative.y - textAreaTopPaddingHeight * mScreen.scale);
     cEdit.itemTextBoxEditor.size(mItems.database[itemIndex].textBox.dimensions.w * mScreen.scale,
                                  (mItems.database[itemIndex].textBox.dimensions.h + textAreaTopPaddingHeight * 2) * mScreen.scale);
 }
@@ -82,7 +88,6 @@ function cEditItemTextBoxReduceTextSizeToKeepWIthinItemBounds() {
     var proposedWidth;
     var proposedHeight;
     
-    /////// --- CHANGE THIS WHOLE SECTION TO JUST ADD A "..." WHEN GOING OUTSIDE THE BOUNDS
     // if textbox would go outside the bounds of the circle
     if (Math.sqrt(Math.pow(h / 2, 2) + Math.pow(w / 2, 2)) > r * (1 - mItems.basePaddingRatio)) {
         mItems.database[itemIndex].textBox.fontSize -= 1;
