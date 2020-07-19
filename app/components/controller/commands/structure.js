@@ -22,6 +22,7 @@ function cStructureSetParentOfIDsTo(childIDs, parentID) {
                 if (previousParentID !== undefined) {
                     // clear child from previous parent's children
                     cStructureRemoveChildIDsFrom(childIDs[i], previousParentID);
+                    cResizeIDBasedOnChildren(previousParentID);
                     previousParentID = undefined;
                 }
 
