@@ -16,3 +16,10 @@ var mSaves = {
     cloud: firebase.firestore()
 };
 
+// mSaves.cloud.collection("saves").get().then((querySnapshot) => {
+//     querySnapshot.forEach((doc) => {
+//         console.log(doc.data());
+//     });
+// });
+
+mSaves.cloud.collection('saves').doc('LOL').get().then((docRef) => { console.log(docRef.data()) });

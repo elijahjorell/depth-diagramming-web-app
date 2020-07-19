@@ -5,6 +5,7 @@ function cSaveNew() {
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     var objectifiedDatabase = JSON.parse(JSON.stringify(mItems.database));
 
+    // turn arrays into objects
     for (i = 0; i < objectifiedDatabase.length; i++) {
         objectifiedDatabase[i].structure.ancestors = Object.assign({}, objectifiedDatabase[i].structure.ancestors)
         objectifiedDatabase[i].structure.children = Object.assign({}, objectifiedDatabase[i].structure.children)
@@ -16,13 +17,12 @@ function cSaveNew() {
         objectifiedDatabase[i].characteristics = Object.assign({}, objectifiedDatabase[i].characteristics)
     }
 
-    mSaves.cloud.collection("saves").add({
+    mSaves.cloud.collection("saves").doc('main-save').set({ // change to custom name
         dateTime: date + ' ' + time,
         itemsDatabase: Object.assign({}, objectifiedDatabase),
         originCoordinate: mOrigin.coordinate
     });
     console.log('Saved to cloud')
 }
-
 
 

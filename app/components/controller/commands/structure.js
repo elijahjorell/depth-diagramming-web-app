@@ -33,6 +33,7 @@ function cStructureSetParentOfIDsTo(childIDs, parentID) {
                 if (parentID !== undefined) {
                     // set children
                     mItems.database[parentIndex].structure.children.push(childIDs[i]);
+                    cResizeIDBasedOnChildren(parentID);
 
                     // set grab state
                     cGrab.state = 'hovering over new parent'
