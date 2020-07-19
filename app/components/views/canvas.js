@@ -30,6 +30,7 @@ function draw() {
     vCanvasDrawBackground();
     vCanvasDrawOrigin();
     vCanvasDrawScreenCentre();
+    vCanvasDrawHelpText();
     vCanvasDrawItems();
     vCanvasDrawSelectArea();
     
@@ -99,4 +100,17 @@ function vCanvasDrawScreenCentre() {
     ellipse(mScreen.coordinate.x + mScreen.dimensions.w / 2, 
             mScreen.coordinate.y + mScreen.dimensions.h / 2, 
             10 / mScreen.scale);
+}
+
+function vCanvasDrawHelpText() {
+    var i;
+    var refCoordinate = mScreenConvertCoordinateRelativeToReal(20, windowHeight - 20);
+    var currentOffsetY = 0;
+    for (i = 0; i < mScreen.helpText.length; i++) {
+        currentOffsetY -= 18 / mScreen.scale; 
+        noStroke();
+        fill('white');
+        textSize(15 / mScreen.scale);
+        text(mScreen.helpText[mScreen.helpText.length - 1 - i], refCoordinate.x, refCoordinate.y + currentOffsetY);
+    }
 }

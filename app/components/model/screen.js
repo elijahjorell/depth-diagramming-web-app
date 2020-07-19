@@ -7,7 +7,8 @@ var mScreen = {
         w: undefined,
         h: undefined
     },
-    scale: 1
+    scale: 1,
+    helpText: []
 }
 
 function mScreenConvertCoordinateRelativeToReal(xRelative, yRelative) {
@@ -33,4 +34,14 @@ function mScreenUpdate() {
 
 function mScreenInitialise() {
     mScreenUpdate();
+    mScreen.helpText.push('CONTROLS (Currently supports mouse and keyboard only)')
+    mScreen.helpText.push('------------------')
+    mScreen.helpText.push('CREATE NEW ITEM  -  Press Enter')
+    mScreen.helpText.push('SELECT ITEM  -  Mouse left click while cursor is over item ')
+    mScreen.helpText.push('GRAB AND MOVE ITEM  -  Mouse left click and hold then move cursor to desired location')
+    mScreen.helpText.push('* Letting go of an item while cursor is over another item will make the grabbed item a child of the targeted item')
+    mScreen.helpText.push('ZOOM  -  Mouse wheel')
+    mScreen.helpText.push('PAN  -  Mouse wheel click and hold')
 }
+
+
