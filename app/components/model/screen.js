@@ -37,6 +37,7 @@ function mScreenInitialise() {
     mScreen.helpText.push('CONTROLS (Currently supports mouse and keyboard only)')
     mScreen.helpText.push('------------------')
     mScreen.helpText.push('CREATE NEW ITEM  -  Press Enter')
+    mScreen.helpText.push('RENAME ITEM -  Mouse left double-click on selected item text')
     mScreen.helpText.push('SELECT ITEM  -  Mouse left click while cursor is over item ')
     mScreen.helpText.push('SELECT MULTIPLE ITEMS -  Mouse left click on canvas, hold then move cursor')
     mScreen.helpText.push('GRAB AND MOVE ITEM  -  Mouse left click a selected item, hold then move cursor to desired location')

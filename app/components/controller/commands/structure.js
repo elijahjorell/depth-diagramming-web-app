@@ -35,6 +35,7 @@ function cStructureSetParentOfIDsTo(childIDs, parentID) {
                     // set children
                     mItems.database[parentIndex].structure.children.push(childIDs[i]);
                     cResizeIDBasedOnChildren(parentID);
+                    cStructureGetDescendantsOfID(parentID);
 
                     // set grab state
                     cGrab.state = 'hovering over new parent'
@@ -62,4 +63,18 @@ function cStructureRemoveChildIDsFrom(childIDs, parentID) {
         mItems.database[parentIndex].structure.children.splice(childIndexInParentID, 1);
         console.log('ID: ' + childIDs[i] + ' is no longer a child of ' + parentID);
     }
+}
+
+function cStructureGetDescendantsOfID(itemID) {
+    var i = 0;
+    var descendantsArray = [itemID];
+    var currentIndex;
+    while (i < descendantsArray.length) {
+        currentIndex = mItemsGetIndexOfID(descendantsArray[i]);
+        if (mItems.database[currentIndex].structure.children.length > 0) {
+            descendantsArray = descendantsArray.concat(mItems.database[currentIndex].structure.children);
+        }
+        i += 1
+    }
+    return descendantsArray;
 }
