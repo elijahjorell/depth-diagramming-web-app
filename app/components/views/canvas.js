@@ -69,9 +69,9 @@ function vCanvasDrawItems() {
         noStroke();
         fill(itemStyle.textFillColour);
         textSize(mItems.database[i].textBox.fontSize);
-        text(mItems.database[i].textBox.value, 
-             mItems.database[i].coordinate.x - mItems.database[i].textBox.dimensions.w / 2,
-             mItems.database[i].coordinate.y + mItems.database[i].textBox.dimensions.h / 2); // does not use textBox coordinate because text lags behind when moving fast
+        // text(mItems.database[i].textBox.value, 
+        //      mItems.database[i].coordinate.x - mItems.database[i].textBox.dimensions.w / 2,
+        //      mItems.database[i].coordinate.y + mItems.database[i].textBox.dimensions.h / 2); // does not use textBox coordinate because text lags behind when moving fast
     }
 }
 

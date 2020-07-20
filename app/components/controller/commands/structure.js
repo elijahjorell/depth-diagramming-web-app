@@ -22,7 +22,8 @@ function cStructureSetParentOfIDsTo(childIDs, parentID) {
                 if (previousParentID !== undefined) {
                     // clear child from previous parent's children
                     cStructureRemoveChildIDsFrom(childIDs[i], previousParentID);
-                    cResizeIDBasedOnChildren(previousParentID);
+                    cStructureUpdateDepth(childIDs[i]);
+                    cResizeShrink(childIDs[i]);
                     previousParentID = undefined;
                 }
 
@@ -34,11 +35,17 @@ function cStructureSetParentOfIDsTo(childIDs, parentID) {
                 if (parentID !== undefined) {
                     // set children
                     mItems.database[parentIndex].structure.children.push(childIDs[i]);
-                    cResizeIDBasedOnChildren(parentID);
+                    cStructureUpdateDepth(childIDs[i]);
+                    cResizeShrink(childIDs[i]);
                     cStructureGetDescendantsOfID(parentID);
 
                     // set grab state
                     cGrab.state = 'hovering over new parent'
+                
+                // if target is canvas
+                } else {
+                    cStructureUpdateDepth(childIDs[i]);
+                    cResizeShrink(childIDs[i]);
                 }
             } else {
                 console.log(`A child cannot be it's own parent!`)
@@ -77,4 +84,23 @@ function cStructureGetDescendantsOfID(itemID) {
         i += 1
     }
     return descendantsArray;
+}
+
+function cStructureGetAncestorsOfID(itemID) {
+    var i = 0;
+    var ancestorsArray = [itemID];
+    var currentIndex;
+    while (i < ancestorsArray.length) {
+        currentIndex = mItemsGetIndexOfID(ancestorsArray[i]);
+        if (mItems.database[currentIndex].structure.parent !== undefined) {
+            ancestorsArray = ancestorsArray.concat(mItems.database[currentIndex].structure.parent);
+        }
+        i += 1
+    }
+    return ancestorsArray;
+}
+
+function cStructureUpdateDepth(itemID) {
+    var itemIndex = mItemsGetIndexOfID(itemID);
+    mItems.database[itemIndex].structure.depth = cStructureGetAncestorsOfID(itemID).length - 1;
 }
