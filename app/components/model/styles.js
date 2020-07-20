@@ -24,61 +24,17 @@ function mStylesCreateNew(component, name, circleFillValues, circleStrokeValues,
 
 function mStylesInitialise() {
     mStylesCreateNew('items', 'default', ['#FFFFFF', 255], ['#FFFFFF', 255], ['#FFFFFF', 0], ['#FFFFFF', 255], ['#000000', 255]);
+    mStylesCreateNew('items', 'default-grabbed', ['#FFE699', 210], ['#FFE699', 210], ['#FFE699', 0], ['#FFFFFF', 210], ['#000000', 210]);
+    mStylesCreateNew('items', 'default-grabbed-hover', ['#FFE699', 210], ['#FFE699', 210], ['#FFE699', 0], ['#FFE699', 210], ['#000000', 210]);
     mStylesCreateNew('items', 'default-hover', ['#FFFFFF', 255], ['#FFFFFF', 255], ['#FFFFFF', 0], ['#FFE699', 255], ['#000000', 255]);
     mStylesCreateNew('items', 'default-selected', ['#FFE699', 255], ['#FFE699', 255], ['#FFE699', 0], ['#FFFFFF', 255], ['#000000', 255]);
     mStylesCreateNew('items', 'default-selected-hover', ['#FFE699', 255], ['#FFE699', 255], ['#FFE699', 0], ['#FFE699', 255], ['#000000', 255]);
     mStylesCreateNew('items', 'parent', ['#FFFFFF', 0], ['#FFFFFF', 255], ['#FFFFFF', 0], ['#FFFFFF', 255], ['#FFFFFF', 255]);
+    mStylesCreateNew('items', 'parent-grabbed', ['#FFE699', 0], ['#FFE699', 210], ['#FFE699', 0], ['#FFFFFF', 210], ['#FFFFFF', 210]);
+    mStylesCreateNew('items', 'parent-grabbed-hover', ['#FFE699', 0], ['#FFE699', 210], ['#FFE699', 0], ['#FFE699', 210], ['#FFFFFF', 210]);
     mStylesCreateNew('items', 'parent-hover', ['#FFFFFF', 0], ['#FFFFFF', 255], ['#FFFFFF', 0], ['#FFE699', 255], ['#FFFFFF', 255]);
     mStylesCreateNew('items', 'parent-selected', ['#FFE699', 0], ['#FFE699', 255], ['#FFE699', 0], ['#FFFFFF', 255], ['#FFFFFF', 255]);
     mStylesCreateNew('items', 'parent-selected-hover', ['#FFE699', 0], ['#FFE699', 255], ['#FFE699', 0], ['#FFE699', 255], ['#FFFFFF', 255]);
-}
-
-function mStylesUpdateItems() {
-    var i;
-    for (i = 0; i < mItems.database.length; i++) {
-        // if default
-        if (mItems.database[i].structure.children.length === 0) {
-        
-            // if selected + hovered
-            if ((cSelectArea.IDs.includes(mItems.database[i].id) || cSelect.IDs.includes(mItems.database[i].id)) &&
-                 mCursor.IDs.front === mItems.database[i].id) {
-                mItems.database[i].style = 'default-selected-hover';
-
-            // if selected
-            } else if (cSelectArea.IDs.includes(mItems.database[i].id) || cSelect.IDs.includes(mItems.database[i].id)) {
-                mItems.database[i].style = 'default-selected';
-
-            // if hovered
-            } else if (mCursor.IDs.front === mItems.database[i].id) {
-                mItems.database[i].style = 'default-hover';
-
-            // if no interaction    
-            } else {
-                mItems.database[i].style = 'default';
-            }
-
-        // if parent
-        } else {
-
-            // if selected + hovered
-            if ((cSelectArea.IDs.includes(mItems.database[i].id) || cSelect.IDs.includes(mItems.database[i].id)) &&
-            mCursor.IDs.front === mItems.database[i].id) {
-            mItems.database[i].style = 'parent-selected-hover';
-
-            // if selected
-            } else if (cSelectArea.IDs.includes(mItems.database[i].id) || cSelect.IDs.includes(mItems.database[i].id)) {
-            mItems.database[i].style = 'parent-selected';
-
-            // if hovered
-            } else if (mCursor.IDs.front === mItems.database[i].id) {
-            mItems.database[i].style = 'parent-hover';
-
-            // if no interaction    
-            } else {
-            mItems.database[i].style = 'parent';
-            }
-        }
-    }
 }
 
 function mStylesAccessComponentStyle(component, styleName) {

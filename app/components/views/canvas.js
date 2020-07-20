@@ -15,7 +15,7 @@ function draw() {
     mCursorUpdateDetectedIDs();
     mCursorUpdateDetectedComponentOfSelectedIDs();
     mCursorUpdateStyle();
-    mStylesUpdateItems();
+    mStyleItemsUpdate();
     mItemsTextBoxUpdateCoordinate();
 
     // controller

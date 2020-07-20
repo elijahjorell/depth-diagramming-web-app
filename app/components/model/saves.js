@@ -22,4 +22,4 @@ var mSaves = {
 //     });
 // });
 
-mSaves.cloud.collection('saves').doc('LOL').get().then((docRef) => { console.log(docRef.data()) });
+// mSaves.cloud.collection('saves').doc('LOL').get().then((docRef) => { console.log(docRef.data()) });
